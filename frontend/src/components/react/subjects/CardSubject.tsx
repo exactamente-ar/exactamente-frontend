@@ -81,7 +81,7 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
             </ContainerLink>
 
             <ContainerLink
-              url={`.${url}/finales?from=${url.slice(1)}`}
+              url={`.${url}/finales`}
               className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-2 border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100 font-semibold flex items-center gap-3 transition-all duration-200'
             >
               <div className='flex items-center gap-2'>

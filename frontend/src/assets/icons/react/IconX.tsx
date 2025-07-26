@@ -9,9 +9,9 @@ const IconX: React.FC<Props> = ({ size = 30, className = 'fill-foreground' }) =>
       <path
         fill='none'
         stroke='#000000'
-        stroke-linecap='round'
-        stroke-linejoin='round'
-        stroke-width='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth='2'
         d='M18 6L6 18M6 6l12 12'
       />
     </svg>
