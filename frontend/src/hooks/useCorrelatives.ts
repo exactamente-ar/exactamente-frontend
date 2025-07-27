@@ -27,13 +27,13 @@ export function useCorrelatives(initialSelectedId: string) {
       if (!plan[year][quad]) plan[year][quad] = [];
 
       let type: TipoMateria = TIPOS_MATERIA.OTRA;
-
-      if (subject.id === selectedMateriaId) {
+      console.log('subjectCurrent', subjectCurrent?.correlatives, subject.id, correlatives);
+      if (subject.id == selectedMateriaId) {
         type = TIPOS_MATERIA.ACTUAL;
+      } else if (subjectCurrent?.correlatives.includes(subject.id)) {
+        type = TIPOS_MATERIA.CORRELATIVA;
       } else if (subjectCurrent?.required.includes(subject.id)) {
         type = TIPOS_MATERIA.REQUERIDA;
-      } else if (correlatives.includes(subject.id)) {
-        type = TIPOS_MATERIA.CORRELATIVA;
       }
 
       plan[year][quad].push({
