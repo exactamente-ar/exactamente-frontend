@@ -27,7 +27,6 @@ export function useCorrelatives(initialSelectedId: string) {
       if (!plan[year][quad]) plan[year][quad] = [];
 
       let type: TipoMateria = TIPOS_MATERIA.OTRA;
-      console.log('subjectCurrent', subjectCurrent?.correlatives, subject.id, correlatives);
       if (subject.id == selectedMateriaId) {
         type = TIPOS_MATERIA.ACTUAL;
       } else if (subjectCurrent?.correlatives.includes(subject.id)) {
