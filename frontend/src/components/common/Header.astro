@@ -80,24 +80,17 @@ import ContainerLink from './ContainerLink.astro';
     </div>
   </div>
 
-  <!-- Menú móvil mejorado -->
+  <!-- Menú celular -->
   <div
-    class='z-0 mobile-menu rounded-b-xl fixed top-16 left-0 w-full bg-zinc-900/70 backdrop-blur-xl border-t border-zinc-800 shadow-2xl transform -translate-y-full opacity-0 transition-all duration-300 ease-in-out md:hidden'
+    class='z-0 mobile-menu rounded-b-xl bg-black/40 fixed top-16 left-0 w-full h-screen backdrop-blur-2xl border-t border-zinc-800 shadow-2xl transform -translate-y-full opacity-0 transition-all duration-300 ease-in-out md:hidden'
   >
-    <div class='px-4 py-20 space-y-2'>
-      <a
-        href='/#subjects'
-        class='flex items-center px-4 py-3 text-zinc-200 hover:text-white hover:bg-zinc-800/50 rounded-lg transition-all duration-200 group'
-      >
-        <span class='font-medium'>Materias</span>
-      </a>
-
-      <a
-        href='/#correlatives'
-        class='flex items-center px-4 py-3 text-zinc-200 hover:text-white hover:bg-zinc-800/50 rounded-lg transition-all duration-200 group'
-      >
-        <span class='font-medium'>Correlativas</span>
-      </a>
+    <div class='px-4 py-20 flex flex-col space-y-2'>
+      <ContainerLink url='/#subjects' class='w-full text-center text-foreground font-bold'>
+        <span class='text-2xl'>Materias</span>
+      </ContainerLink>
+      <ContainerLink url='/#correlatives' class='w-full text-center text-foreground font-bold'>
+        <span class='text-2xl'>Correlativas</span>
+      </ContainerLink>
     </div>
   </div>
 
@@ -196,7 +189,6 @@ import ContainerLink from './ContainerLink.astro';
 </script>
 
 <style>
-  /* Asegurar que las transiciones funcionen correctamente */
   .mobile-menu {
     will-change: transform, opacity;
   }
@@ -205,12 +197,10 @@ import ContainerLink from './ContainerLink.astro';
     will-change: opacity;
   }
 
-  /* Mejorar la animación del botón */
   .mobile-menu-button:active {
     transform: scale(0.95);
   }
 
-  /* Animación suave para los iconos */
   .hamburger-icon,
   .close-icon {
     will-change: transform;
