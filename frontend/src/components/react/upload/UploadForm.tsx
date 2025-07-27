@@ -1,6 +1,9 @@
 import IconDownload from '@/assets/icons/react/IconDownload';
 import IconDocument from '@/assets/icons/react/IconDocument';
 import IconAlertCircle from '@/assets/icons/react/IconAlertCircle';
+import ReCAPTCHA from 'react-google-recaptcha';
+
+const SITE_KEY_CAPTCHA = '6LfCHpArAAAAAMeI_zqp5XSn2IiGqklXaN4V2VEz';
 
 interface UploadFormProps {
   formData: {
@@ -16,6 +19,7 @@ interface UploadFormProps {
     tipoAporte?: string;
     titulo?: string;
     archivo?: string;
+    captcha?: string;
   };
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -26,6 +30,8 @@ interface UploadFormProps {
   tiposAporte: { value: string; label: string; color: string }[];
   uploading: boolean;
   uploadError: string | null;
+  captchaToken: string | null;
+  setCaptchaToken: (token: string | null) => void;
 }
 
 const UploadForm = ({
@@ -38,6 +44,8 @@ const UploadForm = ({
   uploadError,
   subjects,
   tiposAporte,
+  captchaToken,
+  setCaptchaToken,
 }: UploadFormProps) => (
   <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95  rounded-xl shadow-sm border border-border/60 p-6'>
     <form onSubmit={(e) => handleSubmit(() => {})(e)} className='space-y-8'>
@@ -50,7 +58,7 @@ const UploadForm = ({
           name='materia'
           value={formData.materia}
           onChange={handleInputChange}
-          className={`w-full text-foreground-secondary font-bold px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFDD00] focus:border-[#FFDD00] transition-all duration-200 ${
+          className={`w-full text-foreground-secondary font-bold cursor-pointer px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFDD00] focus:border-[#FFDD00] transition-all duration-200 ${
             errors.materia ? 'border-red-300 bg-red-900/10' : 'border-primary/30 bg-black/20'
           }`}
         >
@@ -220,6 +228,18 @@ const UploadForm = ({
         />
       </div>
 
+      <ReCAPTCHA
+        sitekey={SITE_KEY_CAPTCHA}
+        theme='dark'
+        onChange={(token) => setCaptchaToken(token)}
+      />
+
+      {errors.captcha && (
+        <div className='flex items-center mb-4 text-red-600'>
+          <IconAlertCircle size={16} className='fill-red-600 mr-2' />
+          <span className='text-sm'>{errors.captcha}</span>
+        </div>
+      )}
       {/* Submit Button */}
       <div className='pt-6'>
         {uploadError && (

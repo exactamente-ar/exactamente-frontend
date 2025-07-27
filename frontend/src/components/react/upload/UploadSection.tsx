@@ -22,6 +22,8 @@ const UploadSection = () => {
     handleSubmit,
     closeSuccess,
     uploading,
+    captchaToken,
+    setCaptchaToken,
     uploadError,
   } = useUploadForm();
 
@@ -31,6 +33,8 @@ const UploadSection = () => {
       <div className='max-w-4xl mx-auto py-12'>
         <UploadHeader />
         <UploadForm
+          setCaptchaToken={setCaptchaToken}
+          captchaToken={captchaToken}
           uploadError={uploadError}
           uploading={uploading}
           formData={formData}

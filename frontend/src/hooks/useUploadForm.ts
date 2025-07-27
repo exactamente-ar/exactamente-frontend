@@ -19,7 +19,7 @@ const INITIAL_FORM_DATA: FormData = {
 };
 
 const SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbwRGof6cJ0y7H03GTDssrKjaRJNF5rgC4uTnuc9g8xp1w5dnSsovkLPfEtRfbGFb93A/exec';
+  'https://script.google.com/macros/s/AKfycbwm9m4VpPkV5-A5lUSgN2Dho6Lssfi2SVhO-i1owDiMSnKIuHG2beZS-SZGsJml_0Pp/exec';
 
 export const useUploadForm = () => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
@@ -27,6 +27,7 @@ export const useUploadForm = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const resetForm = () => {
     setFormData(INITIAL_FORM_DATA);
@@ -50,18 +51,25 @@ export const useUploadForm = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
+    if (file && file.size > 10 * 1024 * 1024) {
+      setErrors((prev) => ({
+        ...prev,
+        archivo: 'El archivo supera el límite de 10MB',
+      }));
+      return;
+    }
     setFormData((prev) => ({ ...prev, archivo: file }));
     if (errors.archivo) {
       setErrors((prev) => ({ ...prev, archivo: '' }));
     }
   };
-
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.materia) newErrors.materia = 'Selecciona una materia';
     if (!formData.tipoAporte) newErrors.tipoAporte = 'Selecciona el tipo de aporte';
     if (!formData.titulo.trim()) newErrors.titulo = 'Ingresa un título';
+    if (!captchaToken) newErrors.captcha = 'Por favor, verifica que no eres un robot';
 
     if (!formData.archivo) {
       newErrors.archivo = 'Selecciona un archivo';
@@ -98,17 +106,19 @@ export const useUploadForm = () => {
     });
   };
 
-  const uploadFileToDrive = async (base64: string): Promise<string> => {
-    const response = await fetch(
-      `${SCRIPT_URL}?filename=${encodeURIComponent(
-        formData.archivo!.name
-      )}&mimetype=${encodeURIComponent(formData.archivo!.type)}`,
-      {
-        method: 'POST',
-        body: base64,
-        headers: { 'Content-Type': 'text/plain' },
-      }
-    );
+  const uploadFileToDrive = async (base64: string, token: string): Promise<string> => {
+    // Usamos URLSearchParams para construir la URL de forma más segura y legible
+    const params = new URLSearchParams({
+      'g-recaptcha-response': token,
+      filename: formData.archivo!.name,
+      mimetype: formData.archivo!.type,
+    });
+
+    const response = await fetch(`${SCRIPT_URL}?${params.toString()}`, {
+      method: 'POST',
+      body: base64,
+      headers: { 'Content-Type': 'text/plain' },
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -127,13 +137,18 @@ export const useUploadForm = () => {
     e.preventDefault();
     setUploadError(null);
 
-    if (!validateForm() || !formData.archivo) return;
+    if (!validateForm() || !formData.archivo || !captchaToken) {
+      return;
+    }
 
     setUploading(true);
 
     try {
       const base64 = await convertFileToBase64(formData.archivo);
-      const fileUrl = await uploadFileToDrive(base64);
+
+      // 2. Pasar el `captchaToken` como segundo argumento a la función de subida.
+      const fileUrl = await uploadFileToDrive(base64, captchaToken);
+
       // console.log('Archivo subido con éxito a Google Drive:', fileUrl);
 
       setShowSuccess(true);
@@ -158,5 +173,7 @@ export const useUploadForm = () => {
     handleFileChange,
     handleSubmit,
     closeSuccess,
+    captchaToken,
+    setCaptchaToken,
   };
 };
