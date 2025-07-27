@@ -1,0 +1,182 @@
+<!-- Form skeleton -->
+<div class='max-w-4xl mx-auto py-12' id='upload-skeleton'>
+  <div
+    class='p-6 space-y-8 animate-pulse group bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-2xl overflow-hidden shadow-xl relative'
+  >
+    <!-- Materia Select -->
+    <div>
+      <div
+        class='h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 rounded w-20 mb-3 shimmer'
+      >
+      </div>
+      <div
+        class='w-full h-12 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 border border-zinc-700/50 rounded-xl shimmer'
+      >
+      </div>
+    </div>
+
+    <!-- Tipo de Aporte -->
+    <div>
+      <div
+        class='h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 rounded w-32 mb-3 shimmer'
+      >
+      </div>
+      <div class='grid grid-cols-1 md:grid-cols-3 gap-4'>
+        {
+          [1, 2, 3].map((index) => (
+            <div
+              class='flex items-center p-4 border border-zinc-700/50 rounded-xl bg-zinc-800/20 shimmer'
+              style={`animation-delay: ${index * 0.1}s`}
+            >
+              <div class='w-5 h-5 bg-zinc-600 rounded-full mr-3 animate-pulse' />
+              <div
+                class={`h-4 bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-700 rounded shimmer ${
+                  index === 1 ? 'w-16' : index === 2 ? 'w-14' : 'w-12'
+                }`}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Título -->
+    <div>
+      <div
+        class='h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 rounded w-36 mb-3 shimmer'
+      >
+      </div>
+      <div
+        class='w-full h-12 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 border border-zinc-700/50 rounded-xl shimmer'
+      >
+      </div>
+    </div>
+
+    <!-- Descripción -->
+    <div>
+      <div
+        class='h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 rounded w-40 mb-3 shimmer'
+      >
+      </div>
+      <div
+        class='w-full h-24 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 border border-zinc-700/50 rounded-xl shimmer'
+      >
+      </div>
+    </div>
+
+    <!-- File Upload -->
+    <div>
+      <div
+        class='h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 rounded w-16 mb-3 shimmer'
+      >
+      </div>
+      <div
+        class='border border-dashed border-zinc-700/50 rounded-xl p-8 text-center bg-zinc-800/20 shimmer'
+      >
+        <div class='flex flex-col items-center'>
+          <div
+            class='w-12 h-12 bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-700 rounded-xl mb-4 shimmer flex items-center justify-center'
+          >
+            <div class='w-6 h-6 bg-zinc-500 rounded animate-pulse'></div>
+          </div>
+          <div class='space-y-2'>
+            <div
+              class='h-4 bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-700 rounded w-64 shimmer'
+            >
+            </div>
+            <div
+              class='h-3 bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-700 rounded w-40 shimmer'
+            >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Autor -->
+    <div>
+      <div
+        class='h-5 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 rounded w-44 mb-3 shimmer'
+      >
+      </div>
+      <div
+        class='w-full h-12 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 border border-zinc-700/50 rounded-xl shimmer'
+      >
+      </div>
+    </div>
+
+    <!-- reCAPTCHA -->
+    <div class='flex justify-start'>
+      <div
+        class='w-80 h-20 bg-gradient-to-r from-zinc-800/50 via-zinc-700/50 to-zinc-800/50 border border-zinc-700/50 rounded-lg shimmer flex items-center justify-center'
+      >
+        <div class='flex items-center gap-3'>
+          <div class='w-6 h-6 bg-zinc-600 rounded animate-pulse'></div>
+          <div
+            class='h-4 bg-gradient-to-r from-zinc-700 via-zinc-600 to-zinc-700 rounded w-32 shimmer'
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class='pt-6'>
+      <div
+        class='w-full h-14 bg-gradient-to-r from-zinc-700/50 via-zinc-600/50 to-zinc-700/50 rounded-xl shimmer flex items-center justify-center gap-2'
+      >
+        <div class='w-5 h-5 bg-zinc-500 rounded animate-pulse'></div>
+        <div
+          class='h-4 bg-gradient-to-r from-zinc-600 via-zinc-500 to-zinc-600 rounded w-28 shimmer'
+        >
+        </div>
+      </div>
+    </div>
+    <!-- Elementos decorativos -->
+    <div class='absolute top-4 right-4 opacity-30'>
+      <div class='flex gap-1'>
+        <div class='w-2 h-2 bg-zinc-600 rounded-full animate-bounce'></div>
+        <div class='w-2 h-2 bg-zinc-600 rounded-full animate-bounce' style='animation-delay: 0.1s;'>
+        </div>
+        <div class='w-2 h-2 bg-zinc-600 rounded-full animate-bounce' style='animation-delay: 0.2s;'>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+    background-size: 200% 100%;
+  }
+
+  /* Delays y variaciones para naturalidad */
+  .shimmer:nth-child(odd) {
+    animation-delay: 0.3s;
+  }
+
+  .shimmer:nth-child(even) {
+    animation-delay: 0.6s;
+  }
+
+  .shimmer:nth-of-type(3n) {
+    animation-duration: 2.5s;
+  }
+
+  .shimmer:nth-of-type(3n + 1) {
+    animation-duration: 1.8s;
+  }
+
+  .shimmer:nth-of-type(3n + 2) {
+    animation-duration: 2.2s;
+  }
+</style>

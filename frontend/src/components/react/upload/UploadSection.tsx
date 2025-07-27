@@ -1,9 +1,8 @@
 import { useUploadForm } from '@/hooks/useUploadForm';
 import SuccessModal from './SuccesModal';
-import UploadHeader from './UploadHeader';
-import InfoSection from './InfoSection';
 import { MATERIAS_SISTEMAS } from '@/data/materias';
 import UploadForm from './UploadForm';
+import { useEffect } from 'react';
 
 const subjects = MATERIAS_SISTEMAS.map((subject) => subject.title);
 const tiposAporte = [
@@ -27,11 +26,17 @@ const UploadSection = () => {
     uploadError,
   } = useUploadForm();
 
+  useEffect(() => {
+    const skeleton = document.getElementById('upload-skeleton');
+    if (skeleton) {
+      skeleton.style.display = 'none';
+    }
+  }, []);
+
   return (
-    <div className='min-h-screen pt-20'>
+    <>
       <SuccessModal showSuccess={showSuccess} closeSuccess={closeSuccess} />
       <div className='max-w-4xl mx-auto py-12'>
-        <UploadHeader />
         <UploadForm
           setCaptchaToken={setCaptchaToken}
           captchaToken={captchaToken}
@@ -45,9 +50,8 @@ const UploadSection = () => {
           subjects={subjects}
           tiposAporte={tiposAporte}
         />
-        <InfoSection />
       </div>
-    </div>
+    </>
   );
 };
 

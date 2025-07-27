@@ -1,8 +1,17 @@
 ---
 import UploadSection from '@/components/react/upload/UploadSection';
+import UploadHeader from '@/components/upload/UploadHeader.astro';
+import InfoUpload from '@/components/upload/InfoUpload.astro';
+import FormSkeleton from '@/components/upload/FormSkeleton.astro';
 import Layout from '@/layouts/Layout.astro';
+import ContainerSection from '@/components/common/ContainerSection.astro';
 ---
 
 <Layout>
-  <UploadSection client:only='react' />
+  <ContainerSection id='upload'>
+    <UploadHeader />
+    <FormSkeleton />
+    <UploadSection client:only='react' />
+    <InfoUpload />
+  </ContainerSection>
 </Layout>
