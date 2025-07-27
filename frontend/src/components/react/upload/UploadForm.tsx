@@ -124,6 +124,8 @@ const UploadForm = ({
         <div className='pt-6'>
           <ErrorMessage message={uploadError} />
           <SubmitButton
+            uploadError={uploadError}
+            errors={errors}
             isSubmitting={uploading}
             text='Enviar Aporte'
             submittingText='Subiendo archivo...'
