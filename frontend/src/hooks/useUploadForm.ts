@@ -146,10 +146,8 @@ export const useUploadForm = () => {
     try {
       const base64 = await convertFileToBase64(formData.archivo);
 
-      // 2. Pasar el `captchaToken` como segundo argumento a la función de subida.
+      // Pasar el `captchaToken` como segundo argumento a la función de subida.
       const fileUrl = await uploadFileToDrive(base64, captchaToken);
-
-      // console.log('Archivo subido con éxito a Google Drive:', fileUrl);
 
       setShowSuccess(true);
       onSuccess?.();
@@ -157,7 +155,6 @@ export const useUploadForm = () => {
       setTimeout(() => resetForm(), 3000);
     } catch (error: any) {
       setUploadError(error.message || 'Ocurrió un error durante la subida.');
-      // console.error('Upload error:', error);
     } finally {
       setUploading(false);
     }

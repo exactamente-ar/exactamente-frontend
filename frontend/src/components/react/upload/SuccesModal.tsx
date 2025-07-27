@@ -28,7 +28,7 @@ const SuccessModal = ({ showSuccess, closeSuccess }: SuccessModalProps) => {
           </p>
           <button
             onClick={closeSuccess}
-            className='w-full bg-gradient-to-r from-[#FFDD00] to-[#FFCC00] text-black font-semibold py-3 rounded-xl hover:from-[#FFCC00] hover:to-[#FFB800] transition-all duration-200'
+            className='w-full  text-transparent font-semibold py-3 rounded-xl  transition-all duration-200'
           >
             Continuar
           </button>
