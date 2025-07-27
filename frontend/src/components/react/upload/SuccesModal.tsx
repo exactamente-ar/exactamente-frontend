@@ -10,8 +10,8 @@ const SuccessModal = ({ showSuccess, closeSuccess }: SuccessModalProps) => {
   if (!showSuccess) return null;
 
   return (
-    <div className='fixed inset-0 bg-black/95 border-primary/30  border flex items-center justify-center z-50 p-4'>
-      <div className='bg-black/20 rounded-2xl p-8 max-w-md w-full relative animate-in fade-in duration-300'>
+    <div className='fixed inset-0 bg-black/95  flex items-center justify-center z-50 p-4'>
+      <div className='bg-black/40 border-primary/30 border rounded-2xl p-8 max-w-md w-full relative animate-in fade-in duration-300'>
         <button
           onClick={closeSuccess}
           className='absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors'
