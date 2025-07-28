@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
+    "@astrojs/sitemap": "^3.4.2",
     "@astrojs/vercel": "^8.2.2",
     "@fontsource-variable/rubik": "^5.2.6",
     "@tailwindcss/vite": "^4.1.11",
