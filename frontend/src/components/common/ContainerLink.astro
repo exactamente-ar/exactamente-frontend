@@ -5,7 +5,7 @@ interface Props {
   target?: string;
   rel?: string;
 }
-const { url, rel, class: className, target } = Astro.props;
+const { url, rel = 'noopener noreferrer', class: className, target } = Astro.props;
 ---
 
 <a
@@ -17,13 +17,3 @@ const { url, rel, class: className, target } = Astro.props;
 >
   <slot />
 </a>
-
-<script>
-  import { navigate } from 'astro:transitions/client';
-  /*
-  // Navigate to the selected option automatically.
-  document.getElementById('link')?.addEventListener('click', (e) => {
-    let href = e.target.value;
-    navigate(href);
-  });*/
-</script>

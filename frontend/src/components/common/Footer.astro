@@ -1,15 +1,27 @@
+---
+import ContainerLink from './ContainerLink.astro';
+---
+
 <footer class='mt-32'>
   <div class='py-8 relative w-full max-w-6xl 2xl:max-w-8xl mx-auto'>
     <div
-      class='flex flex-col-reverse sm:flex-row gap-4 justify-center sm:items-center sm:justify-between'
+      class='relative flex flex-col-reverse sm:flex-row gap-4 justify-center sm:items-center sm:justify-between'
     >
       <p class='mt-4 text-center text-sm text-foreground-muted lg:mt-0 lg:text-left'>
-          © 2025. Desarrollado por <a
+        © 2025. Desarrollado por <a
           target='_blank'
           href='https://juanpenalba.vercel.app'
           class='underline italic text-juan'>Juanpa</a
         >
       </p>
+      <ContainerLink
+        url='https://cafecito.app/juanpenalba'
+        target='_blank'
+        rel='noopener noreferrer'
+        class='text-gray font-bold sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex items-center justify-center'
+      >
+        ☕ cafecito
+      </ContainerLink>
       <ul class='flex justify-center gap-4 items-center'>
         <li>
           <a
