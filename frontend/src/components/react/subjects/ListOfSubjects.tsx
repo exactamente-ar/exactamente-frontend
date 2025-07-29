@@ -15,7 +15,7 @@ function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: Pr
 
   return (
     <div className='flex flex-col items-center'>
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8'>
+      <div className='w-full grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8'>
         {subjects.length == 0 ? (
           <div className='col-span-full w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-border/60 overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
             <h2 className='text-xl font-semibold text-zinc-100 mb-2'>Sin resultados</h2>
