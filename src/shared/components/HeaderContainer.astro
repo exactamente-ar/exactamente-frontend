@@ -1,0 +1,15 @@
+---
+interface Props {
+  urlImg: string;
+}
+const { urlImg } = Astro.props;
+---
+
+<header
+  class='rounded-xl overflow-hidden mt-6 relative border-border border'
+  style={`background-image: url('${urlImg}'); background-size: cover; background-position: rigth;`}
+>
+  <div class='z-40 bg-primary-foreground/70 w-full h-full p-6'>
+    <slot />
+  </div>
+</header>

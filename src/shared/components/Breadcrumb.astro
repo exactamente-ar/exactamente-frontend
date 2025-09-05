@@ -1,0 +1,22 @@
+---
+interface Props {
+  url: string;
+  title: string;
+}
+const { url, title } = Astro.props;
+---
+
+<div
+  class='py-3 rounded-xl px-2 flex items-start justify-between flex-col sm:flex-row gap-5 sm:gap-2'
+>
+  <a href={url} class='font-bold text-foreground-secondary flex gap-2 items-center'>
+    <svg class='text-foreground-secondary rotate-180' width='20' height='20' viewBox='0 0 24 24'>
+      <path fill='currentColor' d='M16.175 13H4v-2h12.175l-5.6-5.6L12 4l8 8l-8 8l-1.425-1.4z'
+      ></path>
+    </svg>
+    <span> Volver al inicio </span>
+  </a>
+  <div class='flex items-center gap-2 flex-wrap justify-start'>
+    <slot />
+  </div>
+</div>
