@@ -1,5 +1,5 @@
 import { TIPOS_MATERIA } from '@/features/home/constants/correlatives';
-import type { StyleSubjects, SubjectMapped } from '@/types/correlative';
+import type { StyleSubjects, SubjectMapped } from '../../types/correlative';
 
 interface Props {
   styles: StyleSubjects;

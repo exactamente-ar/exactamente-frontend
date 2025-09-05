@@ -1,11 +1,10 @@
-import type { Subject, TipoMateria } from '@/features/home/types/subjects';
+import type { StyleSubjects, SubjectMapped } from '../../types/correlative';
 import CardSubjectCorrelative from './CardSubjectCorrelative';
-import type { SubjectMapped } from '@/types/correlative';
 
 interface Props {
   clickeable: boolean;
   handleSubjectClick: (id: string) => void;
-  getStyleSubject: (type: string) => void;
+  getStyleSubject: (type: string) => StyleSubjects;
   subjects: SubjectMapped[];
 }
 export function ListOfSubjects({

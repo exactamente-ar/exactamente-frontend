@@ -2,7 +2,7 @@
 
 @theme {
   /* 🎨 Colores base */
-  --color-primary: #ffd100; /* Botones principales, enlaces, énfasis */
+  --color-primary: #ffdd00; /* Botones principales, enlaces, énfasis */
   --color-primary-foreground: #050505; /* Texto o íconos sobre primario */
 
   --color-secondary: #1e40af; /* Elementos secundarios: cards, fondos alternos */

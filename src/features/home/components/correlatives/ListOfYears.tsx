@@ -1,11 +1,11 @@
 import { AÑOS_CARRERA } from '@/features/home/constants/correlatives';
 import ListOfQuadmesters from './ListOfQuadmesters';
-import type { PlanEstudiosMapeado } from '@/types/correlative';
+import type { PlanEstudiosMapeado, StyleSubjects } from '../../types/correlative';
 
 interface Props {
   clickeable: boolean;
   handleSubjectClick: (id: string) => void;
-  getStyleSubject: (type: string) => void;
+  getStyleSubject: (type: string) => StyleSubjects;
   PLAN_ESTUDIOS_MAPEADO: PlanEstudiosMapeado;
 }
 

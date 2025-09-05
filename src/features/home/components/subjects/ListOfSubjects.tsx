@@ -1,6 +1,6 @@
+import type { PropsListOfSubjects } from '../../types/filter';
 import Card from './CardSubject';
 import CardSubjectLoading from './CardSubjectLoading';
-import type { PropsListOfSubjects } from '@/types/filter';
 
 function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: PropsListOfSubjects) {
   if (loading) {

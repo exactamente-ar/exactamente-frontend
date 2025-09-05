@@ -1,6 +1,6 @@
 import { CARRERS_FILTER, QUADMESTERS_FILTER, YEARS_FILTER } from '@/features/home/constants/filter';
-import type { PropsFilterBar } from '@/types/filter';
 import React from 'react';
+import type { PropsFilterBar } from '../../types/filter';
 
 const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
   return (
