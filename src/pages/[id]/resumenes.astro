@@ -1,14 +1,17 @@
 ---
-import ContainerSection from '@/components/common/ContainerSection.astro';
+import ContainerSection from '@/shared/components/ContainerSection.astro';
+
 import Layout from '@/layouts/Layout.astro';
-import IconPaper from '@/assets/icons/IconPaper.astro';
-import Breadcrumb from '@/components/common/Breadcrumb.astro';
-import { MATERIAS_SISTEMAS } from '@/data/materias';
-import IconOpenBook from '@/assets/icons/IconOpenBook.astro';
-import ContainerLink from '@/components/common/ContainerLink.astro';
-import IconDocument from '@/assets/icons/IconDocument.astro';
-import IconUniversity from '@/assets/icons/IconUniversity.astro';
-import ResourcesView from '@/components/react/resources/ResourcesView';
+import IconPaper from '@/shared/components/icons/IconPaper.astro';
+import Breadcrumb from '@/shared/components/Breadcrumb.astro';
+
+import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
+import IconOpenBook from '@/shared/components/icons/IconOpenBook.astro';
+import ContainerLink from '@/shared/components/ContainerLink.astro';
+
+import IconDocument from '@/shared/components/icons/IconDocument.astro';
+import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
+import ResourcesView from '@/features/resource/components/ResourcesView';
 
 export async function getStaticPaths() {
   return MATERIAS_SISTEMAS.map((materia) => ({
