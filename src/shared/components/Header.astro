@@ -1,0 +1,208 @@
+---
+import ContainerLink from './ContainerLink.astro';
+---
+
+<header class='fixed left-1/2 -translate-x-1/2 top-0 z-50 w-full filter' id='blur-element'>
+  <div class='z-50 relative w-full max-w-6xl 2xl:max-w-8xl mx-auto px-4 sm:px-10 md:px-12 lg:px-0'>
+    <div class='flex h-16 items-center justify-between'>
+      <div class='md:flex md:items-center md:gap-12'>
+        <a class='block text-primary' href='/'>
+          <span class='sr-only'>Home</span>
+          <svg class='h-7' viewBox='0 0 640 512'>
+            <path
+              d='M288.73 320c0-52.34 16.96-103.22 48.01-144.95 5.17-6.94 4.45-16.54-2.15-22.14l-24.69-20.98c-7-5.95-17.83-5.09-23.38 2.23C246.09 187.42 224 252.78 224 320c0 67.23 22.09 132.59 62.52 185.84 5.56 7.32 16.38 8.18 23.38 2.23l24.69-20.99c6.59-5.61 7.31-15.2 2.15-22.14-31.06-41.71-48.01-92.6-48.01-144.94zM224 16c0-8.84-7.16-16-16-16h-48C102.56 0 56 46.56 56 104v64H16c-8.84 0-16 7.16-16 16v48c0 8.84 7.16 16 16 16h40v128c0 13.2-10.8 24-24 24H16c-8.84 0-16 7.16-16 16v48c0 8.84 7.16 16 16 16h16c57.44 0 104-46.56 104-104V248h40c8.84 0 16-7.16 16-16v-48c0-8.84-7.16-16-16-16h-40v-64c0-13.2 10.8-24 24-24h48c8.84 0 16-7.16 16-16V16zm353.48 118.16c-5.56-7.32-16.38-8.18-23.38-2.23l-24.69 20.98c-6.59 5.61-7.31 15.2-2.15 22.14 31.05 41.71 48.01 92.61 48.01 144.95 0 52.34-16.96 103.23-48.01 144.95-5.17 6.94-4.45 16.54 2.15 22.14l24.69 20.99c7 5.95 17.83 5.09 23.38-2.23C617.91 452.57 640 387.22 640 320c0-67.23-22.09-132.59-62.52-185.84zm-54.17 231.9L477.25 320l46.06-46.06c6.25-6.25 6.25-16.38 0-22.63l-22.62-22.62c-6.25-6.25-16.38-6.25-22.63 0L432 274.75l-46.06-46.06c-6.25-6.25-16.38-6.25-22.63 0l-22.62 22.62c-6.25 6.25-6.25 16.38 0 22.63L386.75 320l-46.06 46.06c-6.25 6.25-6.25 16.38 0 22.63l22.62 22.62c6.25 6.25 16.38 6.25 22.63 0L432 365.25l46.06 46.06c6.25 6.25 16.38 6.25 22.63 0l22.62-22.62c6.25-6.25 6.25-16.38 0-22.63z'
+              fill='currentColor'></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class='hidden md:block absolute left-1/2 -translate-x-1/2'>
+        <nav aria-label='Global'>
+          <ul class='flex items-center gap-6 text-sm'>
+            <li>
+              <a
+                class='text-foreground transition-all hover:text-accent hover:scale-105 duration-200'
+                href='/#subjects'
+              >
+                Materias
+              </a>
+            </li>
+            <li>
+              <a
+                class='text-foreground transition-all hover:text-accent hover:scale-105 duration-200'
+                href='/#correlatives'
+              >
+                Correlativas
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class='flex items-center gap-4'>
+        <ContainerLink
+          url='/upload'
+          class='hover:sepia-50 bg-primary text-primary-foreground font-bold'
+        >
+          Subir Aporte
+        </ContainerLink>
+
+        <div class='block md:hidden'>
+          <button
+            class='mobile-menu-button rounded-xl bg-zinc-800 hover:bg-zinc-700 p-3 text-zinc-300 hover:text-white transition-all duration-200 border border-zinc-700'
+            aria-label='Abrir menú'
+            aria-expanded='false'
+          >
+            <!-- Icono hamburguesa -->
+            <svg
+              class='w-5 h-5 hamburger-icon transition-transform duration-300'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              stroke-width='2'
+            >
+              <path stroke-linecap='round' stroke-linejoin='round' d='M4 6h16M4 12h16M4 18h16'
+              ></path>
+            </svg>
+            <!-- Icono X (oculto inicialmente) -->
+            <svg
+              class='w-5 h-5 close-icon hidden transition-transform duration-300'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              stroke-width='2'
+            >
+              <path stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12'></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menú celular -->
+  <div
+    class='z-0 mobile-menu rounded-b-xl bg-black/40 fixed top-16 left-0 w-full h-screen backdrop-blur-2xl border-t border-zinc-800 shadow-2xl transform -translate-y-full opacity-0 transition-all duration-300 ease-in-out md:hidden'
+  >
+    <div class='px-4 py-20 flex flex-col space-y-2'>
+      <ContainerLink url='/#subjects' class='w-full text-center text-foreground font-bold'>
+        <span class='text-2xl'>Materias</span>
+      </ContainerLink>
+      <ContainerLink url='/#correlatives' class='w-full text-center text-foreground font-bold'>
+        <span class='text-2xl'>Correlativas</span>
+      </ContainerLink>
+    </div>
+  </div>
+
+  <!-- Overlay para cerrar el menú al hacer clic fuera -->
+  <div
+    class='mobile-overlay fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40 md:hidden'
+  >
+  </div>
+</header>
+
+<script>
+  const mobileMenuButton = document.querySelector('.mobile-menu-button');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const mobileOverlay = document.querySelector('.mobile-overlay');
+  const hamburgerIcon = document.querySelector('.hamburger-icon');
+  const closeIcon = document.querySelector('.close-icon');
+  let isMenuOpen = false;
+
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+
+    if (isMenuOpen) {
+      // Abrir menú
+      mobileMenu?.classList.remove('-translate-y-full', 'opacity-0');
+      mobileMenu?.classList.add('translate-y-0', 'opacity-100');
+      mobileOverlay?.classList.remove('opacity-0', 'pointer-events-none');
+      mobileOverlay?.classList.add('opacity-100', 'pointer-events-auto');
+
+      // Cambiar iconos
+      hamburgerIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('hidden');
+
+      // Actualizar aria-expanded
+      mobileMenuButton?.setAttribute('aria-expanded', 'true');
+
+      // Prevenir scroll del body
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Cerrar menú
+      mobileMenu?.classList.remove('translate-y-0', 'opacity-100');
+      mobileMenu?.classList.add('-translate-y-full', 'opacity-0');
+      mobileOverlay?.classList.remove('opacity-100', 'pointer-events-auto');
+      mobileOverlay?.classList.add('opacity-0', 'pointer-events-none');
+
+      // Cambiar iconos
+      hamburgerIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+
+      // Actualizar aria-expanded
+      mobileMenuButton?.setAttribute('aria-expanded', 'false');
+
+      // Restaurar scroll del body
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Event listeners
+  mobileMenuButton?.addEventListener('click', toggleMenu);
+  mobileOverlay?.addEventListener('click', toggleMenu);
+
+  // Cerrar menú al hacer clic en un enlace
+  const mobileLinks = document.querySelectorAll('.mobile-menu a');
+  mobileLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      if (isMenuOpen) {
+        toggleMenu();
+      }
+    });
+  });
+
+  // Cerrar menú con tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMenuOpen) {
+      toggleMenu();
+    }
+  });
+
+  // Manejar scroll para el blur del header
+  const handleScroll = () => {
+    const element = document.getElementById('blur-element');
+    if (!element) return;
+
+    const scrollY = window.scrollY;
+    const maxFadePoint = 100;
+
+    if (scrollY > maxFadePoint) {
+      element.classList.add('backdrop-blur-xl');
+    } else {
+      element.classList.remove('backdrop-blur-xl');
+    }
+  };
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScroll);
+  }
+</script>
+
+<style>
+  .mobile-menu {
+    will-change: transform, opacity;
+  }
+
+  .mobile-overlay {
+    will-change: opacity;
+  }
+
+  .mobile-menu-button:active {
+    transform: scale(0.95);
+  }
+
+  .hamburger-icon,
+  .close-icon {
+    will-change: transform;
+  }
+</style>
