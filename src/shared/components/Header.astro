@@ -6,7 +6,7 @@ import ContainerLink from './ContainerLink.astro';
   <div class='z-50 relative w-full max-w-6xl 2xl:max-w-8xl mx-auto px-4 sm:px-10 md:px-12 lg:px-0'>
     <div class='flex h-16 items-center justify-between'>
       <div class='md:flex md:items-center md:gap-12'>
-        <a class='block text-primary' href='/'>
+        <a class='block text-primary' href='/#hero'>
           <span class='sr-only'>Home</span>
           <svg class='h-7' viewBox='0 0 640 512'>
             <path
@@ -135,23 +135,18 @@ import ContainerLink from './ContainerLink.astro';
       mobileOverlay?.classList.remove('opacity-100', 'pointer-events-auto');
       mobileOverlay?.classList.add('opacity-0', 'pointer-events-none');
 
-      // Cambiar iconos
       hamburgerIcon?.classList.remove('hidden');
       closeIcon?.classList.add('hidden');
 
-      // Actualizar aria-expanded
       mobileMenuButton?.setAttribute('aria-expanded', 'false');
 
-      // Restaurar scroll del body
       document.body.style.overflow = '';
     }
   }
 
-  // Event listeners
   mobileMenuButton?.addEventListener('click', toggleMenu);
   mobileOverlay?.addEventListener('click', toggleMenu);
 
-  // Cerrar menú al hacer clic en un enlace
   const mobileLinks = document.querySelectorAll('.mobile-menu a');
   mobileLinks.forEach((link) => {
     link.addEventListener('click', () => {
@@ -161,14 +156,12 @@ import ContainerLink from './ContainerLink.astro';
     });
   });
 
-  // Cerrar menú con tecla Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isMenuOpen) {
       toggleMenu();
     }
   });
 
-  // Manejar scroll para el blur del header
   const handleScroll = () => {
     const element = document.getElementById('blur-element');
     if (!element) return;

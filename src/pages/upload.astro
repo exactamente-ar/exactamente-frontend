@@ -1,18 +1,23 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import ContainerSection from '@/shared/components/ContainerSection.astro';
+import Layout from "@/layouts/Layout.astro";
+import ContainerSection from "@/shared/components/ContainerSection.astro";
 
-import UploadHeader from '@/features/upload/components/UploadHeader.astro';
-import FormSkeleton from '@/features/upload/components/FormSkeleton.astro';
-import InfoUpload from '@/features/upload/components/InfoUpload.astro';
-import UploadSection from '@/features/upload/components/UploadSection';
+import UploadHeader from "@/features/upload/components/UploadHeader.astro";
+import FormSkeleton from "@/features/upload/components/FormSkeleton.astro";
+
+import UploadSection from "@/features/upload/components/UploadSection";
+import InfoUpload from "@/features/upload/components/InfoUpload.astro";
 ---
 
 <Layout>
-  <ContainerSection id='upload'>
+  <ContainerSection id="upload">
     <UploadHeader />
+   
     <FormSkeleton />
-    <UploadSection client:only='react' />
-    <InfoUpload />
+    <UploadSection client:only="react" />
+     <div class="max-w-4xl mx-auto">
+      <InfoUpload />
+    </div>
+
   </ContainerSection>
 </Layout>

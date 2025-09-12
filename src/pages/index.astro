@@ -1,18 +1,17 @@
 ---
-import CorrelativesComponent from '@/features/home/components/correlatives/CorrelativesSection';
-import Layout from '@/layouts/Layout.astro';
-import HeroSection from '@/features/home/components/hero/HeroSection.astro';
-import SubjectsSection from '@/features/home/components/subjects/SubjectsSection.astro';
+import CorrelativesComponent from "@/features/home/components/correlatives/CorrelativesSection";
+import Layout from "@/layouts/Layout.astro";
+import HeroSection from "@/features/home/components/hero/HeroSection.astro";
+import SubjectsSection from "@/features/home/components/subjects/SubjectsSection.astro";
 ---
 
 <Layout>
   <HeroSection />
   <SubjectsSection />
-  <span id='correlatives '></span>
+  <span id="correlatives" class="relative -top-20"></span>
   <CorrelativesComponent
     client:load
-    title='Correlativas Ingenieria en Sistemas'
+    title="Correlativas Ingenieria en Sistemas"
     clickeable={true}
   />
 </Layout>
- 
