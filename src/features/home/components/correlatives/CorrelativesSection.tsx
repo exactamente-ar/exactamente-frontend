@@ -42,7 +42,6 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
 
           <InfoSubjectSelect correlatives={correlatives} subjectCurrent={subjectCurrent} />
 
-          <ExplanatoryNote subjectCurrent={subjectCurrent} />
         </div>
       </div>
     </div>
