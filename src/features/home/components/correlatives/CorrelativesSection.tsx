@@ -2,7 +2,6 @@ import { useCorrelatives } from '@/features/home/hooks/useCorrelatives';
 import { INITIAL_SELECTED_SUBJECT } from '@/features/home/constants/correlatives';
 import ListOfYears from './ListOfYears';
 import HeaderCorrelative from './HeaderCorrelatives';
-import ExplanatoryNote from './ExplanatoryNote';
 import InfoSubjectSelect from './InfoSubjectSelect';
 
 interface Props {
@@ -27,7 +26,6 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
 
   return (
     <div className=' text-white'>
-      <span id='correlatives' className='absolute -top-20'></span>
 
       <div className='max-w-7xl mx-auto'>
         <div className='rounded-xl mt-10 lg:mt-20'>
