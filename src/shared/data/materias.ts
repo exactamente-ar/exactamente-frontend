@@ -14,7 +14,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A1C1M1',
-    title: 'Introducción a la Programación I',
+    title: 'Introducción a la Programación 1',
     description:
       'Conceptos de algoritmo, proceso, programa. Concepto de programación imperativa (acciones y datos). Estructura de control (secuencia, selección, iteración). Pilas y Filas. Concepto de Variables. Tipos de datos simples y estructurados. Arreglos (una y más dimensiones). Estrategias de modularización, legibilidad, mantenibilidad, reusabilidad. Procedimientos y funciones. Parámetros formales y actuales. Algoritmos básicos de búsqueda, inserción, eliminación, ordenamiento. Utilización de técnicas y herramientas de aplicación en la ingeniería en sistemas de información.',
     url: '/introduccion-a-la-programacion-i',
@@ -138,7 +138,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A1C2M2',
-    title: 'Introducción a la Programación II',
+    title: 'Introducción a la Programación 2',
     description:
       'String. Registros. Archivos. Recursión. Estructuras de datos dinámicas. Punteros. Listas vinculadas simples y dobles. Árboles binarios de búsqueda. Algoritmos avanzados de búsqueda, inserción, eliminación y ordenamiento. Utilización de técnicas y herramientas de aplicación en la ingeniería en sistemas de información.',
     url: '/introduccion-a-la-programacion-ii',
@@ -188,7 +188,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A1C2M4',
-    title: 'Cálculo I',
+    title: 'Cálculo 1',
     description:
       "Funciones. Dominio e imagen. Representación gráfica. Operaciones. Función inversa. Límite de funciones. Propiedades. Indeterminaciones. Límites infinitos. Asíntotas. Continuidad. Teorema del Valor Intermedio. Derivada. Recta tangente. Reglas de derivación. Derivabilidad y continuidad. Teorema del Valor Medio. Derivación implícita. Regla de L'Hôpital. Análisis de funciones. Integral definida e indefinida. Regla de Barrow. Teorema Fundamental del Cálculo. Técnicas de integración. Aplicaciones geométricas y físicas (áreas, longitud de curvas). Ecuaciones diferenciales de primer orden. Sucesiones. Series numéricas. Series de potencias. Serie de Taylor. Convergencia.",
     url: '/calculo-i',
@@ -220,7 +220,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A2C1M1',
-    title: 'Arquitectura de Computadoras I',
+    title: 'Arquitectura de Computadoras 1',
     description:
       'Introducción a las arquitecturas de procesadores. RISC vs CISC. ISA de un procesador. Procesadores escalares. Rendimiento de un procesador escalar. Segmentación de un procesador escalar RISC. Riesgos en la ejecución de instrucciones: control, datos, estructurales. Unidades funcionales de un procesador (unidad de control, ruta de datos escalar, registros). Jerarquía de memorias (caché, central, secundarias, discos).',
     url: '/arquitectura-de-computadoras-i',
@@ -234,7 +234,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A2C1M2',
-    title: 'Análisis y Diseño de Algoritmos I',
+    title: 'Análisis y Diseño de Algoritmos 1',
     description:
       'Análisis de algoritmos. Complejidad temporal y espacial. Notación asintótica. Algoritmos de ordenamiento avanzados (quicksort, mergesort, heapsort). Algoritmos de búsqueda avanzados (árboles balanceados, tablas hash). Técnicas de diseño de algoritmos (divide y vencerás, programación dinámica, algoritmos voraces).',
     url: '/analisis-y-diseno-de-algoritmos-i',
@@ -276,7 +276,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A2C2M1',
-    title: 'Redes de Computadoras I',
+    title: 'Redes de Computadoras 1',
     description:
       'Conceptos fundamentales de redes de computadoras. Modelo OSI y TCP/IP. Capa física, enlace de datos y red. Protocolos Ethernet, IP, ARP, ICMP. Direccionamiento IP (IPv4 y IPv6). Enrutamiento estático y dinámico (RIP, OSPF).',
     url: '/redes-de-computadoras-i',
@@ -304,7 +304,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A2C2M3',
-    title: 'Análisis y Diseño de Algoritmos II',
+    title: 'Análisis y Diseño de Algoritmos 2',
     description:
       'Análisis de algoritmos en grafos. Algoritmos de caminos mínimos (Dijkstra, Bellman-Ford). Algoritmos de árboles de expansión mínima (Prim, Kruskal). Flujo máximo. Programación lineal. Optimización combinatoria. Complejidad computacional (clases P, NP, NP-completo).',
     url: '/analisis-y-diseno-de-algoritmos-ii',
@@ -318,7 +318,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A2C2M4',
-    title: 'Cálculo II',
+    title: 'Cálculo 2',
     description:
       'Funciones de varias variables. Derivadas parciales. Gradiente. Diferencial total. Regla de la cadena. Máximos y mínimos. Multiplicadores de Lagrange. Integrales múltiples (dobles y triples). Coordenadas polares, cilíndricas y esféricas. Teoremas de Green, Stokes y Gauss. Series de Fourier. Ecuaciones diferenciales parciales (ecuación de onda, calor, Laplace).',
     url: '/calculo-ii',
@@ -356,7 +356,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A3C1M2',
-    title: 'Base de Datos I',
+    title: 'Base de Datos 1',
     description:
       'Modelos de bases de datos (jerárquico, red, relacional, orientado a objetos, NoSQL). Modelo entidad-relación. Normalización. Álgebra relacional. SQL (DDL, DML, DCL). Diseño de bases de datos relacionales. Transacciones. Concurrencia. Recuperación.',
     url: '/base-de-datos-i',
@@ -370,7 +370,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A3C1M3',
-    title: 'Física I',
+    title: 'Física 1',
     description:
       'Cinemática. Dinámica. Leyes de Newton. Trabajo y energía. Conservación de la energía. Cantidad de movimiento e impulso. Colisiones. Rotación. Gravitación. Movimiento armónico simple. Ondas. Termodinámica (leyes, calor, trabajo).',
     url: '/fisica-i',
@@ -426,7 +426,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A3C2M2',
-    title: 'Base de Datos II',
+    title: 'Base de Datos 2',
     description:
       'Administración de bases de datos. Optimización de consultas. Tuning de bases de datos. Replicación y distribución de bases de datos. Data Warehousing y OLAP. Bases de datos NoSQL. Big Data. Seguridad avanzada en bases de datos.',
     url: '/base-de-datos-ii',
@@ -454,7 +454,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A3C2M4',
-    title: 'Ingeniería de Software I',
+    title: 'Ingeniería de Software 1',
     description:
       'Principios de ingeniería de software. Gestión de requisitos. Diseño arquitectónico. Patrones arquitectónicos. Diseño de bajo nivel. Construcción de software. Pruebas de software (unitarias, integración, sistema, aceptación). Despliegue. Mantenimiento de software. Calidad de software.',
     url: '/ingenieria-de-software-i',
@@ -496,7 +496,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A4C1M3',
-    title: 'Redes de Computadoras II',
+    title: 'Redes de Computadoras 2',
     description:
       'Diseño de redes. Redes inalámbricas (Wi-Fi, Bluetooth). Redes de área amplia (WAN). VPN. Seguridad en redes. Monitoreo de redes. Gestión de redes. Servicios de red (DNS, DHCP, FTP, HTTP). Cloud computing y redes. Redes definidas por software (SDN).',
     url: '/redes-de-computadoras-ii',
@@ -510,7 +510,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A4C1M4',
-    title: 'Física II',
+    title: 'Física 2',
     description:
       'Electrostática. Ley de Coulomb. Campo eléctrico. Potencial eléctrico. Capacitancia. Corriente eléctrica. Resistencia. Ley de Ohm. Circuitos eléctricos (DC y AC). Magnetismo. Campo magnético. Ley de Ampere. Inducción electromagnética. Ley de Faraday. Ondas electromagnéticas. Óptica geométrica.',
     url: '/fisica-ii',
@@ -538,7 +538,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A4C2M2',
-    title: 'Arquitectura de Computadoras II',
+    title: 'Arquitectura de Computadoras 2',
     description:
       'Paralelismo a nivel de instrucción (ILP). Procesadores superescalares. VLIW. Multiprocesadores. Memoria compartida. Coherencia de caché. Computación distribuida. Arquitecturas de computadoras paralelas. GPUs. Arquitecturas de cómputo en la nube.',
     url: '/arquitectura-de-computadoras-ii',
@@ -580,7 +580,7 @@ export const MATERIAS_SISTEMAS = [
   {
     idCarrer: 'C1',
     id: 'A5C1M1',
-    title: 'Ingeniería de Software II',
+    title: 'Ingeniería de Software 2',
     description:
       'Gestión de la configuración. Integración continua y despliegue continuo (CI/CD). DevOps. Arquitecturas de software avanzadas (microservicios, serverless). Seguridad en el ciclo de vida del desarrollo de software (SSDLC). Líneas de productos de software. Reingeniería de software.',
     url: '/ingenieria-de-software-ii',
