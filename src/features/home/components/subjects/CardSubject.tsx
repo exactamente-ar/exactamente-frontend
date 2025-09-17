@@ -90,7 +90,7 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
               </div>
               <IconLink size={20} />
             </ContainerLink>
-
+          {/*
             <ContainerLink
               url={urlMoodle}
               target='_blank'
@@ -132,6 +132,7 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
               </div>
               <IconLink size={20} />
             </ContainerLink>
+            */}
           </div>
         </div>
       </div>
