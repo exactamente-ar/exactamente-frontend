@@ -6,7 +6,7 @@ interface SubmitButtonProps {
   submittingText: string;
   errors: {
     materia?: string;
-    tipoAporte?: string;
+    tipoRecurso?: string;
     titulo?: string;
     archivo?: string;
     captcha?: string;

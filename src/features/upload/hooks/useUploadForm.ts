@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export interface FormData {
   materia: string;
-  tipoAporte: string;
+  tipoRescurso: string;
   titulo: string;
   descripcion: string;
   archivo: File | null;
@@ -11,7 +11,7 @@ export interface FormData {
 
 const INITIAL_FORM_DATA: FormData = {
   materia: '',
-  tipoAporte: '',
+  tipoRescurso: '',
   titulo: '',
   descripcion: '',
   archivo: null,
@@ -67,7 +67,7 @@ export const useUploadForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.materia) newErrors.materia = 'Selecciona una materia';
-    if (!formData.tipoAporte) newErrors.tipoAporte = 'Selecciona el tipo de aporte';
+    if (!formData.tipoRescurso) newErrors.tipoRescurso = 'Selecciona el tipo de Rescurso';
     if (!formData.titulo.trim()) newErrors.titulo = 'Ingresa un título';
     if (!captchaToken) newErrors.captcha = 'Por favor, verifica que no eres un robot';
 

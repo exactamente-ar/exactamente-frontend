@@ -1,7 +1,7 @@
 export interface UploadFormProps {
   formData: {
     materia: string;
-    tipoAporte: string;
+    tipoRecurso: string;
     titulo: string;
     descripcion: string;
     archivo: File | null;
@@ -9,7 +9,7 @@ export interface UploadFormProps {
   };
   errors: {
     materia?: string;
-    tipoAporte?: string;
+    tipoRecurso?: string;
     titulo?: string;
     archivo?: string;
     captcha?: string;
@@ -20,7 +20,7 @@ export interface UploadFormProps {
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void;
   subjects: string[];
-  tiposAporte: { value: string; label: string; color: string }[];
+  tiposRecurso: { value: string; label: string; color: string }[];
   uploading: boolean;
   uploadError: string | null;
   captchaToken: string | null;
