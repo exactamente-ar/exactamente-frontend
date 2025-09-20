@@ -5,7 +5,7 @@ import UploadForm from './UploadForm';
 import { useEffect } from 'react';
 
 const subjects = MATERIAS_SISTEMAS.map((subject) => subject.title);
-const tiposAporte = [
+const tiposRecurso = [
   { value: 'resumen', label: 'Resumen', color: 'from-emerald-500 to-emerald-600' },
   { value: 'parcial', label: 'Parcial', color: 'from-blue-500 to-blue-600' },
   { value: 'final', label: 'Final', color: 'from-purple-500 to-purple-600' },
@@ -49,7 +49,7 @@ const UploadSection = () => {
           handleFileChange={handleFileChange}
           handleSubmit={handleSubmit}
           subjects={subjects}
-          tiposAporte={tiposAporte}
+          tiposRecurso={tiposRecurso}
         />
       </div>
     </>

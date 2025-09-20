@@ -21,7 +21,7 @@ const UploadForm = ({
   uploading,
   uploadError,
   subjects,
-  tiposAporte,
+  tiposRecurso,
   setCaptchaToken,
 }: UploadFormProps) => {
   return (
@@ -38,17 +38,17 @@ const UploadForm = ({
           />
         </FormField>
 
-        <FormField label='Tipo de aporte' required>
+        <FormField label='Tipo de Recurso' required>
           <RadioGroupInput
-            name='tipoAporte'
-            value={formData.tipoAporte}
+            name='tipoRecurso'
+            value={formData.tipoRecurso}
             onChange={handleInputChange}
-            options={tiposAporte}
-            error={errors.tipoAporte}
+            options={tiposRecurso}
+            error={errors.tipoRecurso}
           />
         </FormField>
 
-        <FormField label='Título del aporte' required>
+        <FormField label='Título del Recurso' required>
           <TextInput
             name='titulo'
             value={formData.titulo}
@@ -63,7 +63,7 @@ const UploadForm = ({
             name='descripcion'
             value={formData.descripcion}
             onChange={handleInputChange}
-            placeholder='Describe brevemente el contenido del aporte...'
+            placeholder='Describe brevemente el contenido del Recurso...'
           />
         </FormField>
 
@@ -101,7 +101,7 @@ const UploadForm = ({
             uploadError={uploadError}
             errors={errors}
             isSubmitting={uploading}
-            text='Enviar Aporte'
+            text='Enviar Recurso'
             submittingText='Subiendo archivo...'
           />
         </div>

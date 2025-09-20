@@ -22,9 +22,9 @@ const SuccessModal = ({ showSuccess, closeSuccess }: SuccessModalProps) => {
           <div className='w-16 h-16 bg-green-900/70 border border-green-600 rounded-full flex items-center justify-center mx-auto mb-4'>
             <IconCheckCircle size={32} className=' stroke-green-600' />
           </div>
-          <h3 className='text-2xl font-bold text-foreground mb-2'>¡Aporte enviado!</h3>
+          <h3 className='text-2xl font-bold text-foreground mb-2'>!Recurso enviado!</h3>
           <p className='text-foreground-secondary mb-6'>
-            Tu aporte ha sido enviado exitosamente. Será revisado y publicado pronto.
+            Tu recurso ha sido enviado exitosamente. Será revisado y publicado pronto.
           </p>
           <button
             onClick={closeSuccess}
