@@ -67,11 +67,11 @@ const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) =>
           <div className='flex gap-3 items-center flex-col sm:flex-row w-full sm:w-min'>
             <ContainerLink
               url={downloadUrl}
-              className='group/download w-full sm:w-max bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-black font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-yellow-500/25 hover:shadow-yellow-500/40'
+              className='group/download w-full sm:w-max  text-white font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 '
               target='_blank'
               rel='noopener noreferrer'
             >
-              <IconDownload size={20} className='fill-primary-foreground' />
+              <IconDownload size={20} className='fill-white' />
               Descargar
             </ContainerLink>
 

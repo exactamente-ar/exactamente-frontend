@@ -4,9 +4,12 @@ import IconDownload from '@/shared/components/icons/IconDownload.astro';
 
 <div class='text-center mb-12 mt-10'>
   <div
-    class='inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#FFDD00] to-[#FFCC00] rounded-2xl mb-6'
+    class='relative overflow-hidden gradient-border w-16 h-16 gradient-bg rounded-2xl mb-6 mx-auto'
   >
-    <IconDownload size={32} class='fill-accent-foreground' />
+  <div class="bg-black/40 m-[1px] rounded-2xl absolute inset-0 z-0 inline-flex items-center justify-center">
+    <IconDownload size={32} class='fill-white relative z-40' />
+    
+    </div>
   </div>
   <h1 class='text-4xl lg:text-5xl font-bold text-foreground mb-4'>
     Subí tu recurso y <span class='text-primary'>ayudá</span> a otros estudiantes

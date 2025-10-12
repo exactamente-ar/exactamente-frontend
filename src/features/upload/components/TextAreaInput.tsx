@@ -19,7 +19,7 @@ const TextAreaInput: React.FC<TextAreaInputProps> = ({
     onChange={onChange}
     rows={rows}
     placeholder={placeholder}
-    className='w-full text-foreground-secondary font-bold px-4 py-3 border border-primary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFDD00] focus:border-[#FFDD00] transition-all duration-200 bg-black/20 resize-none'
+    className='w-full text-foreground-secondary font-bold px-4 py-3 border border-primary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] transition-all duration-200 bg-black/20 resize-none'
   />
 );
 export default TextAreaInput;
