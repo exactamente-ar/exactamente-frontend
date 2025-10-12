@@ -22,7 +22,7 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
           key={tipo.value}
           className={`relative flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
             value === tipo.value
-              ? 'border-[#FFDD00] bg-[#FFDD00]/10'
+              ? 'border-[#0084ff] bg-[#0084ff]/10'
               : 'border-primary/30 bg-black/20 hover:border-gray-400'
           }`}
         >
@@ -36,7 +36,7 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
           />
           <div
             className={`w-5 h-5 text-foreground-secondary font-bold rounded-full border mr-3 flex items-center justify-center ${
-              value === tipo.value ? 'border-[#FFDD00] bg-[#FFDD00]' : 'border-primary/30'
+              value === tipo.value ? 'border-[#0084ff] bg-[#0084ff]' : 'border-primary/30'
             }`}
           >
             {value === tipo.value && <div className='w-2 h-2 bg-black rounded-full'></div>}

@@ -1,9 +1,11 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
   /* 🎨 Colores base */
-  --color-primary: #ffdd00; /* Botones principales, enlaces, énfasis */
-  --color-primary-foreground: #050505; /* Texto o íconos sobre primario */
+  --color-primary: #efefef; /* Usa un color sólido compatible con Tailwind */
+  /* Si necesitas el gradiente, crea una clase utilitaria en Tailwind: */
+  /* .bg-primary-gradient { background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #f6e05e, #38b2ac, #6b46c1); } */
+  --color-primary-foreground: #131314; /* Texto o íconos sobre primario */
 
   --color-secondary: #1e40af; /* Elementos secundarios: cards, fondos alternos */
   --color-secondary-foreground: #ffffff; /* Texto sobre secundario */
@@ -42,9 +44,16 @@
   --color-warning: #f59e0b; /* Amarillo para advertencias */
   --color-warning-foreground: #000000;
 
-  ---font-rubik: Rubik, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  ---font-rubik: Rubik, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+    sans-serif;
 }
+
+.bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
 
 @keyframes fadeInUp {
   from {
@@ -125,4 +134,90 @@ select option {
   color: white;
   background-color: black;
   font-weight: bold;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-text {
+  background-image: linear-gradient(
+    to right,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-animation 8s ease-in-out infinite;
+}
+
+.gradient-bg {
+  background-image: linear-gradient(
+    45deg,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  animation: gradient-animation 8s ease-in-out infinite;
+}
+
+
+@keyframes gradient-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 1rem; /* ajustá el radio según tu diseño */
+  z-index: 0;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px; /* grosor del borde */
+  background: linear-gradient(
+    45deg,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  animation: gradient-border 8s ease-in-out infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  opacity: 0.3;
 }

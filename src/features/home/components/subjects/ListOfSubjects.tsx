@@ -17,14 +17,14 @@ function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: Pr
     <div className='flex flex-col items-center'>
       <div className='w-full grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8'>
         {subjects.length == 0 ? (
-          <div className='col-span-full w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-border/60 overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
+          <div className='col-span-full w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
             <h2 className='text-xl font-semibold text-zinc-100 mb-2'>Sin resultados</h2>
             <p className='text-zinc-400 mb-4'>
               No se encontraron coincidencias con los filtros seleccionados.
             </p>
-            <button
-              className='hover:scale-105 duration-200 cursor-pointer px-4 py-2 mt-2 rounded-full bg-[#ffd100] text-black font-medium hover:brightness-110 transition'
-              onClick={() => {
+
+              <button
+               onClick={() => {
                 setFilters({
                   search: '',
                   quadmester: 0,
@@ -32,9 +32,16 @@ function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: Pr
                   carrer: 'Ingenieria en Sistemas',
                 });
               }}
-            >
-              Restablecer filtros
-            </button>
+        className='mx-auto cursor-pointer flex items-center  duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
+      >
+       <div className="bg-black/40 mx-[1px] relative inset-0 z-0 rounded-2xl gap-2 flex items-center justify-center px-5 py-3">
+         
+        Restablecer filtros
+    </div>
+       
+      </button>
+
+
           </div>
         ) : (
           subjects.map((subject) => {

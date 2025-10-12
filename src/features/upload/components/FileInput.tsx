@@ -15,7 +15,7 @@ const FileInput: React.FC<FileInputProps> = ({ name, file, onChange, accept, err
       className={`relative text-foreground-secondary font-bold border border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
         error
           ? 'border-red-300 bg-red-900/10'
-          : 'border-primary/30 bg-black/20 hover:border-[#FFDD00] hover:bg-[#FFDD00]/5'
+          : 'border-primary/30 bg-black/20 hover:border-[#0084ff] hover:bg-[#0084ff]/5'
       }`}
     >
       <input

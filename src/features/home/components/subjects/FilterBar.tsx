@@ -4,8 +4,8 @@ import type { PropsFilterBar } from '../../types/filter';
 
 const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
   return (
-    <div className='flex flex-col gap-8 mb-4 lg:mb-8 w-full rounded-xl p-4 bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-border/60'>
-      <div className='p-[2px] rounded-xl from-primary  to-accent bg-gradient-to-l'>
+    <div className='flex flex-col gap-8 mb-4 lg:mb-8 w-full rounded-xl p-4 bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border '>
+      <div className='p-[2px] rounded-xl gradient-bg '>
         <div
           className='relative w-full bg-zinc-900 flex justify-between items-center gap-2 border border-zinc-700 rounded-xl  transition-all duration-200'
           tabIndex={0}
@@ -34,13 +34,16 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
               className='w-full font-bold text-foreground placeholder-foreground-muted focus:outline-none'
             />
           </div>
-          <div className='bg-gradient-to-l from-primary  to-accent  py-2.5 px-4 rounded-xl h-full'>
+          <div className='bg-gradient-to-l gradient-bg    rounded-xl h-full'>
+             <div className="bg-black/40  relative py-2.5 px-4 m-[1px] inset-0 z-0 rounded-xl gap-2 flex items-center justify-center w-full">
+             
             <svg className='text-primary-foreground' width='20' height='20' viewBox='0 0 24 24'>
               <path
-                fill='currentColor'
+                fill='#fff'
                 d='M16.175 13H4v-2h12.175l-5.6-5.6L12 4l8 8l-8 8l-1.425-1.4z'
               />
             </svg>
+             </div>
           </div>
         </div>
       </div>
@@ -52,7 +55,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
               <div
                 key={carrer + i}
                 className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:ring-yellow-400 ${
-                  filters.carrer == carrer ? 'bg-yellow-400 text-zinc-950 border-yellow-400' : ''
+                  filters.carrer == carrer ? 'bg-white/80 text-zinc-950 border-white' : ''
                 }`}
                 onClick={() => setFilters((prev) => ({ ...prev, carrer: carrer }))}
               >
@@ -70,7 +73,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
                 key={value}
                 className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:ring-yellow-400 ${
                   filters.quadmester === value
-                    ? 'bg-yellow-400 text-zinc-950 border-yellow-400'
+                    ? 'bg-white/80 text-zinc-950 border-white'
                     : ''
                 }`}
                 onClick={() => setFilters((prev) => ({ ...prev, quadmester: value }))}
@@ -88,7 +91,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
               <div
                 key={value}
                 className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:ring-yellow-400 ${
-                  filters.year === value ? 'bg-yellow-400 text-zinc-950 border-yellow-400' : ''
+                  filters.year === value ? 'bg-white/80 text-zinc-950 border-white' : ''
                 }`}
                 onClick={() => setFilters((prev) => ({ ...prev, year: value }))}
               >

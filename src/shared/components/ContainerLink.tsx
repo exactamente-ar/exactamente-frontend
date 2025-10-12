@@ -13,7 +13,7 @@ const ContainerLink: React.FC<Props> = ({ url, rel, className = '', target, chil
       target={target}
       href={url}
       rel={rel}
-      className={`rounded-xl hover:scale-105 transition-all duration-200 px-5 py-3 text-sm shadow-sm cursor-pointer ${className}`}
+      className={`rounded-xl hover:scale-105 transition-all duration-200 px-5 py-3 text-sm  cursor-pointer gradient-border  ${className}`}
     >
       {children}
     </a>
