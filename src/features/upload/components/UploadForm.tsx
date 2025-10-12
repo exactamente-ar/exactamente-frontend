@@ -25,7 +25,7 @@ const UploadForm = ({
   setCaptchaToken,
 }: UploadFormProps) => {
   return (
-    <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border border-border/60 p-6'>
+    <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border gradient-border  p-6'>
       <form onSubmit={(e) => handleSubmit(() => {})(e)} className='space-y-8'>
         <FormField label='Materia' required>
           <SelectInput

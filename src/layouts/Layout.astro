@@ -5,6 +5,7 @@ import GoogleAnalytics from '@/shared/components/GoogleAnalytics.astro';
 import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
+import GradientBg from '@/shared/components/GradientBg.astro';
 ---
 
 <!doctype html>
@@ -12,7 +13,7 @@ import Header from '@/shared/components/Header.astro';
   <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <link rel='icon' type='image/png' href='/logo.png' />
     <meta name='generator' content={Astro.generator} />
     <meta name='google-site-verification' content='W4j-waCOcYtizIRcI-3fHGekR9CnUWYutunME4biXhc' />
     <GoogleAnalytics />
@@ -20,15 +21,17 @@ import Header from '@/shared/components/Header.astro';
     <title>Exactamente</title>
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
-    <div class='absolute w-full h-screen top-0'>
-      <img src='/images/fondo.webp' class='object-left w-full h-full object-cover' />
-      <div
-        class='absolute -bottom-6 w-full h-96 bg-gradient-to-b from-transparent to-primary-foreground'
-      >
-      </div>
+    <div class="fixed inset-0 bg-noise opacity-10 -z-0"></div>
+    <div class="fixed inset-0 bg-black opacity-70 -z-20"></div>
+    <div class='absolute w-full h-screen top-0 -z-30'>
+      {/*
+        <img src='/images/fondo-hero.png' class='object-left w-full h-full object-cover opacity-50' />
+      
+        */}
+        <GradientBg />
+    
     </div>
-    <div class='absolute w-full h-screen md:h-[50vh] bottom-0'>
-      <img src='/images/fondo.webp' class='object-left w-full h-full object-cover' />
+    <div class='absolute w-full h-screen md:h-[50vh] bottom-0 -z-30'>
       <div
         class='absolute -top-96 md:-top-32 w-full h-96 md:h-32 bg-gradient-to-b from-transparent to-primary-foreground'
       >
