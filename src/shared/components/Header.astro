@@ -70,24 +70,29 @@ import ContainerLink from './ContainerLink.astro';
     </div>
   </div>
 
+
+  
+</header>
+
   <!-- Menú celular -->
   <div
-    class='z-0 mobile-menu rounded-b-xl bg-black/40 fixed top-16 left-0 w-full h-screen backdrop-blur-2xl border-t border-zinc-800 shadow-2xl transform -translate-y-full opacity-0 transition-all duration-300 ease-in-out md:hidden'
+    class=' mobile-menu rounded-b-xl bg-black/70 fixed top-16 left-0 w-full h-screen backdrop-blur-2xl border-t border-zinc-800 shadow-2xl transform -translate-y-full opacity-0 transition-all duration-300 ease-in-out md:hidden'
   >
-    <div class='px-4 py-20 flex flex-col space-y-2'>
-      <ContainerLink url='/#subjects' class='w-full text-center text-foreground font-bold'>
-        <span class='text-2xl'>Materias</span>
-      </ContainerLink>
-  
-    </div>
+   
   </div>
 
   <!-- Overlay para cerrar el menú al hacer clic fuera -->
   <div
     class='mobile-overlay fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40 md:hidden'
   >
+   <div class='px-4 py-20 flex flex-col space-y-2'>
+      <ContainerLink url='/#subjects' class='w-full text-center text-foreground font-bold mt-10'>
+        <span class='text-2xl'>Materias</span>
+      </ContainerLink>
+  
+    </div>
   </div>
-</header>
+
 
 <script>
   const mobileMenuButton = document.querySelector('.mobile-menu-button');
