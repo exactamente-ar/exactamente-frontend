@@ -6,6 +6,7 @@ import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
 import GradientBg from '@/shared/components/GradientBg.astro';
+import Aurora from '@/shared/components/Aurora';
 ---
 
 <!doctype html>
@@ -22,14 +23,20 @@ import GradientBg from '@/shared/components/GradientBg.astro';
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
     <div class="fixed inset-0 bg-noise opacity-10 -z-0"></div>
-    <div class="fixed inset-0 bg-black opacity-70 -z-20"></div>
+    <div class="fixed inset-0 bg-black/70 -z-20"></div>
     <div class='absolute w-full h-screen top-0 -z-30'>
       {/*
         <img src='/images/fondo-hero.png' class='object-left w-full h-full object-cover opacity-50' />
       
-        */}
         <GradientBg />
-    
+        */}
+    <Aurora
+    client:visible
+      colorStops={["#3A29FF", "#FF94B4", "#FF3232"]}
+      blend={0.5}
+      amplitude={1.0}
+      speed={0.5}
+    />
     </div>
     <div class='absolute w-full h-screen md:h-[50vh] bottom-0 -z-30'>
       <div
