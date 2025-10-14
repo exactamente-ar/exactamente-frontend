@@ -54,8 +54,8 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
             {CARRERS_FILTER.map((carrer, i) => (
               <div
                 key={carrer + i}
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:ring-yellow-400 ${
-                  filters.carrer == carrer ? 'bg-white/80 text-zinc-950 border-white' : ''
+                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
+                  filters.carrer == carrer ? 'bg-white/20 text-white/80 border  border-white' : ''
                 }`}
                 onClick={() => setFilters((prev) => ({ ...prev, carrer: carrer }))}
               >
@@ -71,9 +71,9 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
             {QUADMESTERS_FILTER.map(({ label, value }) => (
               <div
                 key={value}
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:ring-yellow-400 ${
+                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
                   filters.quadmester === value
-                    ? 'bg-white/80 text-zinc-950 border-white'
+                    ? 'bg-white/20 text-white/80 border  border-white'
                     : ''
                 }`}
                 onClick={() => setFilters((prev) => ({ ...prev, quadmester: value }))}
@@ -90,8 +90,8 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
             {YEARS_FILTER.map(({ label, value }) => (
               <div
                 key={value}
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:ring-yellow-400 ${
-                  filters.year === value ? 'bg-white/80 text-zinc-950 border-white' : ''
+                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border  ${
+                  filters.year === value ? 'bg-white/20 text-white/80 border  border-white' : ''
                 }`}
                 onClick={() => setFilters((prev) => ({ ...prev, year: value }))}
               >

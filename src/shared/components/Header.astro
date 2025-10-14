@@ -160,7 +160,7 @@ import ContainerLink from './ContainerLink.astro';
     if (!element) return;
 
     const scrollY = window.scrollY;
-    const maxFadePoint = 100;
+    const maxFadePoint = 30;
 
     if (scrollY > maxFadePoint) {
       element.classList.add('backdrop-blur-xl');

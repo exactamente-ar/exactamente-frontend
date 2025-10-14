@@ -71,7 +71,7 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
 
             <ContainerLink
               url={`.${url}/parciales`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-blue-500/50 to-blue-600/10 border-2 border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100 font-semibold flex items-center gap-3 transition-all duration-200'
+              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-blue-500/50 to-blue-600/10 border border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100 font-semibold flex items-center gap-3 transition-all duration-200'
             >
               <div className='flex items-center gap-2'>
                 <IconDocument size={20} className='fill-blue-200' />
@@ -82,7 +82,7 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
 
             <ContainerLink
               url={`.${url}/finales`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-purple-500/50 to-purple-600/10 border-2 border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100 font-semibold flex items-center gap-3 transition-all duration-200'
+              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-purple-500/50 to-purple-600/10 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100 font-semibold flex items-center gap-3 transition-all duration-200'
             >
               <div className='flex items-center gap-2'>
                 <IconUniversity size={20} className='fill-purple-200' />
@@ -90,7 +90,7 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
               </div>
               <IconLink size={20} />
             </ContainerLink>
-          {/*
+          {/* 
             <ContainerLink
               url={urlMoodle}
               target='_blank'
