@@ -1,7 +1,7 @@
 import type { ResourceFetch, StringResource } from '@/features/resource/types/resource';
 import { fetchSheet } from '@/features/resource/utils/fetchSheet';
 
-const RESOURCE_URL = 'https://api.sheetbest.com/sheets/a5216cb3-393a-4c77-bbb9-4b86ab833a7b/tabs';
+const RESOURCE_URL = 'https://api.sheetbest.com/sheets/060a9502-f4b7-41c3-83a6-f3353bdb5c8e/tabs';
 
 export async function getAllResources(type: StringResource) {
   const url = `${RESOURCE_URL}/${type}`;
