@@ -30,7 +30,7 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
             type='radio'
             name={name}
             value={tipo.value}
-            checked={value === tipo.value}
+            checked={value == tipo.value}
             onChange={onChange}
             className='sr-only'
           />

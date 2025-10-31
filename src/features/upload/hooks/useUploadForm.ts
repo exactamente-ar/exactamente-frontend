@@ -1,21 +1,12 @@
 import { useState } from 'react';
+import type { FormData } from '../types/form';
 
-export interface FormData {
-  materia: string;
-  tipoRescurso: string;
-  titulo: string;
-  descripcion: string;
-  archivo: File | null;
-  autor: string;
-}
 
 const INITIAL_FORM_DATA: FormData = {
   materia: '',
-  tipoRescurso: '',
+  tipoRecurso: '',
   titulo: '',
-  descripcion: '',
   archivo: null,
-  autor: '',
 };
 
 const SCRIPT_URL =
@@ -26,7 +17,7 @@ export const useUploadForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | undefined>(undefined);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const resetForm = () => {
@@ -34,7 +25,7 @@ export const useUploadForm = () => {
     setErrors({});
     setShowSuccess(false);
     setUploading(false);
-    setUploadError(null);
+    setUploadError(undefined);
   };
 
   const closeSuccess = () => setShowSuccess(false);
@@ -67,7 +58,7 @@ export const useUploadForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.materia) newErrors.materia = 'Selecciona una materia';
-    if (!formData.tipoRescurso) newErrors.tipoRescurso = 'Selecciona el tipo de Rescurso';
+    if (!formData.tipoRecurso) newErrors.tipoRecurso = 'Selecciona el tipo de Rescurso';
     if (!formData.titulo.trim()) newErrors.titulo = 'Ingresa un título';
     if (!captchaToken) newErrors.captcha = 'Por favor, verifica que no eres un robot';
 
@@ -135,7 +126,7 @@ export const useUploadForm = () => {
 
   const handleSubmit = (onSuccess?: () => void) => async (e: React.FormEvent) => {
     e.preventDefault();
-    setUploadError(null);
+    setUploadError(undefined);
 
     if (!validateForm() || !formData.archivo || !captchaToken) {
       return;

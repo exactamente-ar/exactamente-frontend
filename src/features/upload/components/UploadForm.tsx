@@ -3,7 +3,6 @@ import ErrorMessage from './ErrorMessage';
 import TextInput from './TextInput';
 import FormField from './FormField';
 import FileInput from './FileInput';
-import TextAreaInput from './TextAreaInput';
 import RadioGroupInput from './RadioGroupInput';
 import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
@@ -58,15 +57,7 @@ const UploadForm = ({
           />
         </FormField>
 
-        <FormField label='Descripción (opcional)'>
-          <TextAreaInput
-            name='descripcion'
-            value={formData.descripcion}
-            onChange={handleInputChange}
-            placeholder='Describe brevemente el contenido del Recurso...'
-          />
-        </FormField>
-
+      
         <FormField label='Archivo' required>
           <FileInput
             name='archivo'
@@ -77,14 +68,6 @@ const UploadForm = ({
           />
         </FormField>
 
-        <FormField label='Nombre del autor (opcional)'>
-          <TextInput
-            name='autor'
-            value={formData.autor}
-            onChange={handleInputChange}
-            placeholder='Tu nombre o seudónimo'
-          />
-        </FormField>
 
         <div>
           <ReCAPTCHA

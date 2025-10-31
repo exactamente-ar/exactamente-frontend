@@ -25,7 +25,7 @@ const UploadSection = () => {
     setCaptchaToken,
     uploadError,
   } = useUploadForm();
-
+  console.log(errors);
   useEffect(() => {
     const skeleton = document.getElementById('upload-skeleton');
     if (skeleton) {
