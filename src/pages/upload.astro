@@ -12,12 +12,10 @@ import InfoUpload from "@/features/upload/components/InfoUpload.astro";
 <Layout>
   <ContainerSection id="upload">
     <UploadHeader />
-   
     <FormSkeleton />
     <UploadSection client:only="react" />
-     <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto">
       <InfoUpload />
     </div>
-
   </ContainerSection>
 </Layout>
