@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
 import { TIPOS_MATERIA } from '@/features/home/constants/correlatives';
-import type { PlanEstudiosMapeado } from '@/types/correlative';
 import type { TipoMateria } from '@/features/home/types/subjects';
+import type { PlanEstudiosMapeado } from '../types/correlative';
 
 export function useCorrelatives(initialSelectedId: string) {
   const [selectedMateriaId, setSelectedMateriaId] = useState(initialSelectedId);
