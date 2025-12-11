@@ -8,8 +8,8 @@ import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
 import type { UploadFormProps } from '../types/form';
 
-const SITE_KEY_CAPTCHA = '6LfCHpArAAAAAMeI_zqp5XSn2IiGqklXaN4V2VEz';
 
+const SITE_KEY_CAPTCHA = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 
 const UploadForm = ({
   formData,

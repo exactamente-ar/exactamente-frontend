@@ -20,7 +20,7 @@ export interface UploadFormProps {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: () => void;
+  handleSubmit: (onSuccess?: () => void) => (e: React.FormEvent) => void;
   subjects: string[];
   tiposRecurso: { value: string; label: string; color: string }[];
   uploading: boolean;

@@ -9,8 +9,7 @@ const INITIAL_FORM_DATA: FormData = {
   archivo: null,
 };
 
-const SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbwm9m4VpPkV5-A5lUSgN2Dho6Lssfi2SVhO-i1owDiMSnKIuHG2beZS-SZGsJml_0Pp/exec';
+const SCRIPT_URL = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
 
 export const useUploadForm = () => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
@@ -98,7 +97,6 @@ export const useUploadForm = () => {
   };
 
   const uploadFileToDrive = async (base64: string, token: string): Promise<string> => {
-    // Usamos URLSearchParams para construir la URL de forma más segura y legible
     const params = new URLSearchParams({
       'g-recaptcha-response': token,
       filename: formData.archivo!.name,
@@ -137,7 +135,6 @@ export const useUploadForm = () => {
     try {
       const base64 = await convertFileToBase64(formData.archivo);
 
-      // Pasar el `captchaToken` como segundo argumento a la función de subida.
       const fileUrl = await uploadFileToDrive(base64, captchaToken);
 
       setShowSuccess(true);
