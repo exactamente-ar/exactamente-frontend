@@ -1,0 +1,200 @@
+---
+import ContainerLink from "./ContainerLink.astro";
+---
+
+<header
+  class="fixed left-1/2 -translate-x-1/2 top-0 z-50 w-full filter"
+  id="blur-element"
+>
+  <div
+    class="z-50 relative w-full max-w-6xl 2xl:max-w-8xl mx-auto px-4 sm:px-10 md:px-12 lg:px-0"
+  >
+    <div class="flex h-16 items-center justify-between">
+      <div class="md:flex md:items-center md:gap-12">
+        <a class="flex items-center gap-2 text-white" href="/#hero">
+          <span class="sr-only">Home</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 16 16"
+            ><path
+              fill="#fff"
+              d="M16 6.28a1.23 1.23 0 0 0-.62-1.07l-6.74-4a1.27 1.27 0 0 0-1.28 0l-6.75 4a1.25 1.25 0 0 0 0 2.15l1.92 1.12v2.81a1.28 1.28 0 0 0 .62 1.09l4.25 2.45a1.28 1.28 0 0 0 1.24 0l4.25-2.45a1.28 1.28 0 0 0 .62-1.09V8.45l1.24-.73v2.72H16zm-3.73 5L8 13.74l-4.22-2.45V9.22l3.58 2.13a1.29 1.29 0 0 0 1.28 0l3.62-2.16zM8 10.27l-6.75-4L8 2.26l6.75 4z"
+            ></path></svg
+          >
+          <span class="font-bold">Exactamente</span>
+        </a>
+      </div>
+
+      <div class="hidden md:block absolute left-1/2 -translate-x-1/2">
+        <nav aria-label="Global">
+          <ul class="flex items-center gap-6 text-sm"></ul>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <ContainerLink
+          url="/upload"
+          class="hover:sepia-50 bg-white text-primary-foreground font-bold"
+        >
+          Subir Recurso
+        </ContainerLink>
+
+        <div class="block md:hidden">
+          <button
+            class="mobile-menu-button rounded-xl bg-zinc-800 hover:bg-zinc-700 p-3 text-zinc-300 hover:text-white transition-all duration-200 border border-zinc-700"
+            aria-label="Abrir menú"
+            aria-expanded="false"
+          >
+            <!-- Icono hamburguesa -->
+            <svg
+              class="w-5 h-5 hamburger-icon transition-transform duration-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            <!-- Icono X (oculto inicialmente) -->
+            <svg
+              class="w-5 h-5 close-icon hidden transition-transform duration-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Menú celular -->
+<div
+  class="mobile-menu rounded-b-xl bg-black/70 fixed top-16 left-0 w-full h-screen backdrop-blur-2xl border-t border-zinc-800 shadow-2xl transform -translate-y-full opacity-0 transition-all duration-300 ease-in-out md:hidden"
+>
+</div>
+
+<!-- Overlay para cerrar el menú al hacer clic fuera -->
+<div
+  class="mobile-overlay fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40 md:hidden"
+>
+  <div class="px-4 py-20 flex flex-col space-y-2">
+    <ContainerLink
+      url="/#subjects"
+      class="w-full text-center text-foreground font-bold mt-10"
+    >
+      <span class="text-2xl">Materias</span>
+    </ContainerLink>
+  </div>
+</div>
+
+<script>
+  const mobileMenuButton = document.querySelector(".mobile-menu-button");
+  const mobileMenu = document.querySelector(".mobile-menu");
+  const mobileOverlay = document.querySelector(".mobile-overlay");
+  const hamburgerIcon = document.querySelector(".hamburger-icon");
+  const closeIcon = document.querySelector(".close-icon");
+  let isMenuOpen = false;
+
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+
+    if (isMenuOpen) {
+      // Abrir menú
+      mobileMenu?.classList.remove("-translate-y-full", "opacity-0");
+      mobileMenu?.classList.add("translate-y-0", "opacity-100");
+      mobileOverlay?.classList.remove("opacity-0", "pointer-events-none");
+      mobileOverlay?.classList.add("opacity-100", "pointer-events-auto");
+
+      // Cambiar iconos
+      hamburgerIcon?.classList.add("hidden");
+      closeIcon?.classList.remove("hidden");
+
+      // Actualizar aria-expanded
+      mobileMenuButton?.setAttribute("aria-expanded", "true");
+
+      // Prevenir scroll del body
+      document.body.style.overflow = "hidden";
+    } else {
+      // Cerrar menú
+      mobileMenu?.classList.remove("translate-y-0", "opacity-100");
+      mobileMenu?.classList.add("-translate-y-full", "opacity-0");
+      mobileOverlay?.classList.remove("opacity-100", "pointer-events-auto");
+      mobileOverlay?.classList.add("opacity-0", "pointer-events-none");
+
+      hamburgerIcon?.classList.remove("hidden");
+      closeIcon?.classList.add("hidden");
+
+      mobileMenuButton?.setAttribute("aria-expanded", "false");
+
+      document.body.style.overflow = "";
+    }
+  }
+
+  mobileMenuButton?.addEventListener("click", toggleMenu);
+  mobileOverlay?.addEventListener("click", toggleMenu);
+
+  const mobileLinks = document.querySelectorAll(".mobile-menu a");
+  mobileLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      if (isMenuOpen) {
+        toggleMenu();
+      }
+    });
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isMenuOpen) {
+      toggleMenu();
+    }
+  });
+
+  const handleScroll = () => {
+    const element = document.getElementById("blur-element");
+    if (!element) return;
+
+    const scrollY = window.scrollY;
+    const maxFadePoint = 30;
+
+    if (scrollY > maxFadePoint) {
+      element.classList.add("backdrop-blur-xl");
+    } else {
+      element.classList.remove("backdrop-blur-xl");
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("scroll", handleScroll);
+  }
+</script>
+
+<style>
+  .mobile-menu {
+    will-change: transform, opacity;
+  }
+
+  .mobile-overlay {
+    will-change: opacity;
+  }
+
+  .mobile-menu-button:active {
+    transform: scale(0.95);
+  }
+
+  .hamburger-icon,
+  .close-icon {
+    will-change: transform;
+  }
+</style>

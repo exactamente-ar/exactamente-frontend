@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+@theme {
+  /* 🎨 Colores base */
+  --color-primary: #efefef; /* Usa un color sólido compatible con Tailwind */
+  /* Si necesitas el gradiente, crea una clase utilitaria en Tailwind: */
+  /* .bg-primary-gradient { background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #f6e05e, #38b2ac, #6b46c1); } */
+  --color-primary-foreground: #131314; /* Texto o íconos sobre primario */
+
+  --color-secondary: #1e40af; /* Elementos secundarios: cards, fondos alternos */
+  --color-secondary-foreground: #ffffff; /* Texto sobre secundario */
+
+  --color-accent: #ff9800; /* Destacar secciones o botones alternativos */
+  --color-accent-foreground: #000000;
+
+  --color-muted: #374151; /* Elementos de UI suaves, como fondos de inputs */
+  --color-muted-foreground: #9ca3af; /* Texto suave: placeholders, descripciones */
+
+  --color-ring: var(--color-primary); /* Enfasis focus (e.g., focus-visible) */
+
+  /* 🧱 Backgrounds */
+  --color-background: #0f172a; /* Fondo general de la app (Slate 900) */
+  --color-surface: #1e293b; /* Superficies elevadas: tarjetas, modales */
+
+  /* 📝 Texto */
+  --color-foreground: #f8fafc; /* Texto principal */
+  --color-foreground-secondary: #cbd5e1; /* Texto secundario */
+  --color-foreground-muted: #94a3b8; /* Texto menos importante / desactivado */
+
+  /* 🧱 UI neutra / tarjetas / inputs (modo oscuro) */
+  --color-muted: #1f2937; /* Fondo oscuro para elementos secundarios: tarjetas, inputs (Slate 800) */
+  --color-muted-foreground: #ffd100; /* Texto claro y con contraste amarillo primario para destacar sobre muted */
+  --color-border: #4b4f1d; /* Bordes en tono oscuro tirando a oliva para armonizar con amarillo */
+  --color-input: #111827; /* Fondo de inputs oscuro (Slate 900) */
+  --color-input-placeholder: #a89f48; /* Placeholder en tono amarillo pálido para buen contraste */
+
+  /* 🧨 Estados de error / éxito / alerta */
+  --color-error: #dc2626; /* Rojo para errores */
+  --color-error-foreground: #ffffff;
+
+  --color-success: #16a34a; /* Verde para éxito */
+  --color-success-foreground: #ffffff;
+
+  --color-warning: #f59e0b; /* Amarillo para advertencias */
+  --color-warning-foreground: #000000;
+
+  ---font-rubik: Rubik, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+    sans-serif;
+}
+
+.aurora-container {
+  width: 100%;
+  height: 100%;
+}
+
+
+.bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-juan {
+  background: linear-gradient(89.81deg, red, orange, yellow);
+  fill: linear-gradient(89.81deg, red, orange, yellow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  background-size: 300%;
+}
+
+.text-gray {
+  background: linear-gradient(89.81deg, #fff, #aaa, #999, #aaa, #fff);
+  fill: linear-gradient(89.81deg, #fff, #aaa, #999, #aaa, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  background-size: 300%;
+  animation: gradientText2 2s ease alternate-reverse infinite;
+}
+
+@keyframes gradientText1 {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes gradientText2 {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+select {
+  background-color: #111;
+  color: #fff;
+  font-weight: bold;
+}
+
+select option {
+  color: white;
+  background-color: black;
+  font-weight: bold;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-text {
+  background-image: linear-gradient(
+    to right,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-animation 8s ease-in-out infinite;
+}
+
+.gradient-bg {
+  background-image: linear-gradient(
+    45deg,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  animation: gradient-animation 8s ease-in-out infinite;
+}
+
+
+@keyframes gradient-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 1rem; /* ajustá el radio según tu diseño */
+  z-index: 0;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px; /* grosor del borde */
+  background: linear-gradient(
+    45deg,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  animation: gradient-border 8s ease-in-out infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  opacity: 0.3;
+}

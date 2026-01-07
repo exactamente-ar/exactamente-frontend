@@ -1,0 +1,46 @@
+# ───────────────
+# Node
+# ───────────────
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# ───────────────
+# Build / Output
+# ───────────────
+dist
+.vercel
+.netlify
+.out
+.next
+out
+coverage
+
+# ───────────────
+# Astro
+# ───────────────
+.astro
+
+# ───────────────
+# Env files
+# ───────────────
+.env
+.env.*.local
+
+# ───────────────
+# Editors / IDE
+# ───────────────
+.vscode
+.idea
+*.swp
+*.swo
+
+# ───────────────
+# OS
+# ───────────────
+.DS_Store
+Thumbs.db

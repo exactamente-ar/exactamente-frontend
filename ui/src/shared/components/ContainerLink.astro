@@ -1,0 +1,19 @@
+---
+interface Props {
+  url: string;
+  class?: string;
+  target?: string;
+  rel?: string;
+}
+const { url, rel = 'noopener noreferrer', class: className, target } = Astro.props;
+---
+
+<a
+  id='link'
+  target={target}
+  href={url}
+  rel={rel}
+  class={` rounded-xl hover:scale-105 transition-all duration-200  px-5 py-3 text-sm cursor-pointer  ${className}`}
+>
+  <slot />
+</a>
