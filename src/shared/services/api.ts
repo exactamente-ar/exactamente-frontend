@@ -22,7 +22,7 @@ type BackendResource = {
   subjectId: string;
   title: string;
   type: 'resumen' | 'parcial' | 'final';
-  status: 'published';
+  status: 'published' | 'pending' | 'rejected';
   driveFileId: string;
   driveSize: number;
   downloadCount: number;
