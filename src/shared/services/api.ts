@@ -113,6 +113,7 @@ export async function getResources(
     const url = new URL(`${BASE_URL}/api/v1/resources`);
     url.searchParams.set('subjectId', subjectId);
     url.searchParams.set('type', RESOURCE_TYPE_MAP[type]);
+    url.searchParams.set('limit', '100');
 
     const response = await fetch(url.toString());
     if (!response.ok) {

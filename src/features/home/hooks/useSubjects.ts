@@ -18,7 +18,10 @@ export const useSubjects = () => {
     getSubjects().then((result) => {
       if (!result.error) {
         setAllSubjects(result.data);
+      } else {
+        setAllSubjects([]);
       }
+      setLoading(false);
     });
   }, []);
 

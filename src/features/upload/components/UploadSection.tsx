@@ -25,7 +25,6 @@ const UploadSection = () => {
     uploadError,
   } = useUploadForm();
   const [subjects, setSubjects] = useState<string[]>([]);
-  console.log(errors);
   useEffect(() => {
     const skeleton = document.getElementById('upload-skeleton');
     if (skeleton) {
