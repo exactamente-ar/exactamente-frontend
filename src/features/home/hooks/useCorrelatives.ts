@@ -1,25 +1,39 @@
-import { useState, useMemo } from 'react';
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
+import { useState, useMemo, useEffect } from 'react';
+import { getSubjects } from '@/shared/services/api';
 import { TIPOS_MATERIA } from '@/features/home/constants/correlatives';
-import type { TipoMateria } from '@/features/home/types/subjects';
+import type { Subject, TipoMateria } from '@/features/home/types/subjects';
 import type { PlanEstudiosMapeado } from '../types/correlative';
 
 export function useCorrelatives(initialSelectedId: string) {
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedMateriaId, setSelectedMateriaId] = useState(initialSelectedId);
 
+  useEffect(() => {
+    getSubjects().then((result) => {
+      if (!result.error) {
+        setSubjects(result.data);
+        if (selectedMateriaId === '') {
+          setSelectedMateriaId(result.data[0]?.id ?? '');
+        }
+      }
+      setLoading(false);
+    });
+  }, []);
+
   const subjectCurrent = useMemo(
-    () => MATERIAS_SISTEMAS.find((m) => m.id === selectedMateriaId),
-    [selectedMateriaId]
+    () => subjects.find((m) => m.id === selectedMateriaId),
+    [subjects, selectedMateriaId]
   );
 
   const correlatives = useMemo(() => {
-    return MATERIAS_SISTEMAS.filter((m) => m.required.includes(selectedMateriaId)).map((m) => m.id);
-  }, [selectedMateriaId]);
+    return subjects.filter((m) => m.required.includes(selectedMateriaId)).map((m) => m.id);
+  }, [subjects, selectedMateriaId]);
 
   const PLAN_ESTUDIOS_MAPEADO: PlanEstudiosMapeado = useMemo(() => {
     const plan: PlanEstudiosMapeado = {};
 
-    MATERIAS_SISTEMAS.forEach((subject) => {
+    subjects.forEach((subject) => {
       const year = subject.year;
       const quad = subject.quadmester;
 
@@ -42,7 +56,7 @@ export function useCorrelatives(initialSelectedId: string) {
     });
 
     return plan;
-  }, [MATERIAS_SISTEMAS, selectedMateriaId, subjectCurrent, correlatives]);
+  }, [subjects, selectedMateriaId, subjectCurrent, correlatives]);
 
   const getStyleSubject = (tipo: string) => {
     switch (tipo) {
@@ -84,5 +98,6 @@ export function useCorrelatives(initialSelectedId: string) {
     correlatives,
     PLAN_ESTUDIOS_MAPEADO,
     getStyleSubject,
+    loading,
   };
 }

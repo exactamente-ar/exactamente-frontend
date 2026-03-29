@@ -1,24 +1,33 @@
 import { useEffect, useState } from 'react';
 import { INITIAL_FILTERS } from '@/features/home/constants/filter';
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
+import { getSubjects } from '@/shared/services/api';
 import { normalizeText } from '@/features/home/utils/normalizeText';
+import type { Subject } from '@/features/home/types/subjects';
 import type { FilterT } from '../types/filter';
 
 const PAGE_SIZE = 9;
 
 export const useSubjects = () => {
   const [filters, setFilters] = useState<FilterT>(INITIAL_FILTERS);
-  const [filteredSubjects, setFilteredSubjects] = useState<typeof MATERIAS_SISTEMAS>([]);
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
+  const [filteredSubjects, setFilteredSubjects] = useState<Subject[]>([]);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getSubjects().then((result) => {
+      if (!result.error) {
+        setAllSubjects(result.data);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     setLoading(true);
 
     const timer = setTimeout(() => {
-      const result = MATERIAS_SISTEMAS.filter((s) =>
-        normalizeText(s.title).includes(normalizeText(filters.search))
-      )
+      const result = allSubjects
+        .filter((s) => normalizeText(s.title).includes(normalizeText(filters.search)))
         .filter((s) => (filters.year === 0 ? true : s.year === filters.year))
         .filter((s) => (filters.quadmester === 0 ? true : s.quadmester === filters.quadmester))
         .sort((a, b) => a.title.localeCompare(b.title));
@@ -29,7 +38,7 @@ export const useSubjects = () => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [filters]);
+  }, [filters, allSubjects]);
 
   const visibleSubjects = filteredSubjects.slice(0, visibleCount);
 

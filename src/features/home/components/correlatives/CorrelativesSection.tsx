@@ -1,5 +1,4 @@
 import { useCorrelatives } from '@/features/home/hooks/useCorrelatives';
-import { INITIAL_SELECTED_SUBJECT } from '@/features/home/constants/correlatives';
 import ListOfYears from './ListOfYears';
 import HeaderCorrelative from './HeaderCorrelatives';
 import InfoSubjectSelect from './InfoSubjectSelect';
@@ -16,7 +15,7 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
     correlatives,
     PLAN_ESTUDIOS_MAPEADO,
     getStyleSubject,
-  } = useCorrelatives(INITIAL_SELECTED_SUBJECT);
+  } = useCorrelatives('');
 
   const handleMateriaClick = (materiaId: string) => {
     if (clickeable) {
