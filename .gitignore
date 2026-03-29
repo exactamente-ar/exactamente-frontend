@@ -29,6 +29,7 @@ coverage
 # Env files
 # ───────────────
 .env
+.env.local
 .env.*.local
 
 # ───────────────
