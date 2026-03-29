@@ -1,10 +1,9 @@
 import { useUploadForm } from '@/features/upload/hooks/useUploadForm';
 import SuccessModal from './SuccesModal';
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
 import UploadForm from './UploadForm';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getSubjects } from '@/shared/services/api';
 
-const subjects = MATERIAS_SISTEMAS.map((subject) => subject.title);
 const tiposRecurso = [
   { value: 'resumen', label: 'Resumen', color: 'from-emerald-500 to-emerald-600' },
   { value: 'parcial', label: 'Parcial', color: 'from-blue-500 to-blue-600' },
@@ -25,12 +24,18 @@ const UploadSection = () => {
     setCaptchaToken,
     uploadError,
   } = useUploadForm();
+  const [subjects, setSubjects] = useState<string[]>([]);
   console.log(errors);
   useEffect(() => {
     const skeleton = document.getElementById('upload-skeleton');
     if (skeleton) {
       skeleton.style.display = 'none';
     }
+  }, []);
+  useEffect(() => {
+    getSubjects().then(({ data }) => {
+      setSubjects(data.map((subject) => subject.title));
+    });
   }, []);
 
   return (
