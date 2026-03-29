@@ -8,24 +8,22 @@ import { usePreviewDrive } from '@/features/resource/hooks/usePreviewDrive';
 
 interface Props {
   title: string;
-  urlDrive: string;
+  previewUrl: string;
+  downloadUrl: string;
   type: string;
   mostRecent: boolean;
 }
 
-const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) => {
+const CardResource: React.FC<Props> = ({ title, previewUrl, downloadUrl, type, mostRecent }) => {
   const partsTitle = title.split('.');
 
   const {
-    fileId,
-    previewUrl,
-    downloadUrl,
     previewOpen,
     iframeLoaded,
     iframeRef,
     togglePreview,
     handleIframeLoad,
-  } = usePreviewDrive(urlDrive);
+  } = usePreviewDrive(previewUrl, downloadUrl);
 
   return (
     <div className='flex flex-col bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-xl hover:border-zinc-700/80 transition-all duration-300 group overflow-hidden'>
@@ -82,7 +80,7 @@ const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) =>
                   ? 'bg-red-800/50 hover:bg-red-700/60 border-red-700 hover:border-red-600 text-white'
                   : 'bg-zinc-800/50 hover:bg-zinc-700/60 border-zinc-700 hover:border-zinc-600 text-zinc-200'
               }`}
-              disabled={!fileId}
+              disabled={!previewUrl}
             >
               {previewOpen ? (
                 <IconVisibilityOff size={20} className='fill-foreground' />

@@ -10,9 +10,9 @@ export interface TypeResource {
 
 export type ResourceFetch = {
   id: string;
-  idMateria: string;
   title: string;
-  urlDrive: string;
+  previewUrl: string;
+  downloadUrl: string;
 };
 
 export type StringResource = 'Parciales' | 'Resumenes' | 'Finales';

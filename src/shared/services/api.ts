@@ -1,5 +1,5 @@
 import type { Subject } from '@/features/home/types/subjects';
-import type { StringResource } from '@/features/resource/types/resource';
+import type { ResourceFetch, StringResource } from '@/features/resource/types/resource';
 
 // Backend types
 type BackendSubject = {
@@ -39,13 +39,6 @@ type BackendPaginatedResponse<T> = {
   totalPages: number;
 };
 
-// Mapped resource type (forward-compatible with Task 2 ResourceFetch update)
-export type MappedResource = {
-  id: string;
-  title: string;
-  previewUrl: string;
-  downloadUrl: string;
-};
 
 type ApiSuccess<T> = { data: T; error: null };
 type ApiError = { data: []; error: string };
@@ -74,7 +67,7 @@ function mapSubject(backend: BackendSubject): Subject {
   };
 }
 
-function mapResource(backend: BackendResource): MappedResource {
+function mapResource(backend: BackendResource): ResourceFetch {
   return {
     id: backend.id,
     title: backend.title,
@@ -115,7 +108,7 @@ export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
 export async function getResources(
   subjectId: string,
   type: StringResource
-): Promise<ApiResult<MappedResource[]>> {
+): Promise<ApiResult<ResourceFetch[]>> {
   try {
     const url = new URL(`${BASE_URL}/api/v1/resources`);
     url.searchParams.set('subjectId', subjectId);

@@ -1,17 +1,12 @@
 import { useRef, useState } from 'react';
-import { extractDriveFileId } from '@/features/resource/utils/extractDriveFileId';
 
-export const usePreviewDrive = (urlDrive: string) => {
-  const fileId = extractDriveFileId(urlDrive);
-  const previewUrl = fileId ? `https://drive.google.com/file/d/${fileId}/preview` : '#';
-  const downloadUrl = fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : '#';
-
+export const usePreviewDrive = (previewUrl: string, downloadUrl: string) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const togglePreview = () => {
-    if (!fileId) return;
+    if (!previewUrl) return;
 
     if (!previewOpen) {
       if (iframeRef.current && iframeRef.current.src !== previewUrl) {
@@ -30,7 +25,6 @@ export const usePreviewDrive = (urlDrive: string) => {
   const handleIframeLoad = () => setIframeLoaded(true);
 
   return {
-    fileId,
     previewUrl,
     downloadUrl,
     previewOpen,
