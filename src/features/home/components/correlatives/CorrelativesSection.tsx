@@ -15,6 +15,8 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
     correlatives,
     PLAN_ESTUDIOS_MAPEADO,
     getStyleSubject,
+    subjects,
+    loading,
   } = useCorrelatives('');
 
   const handleMateriaClick = (materiaId: string) => {
@@ -30,14 +32,20 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
         <div className='rounded-xl mt-10 lg:mt-20'>
           <HeaderCorrelative subjectCurrent={subjectCurrent} title={title} />
 
-          <ListOfYears
-            PLAN_ESTUDIOS_MAPEADO={PLAN_ESTUDIOS_MAPEADO}
-            clickeable={clickeable}
-            getStyleSubject={getStyleSubject}
-            handleSubjectClick={handleMateriaClick}
-          />
+          {loading ? (
+            <div className='flex items-center justify-center py-16 text-zinc-400'>
+              Cargando plan de estudios...
+            </div>
+          ) : (
+            <ListOfYears
+              PLAN_ESTUDIOS_MAPEADO={PLAN_ESTUDIOS_MAPEADO}
+              clickeable={clickeable}
+              getStyleSubject={getStyleSubject}
+              handleSubjectClick={handleMateriaClick}
+            />
+          )}
 
-          <InfoSubjectSelect correlatives={correlatives} subjectCurrent={subjectCurrent} />
+          <InfoSubjectSelect correlatives={correlatives} subjectCurrent={subjectCurrent} subjects={subjects} />
 
         </div>
       </div>

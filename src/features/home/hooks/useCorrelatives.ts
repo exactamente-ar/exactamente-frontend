@@ -13,7 +13,7 @@ export function useCorrelatives(initialSelectedId: string) {
     getSubjects().then((result) => {
       if (!result.error) {
         setSubjects(result.data);
-        if (selectedMateriaId === '') {
+        if (initialSelectedId === '') {
           setSelectedMateriaId(result.data[0]?.id ?? '');
         }
       }
@@ -41,7 +41,7 @@ export function useCorrelatives(initialSelectedId: string) {
       if (!plan[year][quad]) plan[year][quad] = [];
 
       let type: TipoMateria = TIPOS_MATERIA.OTRA;
-      if (subject.id == selectedMateriaId) {
+      if (subject.id === selectedMateriaId) {
         type = TIPOS_MATERIA.ACTUAL;
       } else if (subjectCurrent?.correlatives.includes(subject.id)) {
         type = TIPOS_MATERIA.CORRELATIVA;
@@ -56,7 +56,7 @@ export function useCorrelatives(initialSelectedId: string) {
     });
 
     return plan;
-  }, [subjects, selectedMateriaId, subjectCurrent, correlatives]);
+  }, [subjects, selectedMateriaId]);
 
   const getStyleSubject = (tipo: string) => {
     switch (tipo) {
@@ -94,6 +94,7 @@ export function useCorrelatives(initialSelectedId: string) {
   return {
     selectedMateriaId,
     setSelectedMateriaId,
+    subjects,
     subjectCurrent,
     correlatives,
     PLAN_ESTUDIOS_MAPEADO,
