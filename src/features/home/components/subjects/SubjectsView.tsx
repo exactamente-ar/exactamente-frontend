@@ -3,11 +3,11 @@ import FilterBar from './FilterBar';
 import { useSubjects } from '@/features/home/hooks/useSubjects';
 
 function SubjectsView() {
-  const { filters, setFilters, filteredSubjects, loading, hasMore, showMore } = useSubjects();
+  const { filters, setFilters, careers, filteredSubjects, loading, hasMore, showMore } = useSubjects();
 
   return (
     <>
-      <FilterBar setFilters={setFilters} filters={filters} />
+      <FilterBar setFilters={setFilters} filters={filters} careers={careers} />
       <ListOfSubjects
         subjects={filteredSubjects}
         setFilters={setFilters}

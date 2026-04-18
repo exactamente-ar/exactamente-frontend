@@ -1,8 +1,8 @@
-import { CARRERS_FILTER, QUADMESTERS_FILTER, YEARS_FILTER } from '@/features/home/constants/filter';
+import { QUADMESTERS_FILTER, YEARS_FILTER } from '@/features/home/constants/filter';
 import React from 'react';
 import type { PropsFilterBar } from '../../types/filter';
 
-const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
+const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters, careers }) => {
   return (
     <div className='flex flex-col gap-8 mb-4 lg:mb-8 w-full rounded-xl p-4 bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border '>
       <div className='p-[2px] rounded-xl gradient-bg '>
@@ -36,7 +36,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
           </div>
           <div className='bg-gradient-to-l gradient-bg    rounded-xl h-full'>
              <div className="bg-black/40  relative py-2.5 px-4 m-[1px] inset-0 z-0 rounded-xl gap-2 flex items-center justify-center w-full">
-             
+
             <svg className='text-primary-foreground' width='20' height='20' viewBox='0 0 24 24'>
               <path
                 fill='#fff'
@@ -51,15 +51,15 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
         <div className='flex items-start gap-2'>
           <span className='text-sm'>Carrera</span>
           <div className='flex gap-2 flex-wrap'>
-            {CARRERS_FILTER.map((carrer, i) => (
+            {careers.map((career) => (
               <div
-                key={carrer + i}
+                key={career.id}
                 className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
-                  filters.carrer == carrer ? 'bg-white/20 text-white/80 border  border-white' : ''
+                  filters.careerId === career.id ? 'bg-white/20 text-white/80 border  border-white' : ''
                 }`}
-                onClick={() => setFilters((prev) => ({ ...prev, carrer: carrer }))}
+                onClick={() => setFilters((prev) => ({ ...prev, careerId: career.id }))}
               >
-                {carrer}
+                {career.name}
               </div>
             ))}
           </div>

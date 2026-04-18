@@ -25,12 +25,12 @@ function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: Pr
 
               <button
                onClick={() => {
-                setFilters({
+                setFilters((prev) => ({
+                  ...prev,
                   search: '',
                   quadmester: 0,
                   year: 0,
-                  carrer: 'Ingenieria en Sistemas',
-                });
+                }));
               }}
         className='mx-auto cursor-pointer flex items-center  duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
       >

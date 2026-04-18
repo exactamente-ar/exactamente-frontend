@@ -2,6 +2,19 @@ import type { Subject } from '@/features/home/types/subjects';
 import type { ResourceFetch, StringResource } from '@/features/resource/types/resource';
 
 // Backend types
+type BackendCareer = {
+  id: string;
+  facultyId: string;
+  name: string;
+  slug: string;
+  createdAt: string;
+};
+
+export type Career = {
+  id: string;
+  name: string;
+};
+
 type BackendSubject = {
   id: string;
   facultyId: string;
@@ -74,6 +87,21 @@ function mapResource(backend: BackendResource): ResourceFetch {
     previewUrl: backend.previewUrl,
     downloadUrl: backend.downloadUrl,
   };
+}
+
+export async function getCareers(): Promise<ApiResult<Career[]>> {
+  try {
+    const url = new URL(`${BASE_URL}/api/v1/careers`);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      return { data: [], error: `Request failed with status ${response.status}` };
+    }
+    const json: { data: BackendCareer[] } = await response.json();
+    return { data: json.data.map(({ id, name }) => ({ id, name })), error: null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error fetching careers';
+    return { data: [], error: message };
+  }
 }
 
 export async function getSubjects(params?: Record<string, string>): Promise<ApiResult<Subject[]>> {
