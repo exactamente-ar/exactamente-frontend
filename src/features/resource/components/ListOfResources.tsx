@@ -5,7 +5,7 @@ import CardResource from './CardResource';
 import CardResourceLoading from './CardResourceLoading';
 
 interface Props {
-  resources: ResourceFetch[];
+  resources: ResourceFetch[] | null;
   type: string;
   error: string | null;
   loading: boolean;

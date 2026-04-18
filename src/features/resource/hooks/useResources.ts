@@ -36,7 +36,7 @@ export const useResources = (id: string, type: StringResource) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, type]);
 
   return { data, error, loading };
 };

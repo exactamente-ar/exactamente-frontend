@@ -25,8 +25,6 @@ export const usePreviewDrive = (previewUrl: string, downloadUrl: string) => {
   const handleIframeLoad = () => setIframeLoaded(true);
 
   return {
-    previewUrl,
-    downloadUrl,
     previewOpen,
     iframeLoaded,
     iframeRef,
