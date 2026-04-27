@@ -2,7 +2,7 @@ import type { PropsListOfSubjects } from '../../types/filter';
 import Card from './CardSubject';
 import CardSubjectLoading from './CardSubjectLoading';
 
-function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: PropsListOfSubjects) {
+function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore, careerId }: PropsListOfSubjects) {
   if (loading) {
     return (
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8'>
@@ -45,7 +45,7 @@ function ListOfSubjects({ subjects, setFilters, loading, hasMore, showMore }: Pr
           </div>
         ) : (
           subjects.map((subject) => {
-            return <Card key={subject.id} {...subject} />;
+            return <Card key={subject.id} {...subject} careerId={careerId} />;
           })
         )}
       </div>

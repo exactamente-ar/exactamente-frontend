@@ -2,7 +2,7 @@ import { QUADMESTERS_FILTER, YEARS_FILTER } from '@/features/home/constants/filt
 import React from 'react';
 import type { PropsFilterBar } from '../../types/filter';
 
-const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters, careers }) => {
+const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters, careers, plans }) => {
   return (
     <div className='flex flex-col gap-8 mb-4 lg:mb-8 w-full rounded-xl p-4 bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border '>
       <div className='p-[2px] rounded-xl gradient-bg '>
@@ -83,6 +83,37 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters, careers }) =
             ))}
           </div>
         </div>
+
+        {plans.length > 1 && (
+          <div className='flex items-start gap-2'>
+            <span className='text-sm'>Plan</span>
+            <div className='flex gap-2 flex-wrap'>
+              <div
+                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
+                  filters.planId === '' ? 'bg-white/20 text-white/80 border border-white' : ''
+                }`}
+                onClick={() => setFilters((prev) => ({ ...prev, planId: '' }))}
+              >
+                Todos
+              </div>
+              {plans.map((planId) => {
+                const year = planId.match(/\d+$/)?.[0];
+                const label = year ? `Plan ${year}` : planId;
+                return (
+                  <div
+                    key={planId}
+                    className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
+                      filters.planId === planId ? 'bg-white/20 text-white/80 border border-white' : ''
+                    }`}
+                    onClick={() => setFilters((prev) => ({ ...prev, planId }))}
+                  >
+                    {label}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className='flex items-start gap-2'>
           <span className='text-sm'>Año</span>

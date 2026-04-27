@@ -25,7 +25,7 @@ type BackendSubject = {
   urlPrograma: string;
   year: number;
   quadmester: number;
-  careers: Array<{ careerId: string; year: number; quadmester: number }>;
+  careers: Array<{ careerId: string; planId: string; year: number; quadmester: number }>;
   prerequisites: string[];
   correlatives: string[];
 };
@@ -77,6 +77,7 @@ function mapSubject(backend: BackendSubject): Subject {
     quadmester: backend.quadmester,
     required: backend.prerequisites,
     correlatives: backend.correlatives,
+    careers: backend.careers,
   };
 }
 

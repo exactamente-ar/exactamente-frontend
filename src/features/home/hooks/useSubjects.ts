@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { INITIAL_FILTERS } from '@/features/home/constants/filter';
 import { getCareers, getSubjects } from '@/shared/services/api';
 import { normalizeText } from '@/features/home/utils/normalizeText';
@@ -30,11 +30,23 @@ export const useSubjects = () => {
   useEffect(() => {
     if (!filters.careerId) return;
     setLoading(true);
+    setFilters((prev) => ({ ...prev, planId: '' }));
     getSubjects({ careerId: filters.careerId }).then((result) => {
       setAllSubjects(result.error ? [] : result.data);
       setLoading(false);
     });
   }, [filters.careerId]);
+
+  const plans = useMemo(() => {
+    if (!filters.careerId) return [];
+    const planSet = new Set<string>();
+    allSubjects.forEach((s) => {
+      s.careers.forEach((c) => {
+        if (c.careerId === filters.careerId) planSet.add(c.planId);
+      });
+    });
+    return Array.from(planSet).sort();
+  }, [allSubjects, filters.careerId]);
 
   useEffect(() => {
     setLoading(true);
@@ -43,6 +55,13 @@ export const useSubjects = () => {
         .filter((s) => normalizeText(s.title).includes(normalizeText(filters.search)))
         .filter((s) => (filters.year === 0 ? true : s.year === filters.year))
         .filter((s) => (filters.quadmester === 0 ? true : s.quadmester === filters.quadmester))
+        .filter((s) =>
+          !filters.planId
+            ? true
+            : s.careers.some(
+                (c) => c.careerId === filters.careerId && c.planId === filters.planId
+              )
+        )
         .sort((a, b) => a.title.localeCompare(b.title));
 
       setFilteredSubjects(result);
@@ -51,7 +70,7 @@ export const useSubjects = () => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [filters.search, filters.year, filters.quadmester, allSubjects]);
+  }, [filters.search, filters.year, filters.quadmester, filters.planId, allSubjects]);
 
   const visibleSubjects = filteredSubjects.slice(0, visibleCount);
 
@@ -65,6 +84,7 @@ export const useSubjects = () => {
     filters,
     setFilters,
     careers,
+    plans,
     filteredSubjects: visibleSubjects,
     loading,
     showMore,

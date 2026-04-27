@@ -6,12 +6,14 @@ export type FilterT = {
   year: number;
   quadmester: number;
   careerId: string;
+  planId: string;
 };
 
 export interface PropsFilterBar {
   setFilters: React.Dispatch<React.SetStateAction<FilterT>>;
   filters: FilterT;
   careers: Career[];
+  plans: string[];
 }
 
 export type PropsListOfSubjects = {
@@ -20,4 +22,5 @@ export type PropsListOfSubjects = {
   loading: boolean;
   hasMore: boolean;
   showMore: () => void;
+  careerId: string;
 };

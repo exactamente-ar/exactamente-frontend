@@ -5,6 +5,7 @@ import IconDocument from '@/shared/components/icons/react/IconDocument';
 import IconLink from '@/shared/components/icons/react/IconLink';
 import IconMoodle from '@/shared/components/icons/react/IconMoodle';
 import ContainerLink from '@/shared/components/ContainerLink.tsx';
+import type { SubjectCareer } from '@/features/home/types/subjects';
 
 type Props = {
   id: string;
@@ -12,9 +13,20 @@ type Props = {
   url: string;
   quadmester: number;
   year: number;
+  careers: SubjectCareer[];
+  careerId: string;
 };
 
-export default function Card({ id, title, url, quadmester, year }: Props) {
+function formatPlanId(planId: string): string {
+  const year = planId.match(/\d+$/)?.[0];
+  return year ? `Plan ${year}` : planId;
+}
+
+export default function Card({ id, title, url, quadmester, year, careers, careerId }: Props) {
+  const careerEntry = careers.find((c) => c.careerId === careerId);
+  const displayYear = careerEntry?.year ?? year;
+  const displayQuadmester = careerEntry?.quadmester ?? quadmester;
+  const planLabel = careerEntry ? formatPlanId(careerEntry.planId) : null;
   const urlPrograma = '';
   const urlMoodle = '';
   return (
@@ -27,7 +39,11 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
           <h2 className='text-2xl md:text-3xl font-bold text-white mb-2 group-hover:text-yellow-100 transition-colors'>
             {title}
           </h2>
-          <h3 className='text-zinc-400 font-medium text-lg'>Ingeniería en Sistemas</h3>
+          {planLabel && (
+            <span className='inline-block text-zinc-400 font-medium text-sm bg-zinc-800/60 border border-zinc-700/50 rounded-md px-2 py-0.5'>
+              {planLabel}
+            </span>
+          )}
         </div>
       </div>
       {/* Content */}
@@ -43,11 +59,11 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
                 d='M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m11-9c0 6.075-4.925 11-11 11S1 18.075 1 12S5.925 1 12 1s11 4.925 11 11m-8 4.414l-4-4V5.5h2v6.086L16.414 15z'
               />
             </svg>
-            <span className='text-zinc-200 font-medium'>{quadmester}º Cuatrimestre</span>
+            <span className='text-zinc-200 font-medium'>{displayQuadmester}º Cuatrimestre</span>
           </div>
 
           <div className='bg-gradient-to-r from-yellow-500/15 to-yellow-600/15 border border-yellow-500/30 text-yellow-200 font-semibold px-4 py-2 rounded-full'>
-            {year}º año
+            {displayYear}º año
           </div>
         </div>
         {/* Recursos */}

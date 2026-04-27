@@ -3,6 +3,7 @@ export const INITIAL_FILTERS = {
   quadmester: 0,
   year: 0,
   careerId: '',
+  planId: '',
 };
 
 export const YEARS_FILTER = [
