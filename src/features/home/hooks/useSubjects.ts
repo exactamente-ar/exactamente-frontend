@@ -1,65 +1,56 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getSubjects } from '@/shared/services/api';
-import { normalizeText } from '@/features/home/utils/normalizeText';
 import type { Subject } from '@/features/home/types/subjects';
 import type { AppliedFilters, FilterOption } from '@/features/home/types/filter';
 
 const PAGE_SIZE = 9;
 
 export const useSubjects = (appliedFilters: AppliedFilters) => {
-  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
+  const [fetchedSubjects, setFetchedSubjects] = useState<Subject[]>([]);
   const [filteredSubjects, setFilteredSubjects] = useState<Subject[]>([]);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [loading, setLoading] = useState(false);
 
+  // Fetch from API whenever any backend-supported filter changes.
+  // Debounced 300ms so fast search keystrokes don't flood the API.
   useEffect(() => {
-    if (!appliedFilters.careerId) {
-      setAllSubjects([]);
-      setLoading(false);
-      return;
-    }
     setLoading(true);
-    getSubjects({ careerId: appliedFilters.careerId }).then((result) => {
-      setAllSubjects(result.error ? [] : result.data);
-      setLoading(false);
-    });
-  }, [appliedFilters.careerId]);
+    const params: Record<string, string> = {};
+    if (appliedFilters.careerId) params.careerId = appliedFilters.careerId;
+    if (appliedFilters.search) params.search = appliedFilters.search;
+    if (appliedFilters.year !== 0) params.year = String(appliedFilters.year);
+    if (appliedFilters.quadmester !== 0) params.quadmester = String(appliedFilters.quadmester);
 
-  useEffect(() => {
-    setLoading(true);
     const timer = setTimeout(() => {
-      const result = allSubjects
-        .filter((s) => normalizeText(s.title).includes(normalizeText(appliedFilters.search)))
-        .filter((s) => (appliedFilters.year === 0 ? true : s.year === appliedFilters.year))
-        .filter((s) => (appliedFilters.quadmester === 0 ? true : s.quadmester === appliedFilters.quadmester))
-        .filter((s) =>
-          !appliedFilters.planId
-            ? true
-            : s.careers.some(
-                (c) => c.careerId === appliedFilters.careerId && c.planId === appliedFilters.planId
-              )
-        )
-        .sort((a, b) => a.title.localeCompare(b.title));
-
-      setFilteredSubjects(result);
-      setVisibleCount(PAGE_SIZE);
-      setLoading(false);
+      getSubjects(Object.keys(params).length ? params : undefined).then((result) => {
+        setFetchedSubjects(result.error ? [] : result.data);
+        setLoading(false);
+      });
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [
-    appliedFilters.search,
-    appliedFilters.year,
-    appliedFilters.quadmester,
-    appliedFilters.planId,
-    appliedFilters.careerId,
-    allSubjects,
-  ]);
+  }, [appliedFilters.careerId, appliedFilters.search, appliedFilters.year, appliedFilters.quadmester]);
+
+  // Client-side filter: planId only (backend does not support it).
+  useEffect(() => {
+    const result = fetchedSubjects
+      .filter((s) =>
+        !appliedFilters.planId
+          ? true
+          : s.careers.some(
+              (c) => c.careerId === appliedFilters.careerId && c.planId === appliedFilters.planId
+            )
+      )
+      .sort((a, b) => a.title.localeCompare(b.title));
+
+    setFilteredSubjects(result);
+    setVisibleCount(PAGE_SIZE);
+  }, [appliedFilters.planId, appliedFilters.careerId, fetchedSubjects]);
 
   const planOptions = useMemo((): FilterOption[] => {
     if (!appliedFilters.careerId) return [];
     const planSet = new Set<string>();
-    allSubjects.forEach((s) => {
+    fetchedSubjects.forEach((s) => {
       s.careers.forEach((c) => {
         if (c.careerId === appliedFilters.careerId) planSet.add(c.planId);
       });
@@ -70,7 +61,7 @@ export const useSubjects = (appliedFilters: AppliedFilters) => {
         const year = planId.match(/\d+$/)?.[0];
         return { id: planId, label: year ? `Plan ${year}` : planId };
       });
-  }, [allSubjects, appliedFilters.careerId]);
+  }, [fetchedSubjects, appliedFilters.careerId]);
 
   const visibleSubjects = filteredSubjects.slice(0, visibleCount);
   const showMore = () => setVisibleCount((prev) => prev + PAGE_SIZE);
