@@ -1,65 +1,42 @@
 import { useEffect, useMemo, useState } from 'react';
-import { INITIAL_FILTERS } from '@/features/home/constants/filter';
-import { getCareers, getSubjects } from '@/shared/services/api';
+import { getSubjects } from '@/shared/services/api';
 import { normalizeText } from '@/features/home/utils/normalizeText';
-import type { Career } from '@/shared/services/api';
 import type { Subject } from '@/features/home/types/subjects';
-import type { FilterT } from '../types/filter';
+import type { AppliedFilters, FilterOption } from '@/features/home/types/filter';
 
 const PAGE_SIZE = 9;
 
-export const useSubjects = () => {
-  const [filters, setFilters] = useState<FilterT>(INITIAL_FILTERS);
-  const [careers, setCareers] = useState<Career[]>([]);
+export const useSubjects = (appliedFilters: AppliedFilters) => {
   const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
   const [filteredSubjects, setFilteredSubjects] = useState<Subject[]>([]);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getCareers().then((result) => {
-      if (!result.error && result.data.length > 0) {
-        setCareers(result.data);
-        setFilters((prev) => ({ ...prev, careerId: result.data[0].id }));
-      } else {
-        setLoading(false);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!filters.careerId) return;
+    if (!appliedFilters.careerId) {
+      setAllSubjects([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-    setFilters((prev) => ({ ...prev, planId: '' }));
-    getSubjects({ careerId: filters.careerId }).then((result) => {
+    getSubjects({ careerId: appliedFilters.careerId }).then((result) => {
       setAllSubjects(result.error ? [] : result.data);
       setLoading(false);
     });
-  }, [filters.careerId]);
-
-  const plans = useMemo(() => {
-    if (!filters.careerId) return [];
-    const planSet = new Set<string>();
-    allSubjects.forEach((s) => {
-      s.careers.forEach((c) => {
-        if (c.careerId === filters.careerId) planSet.add(c.planId);
-      });
-    });
-    return Array.from(planSet).sort();
-  }, [allSubjects, filters.careerId]);
+  }, [appliedFilters.careerId]);
 
   useEffect(() => {
     setLoading(true);
     const timer = setTimeout(() => {
       const result = allSubjects
-        .filter((s) => normalizeText(s.title).includes(normalizeText(filters.search)))
-        .filter((s) => (filters.year === 0 ? true : s.year === filters.year))
-        .filter((s) => (filters.quadmester === 0 ? true : s.quadmester === filters.quadmester))
+        .filter((s) => normalizeText(s.title).includes(normalizeText(appliedFilters.search)))
+        .filter((s) => (appliedFilters.year === 0 ? true : s.year === appliedFilters.year))
+        .filter((s) => (appliedFilters.quadmester === 0 ? true : s.quadmester === appliedFilters.quadmester))
         .filter((s) =>
-          !filters.planId
+          !appliedFilters.planId
             ? true
             : s.careers.some(
-                (c) => c.careerId === filters.careerId && c.planId === filters.planId
+                (c) => c.careerId === appliedFilters.careerId && c.planId === appliedFilters.planId
               )
         )
         .sort((a, b) => a.title.localeCompare(b.title));
@@ -67,27 +44,43 @@ export const useSubjects = () => {
       setFilteredSubjects(result);
       setVisibleCount(PAGE_SIZE);
       setLoading(false);
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(timer);
-  }, [filters.search, filters.year, filters.quadmester, filters.planId, allSubjects]);
+  }, [
+    appliedFilters.search,
+    appliedFilters.year,
+    appliedFilters.quadmester,
+    appliedFilters.planId,
+    appliedFilters.careerId,
+    allSubjects,
+  ]);
+
+  const planOptions = useMemo((): FilterOption[] => {
+    if (!appliedFilters.careerId) return [];
+    const planSet = new Set<string>();
+    allSubjects.forEach((s) => {
+      s.careers.forEach((c) => {
+        if (c.careerId === appliedFilters.careerId) planSet.add(c.planId);
+      });
+    });
+    return Array.from(planSet)
+      .sort()
+      .map((planId) => {
+        const year = planId.match(/\d+$/)?.[0];
+        return { id: planId, label: year ? `Plan ${year}` : planId };
+      });
+  }, [allSubjects, appliedFilters.careerId]);
 
   const visibleSubjects = filteredSubjects.slice(0, visibleCount);
-
-  const showMore = () => {
-    setVisibleCount((prev) => prev + PAGE_SIZE);
-  };
-
+  const showMore = () => setVisibleCount((prev) => prev + PAGE_SIZE);
   const hasMore = visibleCount < filteredSubjects.length;
 
   return {
-    filters,
-    setFilters,
-    careers,
-    plans,
     filteredSubjects: visibleSubjects,
     loading,
     showMore,
     hasMore,
+    planOptions,
   };
 };
