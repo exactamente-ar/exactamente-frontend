@@ -32,8 +32,10 @@ export const useFilterState = () => {
     const facultyId = universityId ? (params.get('faculty') ?? '') : '';
     const careerId = facultyId ? (params.get('career') ?? '') : '';
     const planId = careerId ? (params.get('plan') ?? '') : '';
-    const year = careerId ? Number(params.get('year') ?? 0) : 0;
-    const quadmester = careerId ? Number(params.get('quadmester') ?? 0) : 0;
+    const rawYear = careerId ? Number(params.get('year') ?? 0) : 0;
+    const year = Number.isFinite(rawYear) ? rawYear : 0;
+    const rawQuadmester = careerId ? Number(params.get('quadmester') ?? 0) : 0;
+    const quadmester = Number.isFinite(rawQuadmester) ? rawQuadmester : 0;
     const search = params.get('q') ?? '';
 
     const initialDraft: DraftFilters = { universityId, facultyId, careerId, planId, year, quadmester };
@@ -67,7 +69,10 @@ export const useFilterState = () => {
   }
 
   function applyDraft() {
-    setApplied((prev) => ({ ...draft, search: prev.search }));
+    setDraft((currentDraft) => {
+      setApplied((prev) => ({ ...currentDraft, search: prev.search }));
+      return currentDraft;
+    });
   }
 
   function cancelDraft() {
