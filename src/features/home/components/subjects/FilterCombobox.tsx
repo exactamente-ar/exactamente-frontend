@@ -103,7 +103,6 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
               onKeyDown={handleKeyDown}
               placeholder='Buscar...'
               className='w-full bg-zinc-900 text-sm text-white placeholder-zinc-400 px-2 py-1 rounded outline-none'
-              role='combobox'
               aria-autocomplete='list'
               aria-expanded={isOpen}
               aria-controls={listId}

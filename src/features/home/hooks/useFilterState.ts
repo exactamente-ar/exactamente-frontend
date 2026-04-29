@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { DraftFilters, AppliedFilters } from '@/features/home/types/filter';
 
 const EMPTY_DRAFT: DraftFilters = {
@@ -24,6 +24,11 @@ const CASCADE_CHILDREN: Record<keyof DraftFilters, Array<keyof DraftFilters>> = 
 export const useFilterState = () => {
   const [draft, setDraft] = useState<DraftFilters>(EMPTY_DRAFT);
   const [applied, setApplied] = useState<AppliedFilters>(EMPTY_APPLIED);
+
+  const draftRef = useRef(draft);
+  useEffect(() => {
+    draftRef.current = draft;
+  }, [draft]);
 
   // Initialize from URL on mount
   useEffect(() => {
@@ -69,10 +74,7 @@ export const useFilterState = () => {
   }
 
   function applyDraft() {
-    setDraft((currentDraft) => {
-      setApplied((prev) => ({ ...currentDraft, search: prev.search }));
-      return currentDraft;
-    });
+    setApplied((prev) => ({ ...draftRef.current, search: prev.search }));
   }
 
   function cancelDraft() {

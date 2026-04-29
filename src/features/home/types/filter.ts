@@ -1,4 +1,3 @@
-import type { University, Faculty, Career } from '@/shared/services/api';
 import type { Subject } from './subjects';
 
 export type DraftFilters = {

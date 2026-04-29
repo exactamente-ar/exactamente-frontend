@@ -17,11 +17,14 @@ export const useFilterOptions = (draft: DraftFilters) => {
   const [loadingCareers, setLoadingCareers] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
     setLoadingUniversities(true);
     getUniversities().then((r) => {
+      if (controller.signal.aborted) return;
       setUniversities(r.error ? [] : r.data);
       setLoadingUniversities(false);
     });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {

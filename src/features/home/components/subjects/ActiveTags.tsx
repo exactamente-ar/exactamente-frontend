@@ -50,26 +50,32 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [overflowCount, setOverflowCount] = useState(0);
 
-  // Detect overflow on desktop (max 2 lines = 2 * ~32px = 64px)
+  // Detect overflow on desktop (max 2 rows via offsetTop)
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
-    const lineHeight = 32;
-    const maxHeight = lineHeight * 2;
-    if (!expanded && container.scrollHeight > maxHeight + 4) {
-      // Count tags that overflow
-      let visibleHeight = 0;
-      let hiddenCount = 0;
-      const children = Array.from(container.children) as HTMLElement[];
-      for (const child of children) {
-        visibleHeight += child.offsetHeight + 8; // 8 = gap
-        if (visibleHeight > maxHeight) hiddenCount++;
-      }
-      setOverflowCount(hiddenCount);
-    } else {
+    if (!container || expanded) {
       setOverflowCount(0);
+      return;
     }
+    const check = () => {
+      const maxBottom = 72; // 2 rows × ~32px + gap
+      const allChildren = Array.from(container.children) as HTMLElement[];
+      // Only count actual tag chips (exclude the "+N más" and ClearAll buttons)
+      const tagChildren = allChildren.slice(0, tags.length);
+      const hidden = tagChildren.filter(
+        (el) => el.offsetTop + el.offsetHeight > maxBottom
+      );
+      setOverflowCount(hidden.length);
+    };
+    const observer = new ResizeObserver(check);
+    observer.observe(container);
+    check();
+    return () => observer.disconnect();
   }, [tags.length, expanded]);
+
+  useEffect(() => {
+    if (tags.length === 0) setExpanded(false);
+  }, [tags.length]);
 
   if (tags.length === 0) return null;
 
@@ -98,6 +104,7 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
         ))}
         {!expanded && overflowCount > 0 && (
           <button
+            type='button'
             onClick={() => setExpanded(true)}
             className='text-xs text-zinc-400 hover:text-zinc-200 px-2 py-1 rounded-full border border-zinc-700 hover:border-zinc-500 transition-colors whitespace-nowrap'
           >
@@ -115,6 +122,7 @@ function TagChip({ label, onRemove }: { label: string; onRemove: () => void }) {
     <span className='flex items-center gap-1 pl-3 pr-1.5 py-1 text-sm bg-zinc-700/60 border border-zinc-600 rounded-full text-zinc-200 whitespace-nowrap'>
       {label}
       <button
+        type='button'
         onClick={onRemove}
         aria-label={`Eliminar filtro ${label}`}
         className='ml-0.5 flex items-center justify-center w-4 h-4 rounded-full hover:bg-zinc-500 transition-colors'
@@ -135,6 +143,7 @@ function TagChip({ label, onRemove }: { label: string; onRemove: () => void }) {
 function ClearAllButton({ onClick }: { onClick: () => void }) {
   return (
     <button
+      type='button'
       onClick={onClick}
       className='text-xs text-zinc-400 hover:text-red-400 transition-colors whitespace-nowrap underline underline-offset-2'
     >
