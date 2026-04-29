@@ -10,7 +10,30 @@ type BackendCareer = {
   createdAt: string;
 };
 
+type BackendUniversity = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
+
+type BackendFaculty = {
+  id: string;
+  universityId: string;
+  name: string;
+  createdAt: string;
+};
+
 export type Career = {
+  id: string;
+  name: string;
+};
+
+export type University = {
+  id: string;
+  name: string;
+};
+
+export type Faculty = {
   id: string;
   name: string;
 };
@@ -90,9 +113,10 @@ function mapResource(backend: BackendResource): ResourceFetch {
   };
 }
 
-export async function getCareers(): Promise<ApiResult<Career[]>> {
+export async function getCareers(params?: { facultyId?: string }): Promise<ApiResult<Career[]>> {
   try {
     const url = new URL(`${BASE_URL}/api/v1/careers`);
+    if (params?.facultyId) url.searchParams.set('facultyId', params.facultyId);
     const response = await fetch(url.toString());
     if (!response.ok) {
       return { data: [], error: `Request failed with status ${response.status}` };
@@ -101,6 +125,37 @@ export async function getCareers(): Promise<ApiResult<Career[]>> {
     return { data: json.data.map(({ id, name }) => ({ id, name })), error: null };
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error fetching careers';
+    return { data: [], error: message };
+  }
+}
+
+export async function getUniversities(): Promise<ApiResult<University[]>> {
+  try {
+    const url = new URL(`${BASE_URL}/api/v1/universities`);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      return { data: [], error: `Request failed with status ${response.status}` };
+    }
+    const json: { data: BackendUniversity[] } = await response.json();
+    return { data: json.data.map(({ id, name }) => ({ id, name })), error: null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error fetching universities';
+    return { data: [], error: message };
+  }
+}
+
+export async function getFaculties(params: { universityId: string }): Promise<ApiResult<Faculty[]>> {
+  try {
+    const url = new URL(`${BASE_URL}/api/v1/faculties`);
+    url.searchParams.set('universityId', params.universityId);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      return { data: [], error: `Request failed with status ${response.status}` };
+    }
+    const json: { data: BackendFaculty[] } = await response.json();
+    return { data: json.data.map(({ id, name }) => ({ id, name })), error: null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error fetching faculties';
     return { data: [], error: message };
   }
 }
