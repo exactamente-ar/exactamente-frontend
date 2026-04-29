@@ -1,137 +1,132 @@
-import { QUADMESTERS_FILTER, YEARS_FILTER } from '@/features/home/constants/filter';
-import React from 'react';
-import type { PropsFilterBar } from '../../types/filter';
+import React, { useEffect, useRef, useState } from 'react';
+import FilterPanel from './FilterPanel';
+import ActiveTags from './ActiveTags';
+import type { PropsFilterBar, DraftFilters } from '@/features/home/types/filter';
 
-const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters, careers, plans }) => {
+const FilterBar: React.FC<PropsFilterBar> = ({
+  draft,
+  applied,
+  setDraftFilter,
+  applyDraft,
+  cancelDraft,
+  setSearch,
+  clearAll,
+  removeFilter,
+  activeCount,
+  options,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Return focus to button when panel closes
+  useEffect(() => {
+    if (!isOpen) buttonRef.current?.focus();
+  }, [isOpen]);
+
+  // Close desktop dropdown on click outside
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (panelWrapperRef.current && !panelWrapperRef.current.contains(e.target as Node)) {
+        cancelDraft();
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [isOpen, cancelDraft]);
+
+  const handleApply = () => {
+    applyDraft();
+    setIsOpen(false);
+  };
+
+  const handleCancel = () => {
+    cancelDraft();
+    setIsOpen(false);
+  };
+
+  const displayedFilters: DraftFilters = isOpen
+    ? draft
+    : {
+        universityId: applied.universityId,
+        facultyId: applied.facultyId,
+        careerId: applied.careerId,
+        planId: applied.planId,
+        year: applied.year,
+        quadmester: applied.quadmester,
+      };
+
   return (
-    <div className='flex flex-col gap-8 mb-4 lg:mb-8 w-full rounded-xl p-4 bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border '>
-      <div className='p-[2px] rounded-xl gradient-bg '>
-        <div
-          className='relative w-full bg-zinc-900 flex justify-between items-center gap-2 border border-zinc-700 rounded-xl  transition-all duration-200'
-          tabIndex={0}
-        >
-          <div className='px-4 py-2 flex items-center w-full'>
-            <svg width='20' height='20' className='mr-2' viewBox='0 0 24 24'>
-              <path
-                className='stroke-foreground-muted'
-                fill='none'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                d='m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314'
-              />
-            </svg>
-            <input
-              type='text'
-              placeholder='Ingresa una materia'
-              value={filters.search}
-              onChange={(e) => {
-                setFilters((prev) => ({
-                  ...prev,
-                  search: e.target.value,
-                }));
-              }}
-              className='w-full font-bold text-foreground placeholder-foreground-muted focus:outline-none'
+    <div className='flex flex-col mb-4 lg:mb-8 w-full'>
+      {/* Search bar row */}
+      <div className='relative flex items-center gap-2'>
+        <div className='flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2.5 focus-within:border-zinc-500 transition-colors'>
+          <svg width='18' height='18' viewBox='0 0 24 24' className='shrink-0'>
+            <path
+              className='stroke-foreground-muted'
+              fill='none'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314'
             />
-          </div>
-          <div className='bg-gradient-to-l gradient-bg    rounded-xl h-full'>
-             <div className="bg-black/40  relative py-2.5 px-4 m-[1px] inset-0 z-0 rounded-xl gap-2 flex items-center justify-center w-full">
+          </svg>
+          <input
+            type='text'
+            placeholder='Ingresá una materia'
+            value={applied.search}
+            onChange={(e) => setSearch(e.target.value)}
+            className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
+          />
+        </div>
 
-            <svg className='text-primary-foreground' width='20' height='20' viewBox='0 0 24 24'>
+        {/* Filtros button + desktop dropdown wrapper */}
+        <div ref={panelWrapperRef} className='relative'>
+          <button
+            ref={buttonRef}
+            type='button'
+            onClick={() => setIsOpen((prev) => !prev)}
+            aria-expanded={isOpen}
+            aria-controls='filter-panel'
+            className='flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-zinc-900 border border-zinc-700 rounded-xl hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-zinc-500'
+          >
+            <svg width='16' height='16' viewBox='0 0 24 24' fill='none'>
               <path
-                fill='#fff'
-                d='M16.175 13H4v-2h12.175l-5.6-5.6L12 4l8 8l-8 8l-1.425-1.4z'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                d='M3 6h18M7 12h10M11 18h2'
               />
             </svg>
-             </div>
-          </div>
+            <span>Filtros</span>
+            {activeCount > 0 && (
+              <span className='flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full gradient-bg text-white'>
+                {activeCount}
+              </span>
+            )}
+          </button>
+
+          {isOpen && (
+            <FilterPanel
+              draft={draft}
+              setDraftFilter={setDraftFilter}
+              options={options}
+              onApply={handleApply}
+              onCancel={handleCancel}
+            />
+          )}
         </div>
       </div>
-      <div className='flex gap-6 items-start sm:items-center flex-col sm:flex-row text-foreground-muted'>
-        <div className='flex items-start gap-2'>
-          <span className='text-sm'>Carrera</span>
-          <div className='flex gap-2 flex-wrap'>
-            {careers.map((career) => (
-              <div
-                key={career.id}
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
-                  filters.careerId === career.id ? 'bg-white/20 text-white/80 border  border-white' : ''
-                }`}
-                onClick={() => setFilters((prev) => ({ ...prev, careerId: career.id }))}
-              >
-                {career.name}
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div className='flex items-start gap-2'>
-          <span className='text-sm'>Cuatrimestre</span>
-          <div className='flex gap-2 flex-wrap'>
-            {QUADMESTERS_FILTER.map(({ label, value }) => (
-              <div
-                key={value}
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
-                  filters.quadmester === value
-                    ? 'bg-white/20 text-white/80 border  border-white'
-                    : ''
-                }`}
-                onClick={() => setFilters((prev) => ({ ...prev, quadmester: value }))}
-              >
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {plans.length > 1 && (
-          <div className='flex items-start gap-2'>
-            <span className='text-sm'>Plan</span>
-            <div className='flex gap-2 flex-wrap'>
-              <div
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
-                  filters.planId === '' ? 'bg-white/20 text-white/80 border border-white' : ''
-                }`}
-                onClick={() => setFilters((prev) => ({ ...prev, planId: '' }))}
-              >
-                Todos
-              </div>
-              {plans.map((planId) => {
-                const year = planId.match(/\d+$/)?.[0];
-                const label = year ? `Plan ${year}` : planId;
-                return (
-                  <div
-                    key={planId}
-                    className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border ${
-                      filters.planId === planId ? 'bg-white/20 text-white/80 border border-white' : ''
-                    }`}
-                    onClick={() => setFilters((prev) => ({ ...prev, planId }))}
-                  >
-                    {label}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        <div className='flex items-start gap-2'>
-          <span className='text-sm'>Año</span>
-          <div className='flex gap-2 flex-wrap'>
-            {YEARS_FILTER.map(({ label, value }) => (
-              <div
-                key={value}
-                className={`cursor-pointer rounded-full px-4 font-medium flex gap-1 items-center border border-zinc-700 hover:ring-1 hover:gradient-border  ${
-                  filters.year === value ? 'bg-white/20 text-white/80 border  border-white' : ''
-                }`}
-                onClick={() => setFilters((prev) => ({ ...prev, year: value }))}
-              >
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Active tags */}
+      <ActiveTags
+        displayedFilters={displayedFilters}
+        options={options}
+        onRemove={removeFilter}
+        onClearAll={clearAll}
+      />
     </div>
   );
 };
