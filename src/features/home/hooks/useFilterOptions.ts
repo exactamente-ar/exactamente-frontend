@@ -27,25 +27,33 @@ export const useFilterOptions = (draft: DraftFilters) => {
   useEffect(() => {
     if (!draft.universityId) {
       setFaculties([]);
+      setLoadingFaculties(false);
       return;
     }
+    const controller = new AbortController();
     setLoadingFaculties(true);
     getFaculties({ universityId: draft.universityId }).then((r) => {
+      if (controller.signal.aborted) return;
       setFaculties(r.error ? [] : r.data);
       setLoadingFaculties(false);
     });
+    return () => controller.abort();
   }, [draft.universityId]);
 
   useEffect(() => {
     if (!draft.facultyId) {
       setCareers([]);
+      setLoadingCareers(false);
       return;
     }
+    const controller = new AbortController();
     setLoadingCareers(true);
     getCareers({ facultyId: draft.facultyId }).then((r) => {
+      if (controller.signal.aborted) return;
       setCareers(r.error ? [] : r.data);
       setLoadingCareers(false);
     });
+    return () => controller.abort();
   }, [draft.facultyId]);
 
   return {
