@@ -23,7 +23,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({ filters, setFilters }) => {
             </svg>
             <input
               type='text'
-              placeholder='Ingresa una materia'
+              placeholder='Buscar una materia'
               value={filters.search}
               onChange={(e) => {
                 setFilters((prev) => ({
