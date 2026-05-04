@@ -380,6 +380,46 @@ No hay `prefers-reduced-motion` configurado actualmente. Las animaciones son cor
 
 ## 10. Componentes shadcn/ui
 
-> Pendiente de completar después de [issue #3](https://github.com/exactamente/exactamente-frontend/issues/3).
->
-> Esta sección documentará el catálogo de componentes shadcn/ui adoptados y sus variantes customizadas para el tema dark de Exactamente.
+### Restricción importante
+
+Los componentes shadcn/ui son **React-only**. Solo funcionan dentro de islands con `client:load` o `client:visible`. No pueden usarse en archivos `.astro` server-rendered.
+
+### Import
+
+```ts
+import { Button } from "@/shared/components/ui/button"
+import { Input } from "@/shared/components/ui/input"
+import { Badge } from "@/shared/components/ui/badge"
+import { Skeleton } from "@/shared/components/ui/skeleton"
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/shared/components/ui/card"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/shared/components/ui/dialog"
+```
+
+### Catálogo de componentes instalados
+
+| Componente | Ubicación | Descripción |
+|---|---|---|
+| `Button` | `ui/button.tsx` | Botón con variantes (default, destructive, outline, secondary, ghost, link) y tamaños (default, sm, lg, icon) |
+| `Input` | `ui/input.tsx` | Input de texto base con estilos del tema |
+| `Badge` | `ui/badge.tsx` | Badge/pill para metadata y etiquetas |
+| `Skeleton` | `ui/skeleton.tsx` | Placeholder animado para loading states |
+| `Card` | `ui/card.tsx` | Container con header, content y footer |
+| `Dialog` | `ui/dialog.tsx` | Modal accesible con overlay, basado en Radix UI |
+
+### Cuándo usar shadcn vs componente custom
+
+| Usar shadcn | Usar componente custom |
+|---|---|
+| UI genérica: botones, inputs, modales, badges | Componentes con lógica de negocio específica (CardSubject, FilterBar) |
+| Necesitas accesibilidad built-in (Dialog, Popover) | Componentes server-rendered en `.astro` |
+| Prototipado rápido de nuevas features | Componentes con animaciones/gradientes muy específicos del diseño |
+| Composición estándar (Card con header/content/footer) | Cuando el overhead de Radix UI no se justifica |
+
+### Componentes candidatos para migración futura
+
+| Actual | Migración propuesta |
+|---|---|
+| `FilterCombobox` | shadcn `Command` + `Popover` |
+| `SuccessModal` | shadcn `Dialog` |
+| Loading skeletons custom | shadcn `Skeleton` |
+| FilterBar pills | shadcn `Button` variant (`outline`, `ghost`) |
