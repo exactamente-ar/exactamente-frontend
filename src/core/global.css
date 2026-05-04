@@ -29,10 +29,19 @@
 
   /* 🧱 UI neutra / tarjetas / inputs (modo oscuro) */
   --color-muted: #1f2937; /* Fondo oscuro para elementos secundarios: tarjetas, inputs (Slate 800) */
-  --color-muted-foreground: #ffd100; /* Texto claro y con contraste amarillo primario para destacar sobre muted */
-  --color-border: #4b4f1d; /* Bordes en tono oscuro tirando a oliva para armonizar con amarillo */
+  --color-muted-foreground: #94a3b8; /* slate-400, neutro para shadcn */
+  --color-border: #334155; /* slate-700, neutro para shadcn */
   --color-input: #111827; /* Fondo de inputs oscuro (Slate 900) */
   --color-input-placeholder: #a89f48; /* Placeholder en tono amarillo pálido para buen contraste */
+
+  /* 🃏 shadcn/ui */
+  --color-card: #1e293b;
+  --color-card-foreground: #f8fafc;
+  --color-popover: #1e293b;
+  --color-popover-foreground: #f8fafc;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --radius: 0.75rem;
 
   /* 🧨 Estados de error / éxito / alerta */
   --color-error: #dc2626; /* Rojo para errores */
