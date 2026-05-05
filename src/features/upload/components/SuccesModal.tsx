@@ -1,5 +1,5 @@
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/shared/components/ui/dialog';
 import IconCheckCircle from '@/shared/components/icons/react/IconCheckCircle';
-import IconX from '@/shared/components/icons/react/IconX';
 
 interface SuccessModalProps {
   showSuccess: boolean;
@@ -7,34 +7,28 @@ interface SuccessModalProps {
 }
 
 const SuccessModal = ({ showSuccess, closeSuccess }: SuccessModalProps) => {
-  if (!showSuccess) return null;
-
   return (
-    <div className='fixed inset-0 bg-black/95  flex items-center justify-center z-50 p-4'>
-      <div className='bg-black/40 border-primary/30 border rounded-2xl p-8 max-w-md w-full relative animate-in fade-in duration-300'>
-        <button
-          onClick={closeSuccess}
-          className='absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors'
-        >
-          <IconX size={24} />
-        </button>
-        <div className='text-center'>
-          <div className='w-16 h-16 bg-green-900/70 border border-green-600 rounded-full flex items-center justify-center mx-auto mb-4'>
-            <IconCheckCircle size={32} className=' stroke-green-600' />
+    <Dialog open={showSuccess} onOpenChange={(open) => { if (!open) closeSuccess(); }}>
+      <DialogContent className='bg-black/90 border border-primary/30 rounded-2xl p-8 max-w-md text-center [&>button]:text-zinc-400 [&>button]:hover:text-zinc-200'>
+        <div className='flex flex-col items-center gap-4'>
+          <div className='w-16 h-16 bg-green-900/70 border border-green-600 rounded-full flex items-center justify-center'>
+            <IconCheckCircle size={32} className='stroke-green-600' />
           </div>
-          <h3 className='text-2xl font-bold text-foreground mb-2'>!Recurso enviado!</h3>
-          <p className='text-foreground-secondary mb-6'>
-            Tu recurso ha sido enviado exitosamente. Será revisado y publicado pronto.
-          </p>
+          <DialogTitle className='text-2xl font-bold text-foreground'>
+            !Recurso enviado!
+          </DialogTitle>
+          <DialogDescription className='text-foreground-secondary'>
+            Tu recurso ha sido enviado exitosamente. Sera revisado y publicado pronto.
+          </DialogDescription>
           <button
             onClick={closeSuccess}
-            className='w-full  text-transparent font-semibold py-3 rounded-xl  transition-all duration-200'
+            className='w-full font-semibold py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-foreground transition-all duration-200'
           >
             Continuar
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
