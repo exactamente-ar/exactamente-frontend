@@ -1,3 +1,4 @@
+import React from 'react';
 import { Textarea } from '@/shared/components/ui/textarea';
 
 interface TextAreaInputProps {
