@@ -1,5 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import type { DraftFilters, FilterOptions } from '@/features/home/types/filter';
+import { Badge } from '@/shared/components/ui/badge';
 
 interface ActiveTagsProps {
   displayedFilters: DraftFilters;
@@ -45,7 +46,7 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
   onRemove,
   onClearAll,
 }) => {
-  const tags = buildTags(displayedFilters, options);
+  const tags = useMemo(() => buildTags(displayedFilters, options), [displayedFilters, options]);
   const [expanded, setExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [overflowCount, setOverflowCount] = useState(0);
@@ -58,12 +59,13 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
       return;
     }
     const check = () => {
-      const maxBottom = 72; // 2 rows × ~32px + gap
+      const containerRect = container.getBoundingClientRect();
+      const maxBottom = containerRect.top + 72; // 2 rows × ~32px + gap
       const allChildren = Array.from(container.children) as HTMLElement[];
       // Only count actual tag chips (exclude the "+N más" and ClearAll buttons)
       const tagChildren = allChildren.slice(0, tags.length);
       const hidden = tagChildren.filter(
-        (el) => el.offsetTop + el.offsetHeight > maxBottom
+        (el) => el.getBoundingClientRect().bottom > maxBottom
       );
       setOverflowCount(hidden.length);
     };
@@ -79,10 +81,6 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
 
   if (tags.length === 0) return null;
 
-  const visibleTags = !expanded && overflowCount > 0
-    ? tags.slice(0, tags.length - overflowCount)
-    : tags;
-
   return (
     <div className='mt-3 flex flex-col gap-2'>
       {/* Mobile: scroll horizontal */}
@@ -94,24 +92,31 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
       </div>
 
       {/* Desktop: flex wrap con colapso */}
-      <div
-        ref={containerRef}
-        className='hidden lg:flex flex-wrap gap-2 items-center'
-        style={!expanded && overflowCount > 0 ? { maxHeight: '72px', overflow: 'hidden' } : undefined}
-      >
-        {visibleTags.map((tag) => (
-          <TagChip key={tag.key} label={tag.label} onRemove={() => onRemove(tag.key)} />
-        ))}
-        {!expanded && overflowCount > 0 && (
-          <button
-            type='button'
-            onClick={() => setExpanded(true)}
-            className='text-xs text-zinc-400 hover:text-zinc-200 px-2 py-1 rounded-full border border-zinc-700 hover:border-zinc-500 transition-colors whitespace-nowrap'
-          >
-            +{overflowCount} más
-          </button>
-        )}
-        <ClearAllButton onClick={onClearAll} />
+      <div className='hidden lg:flex flex-col gap-2'>
+        {/* Tags container — siempre renderiza todos los chips para que el slice DOM sea correcto */}
+        <div
+          ref={containerRef}
+          className='flex flex-wrap gap-2'
+          style={!expanded && overflowCount > 0 ? { maxHeight: '72px', overflow: 'hidden' } : undefined}
+        >
+          {tags.map((tag) => (
+            <TagChip key={tag.key} label={tag.label} onRemove={() => onRemove(tag.key)} />
+          ))}
+        </div>
+
+        {/* Controles fuera del contenedor con overflow para que siempre sean visibles */}
+        <div className='flex items-center gap-2'>
+          {!expanded && overflowCount > 0 && (
+            <button
+              type='button'
+              onClick={() => setExpanded(true)}
+              className='text-xs text-zinc-400 hover:text-zinc-200 px-2 py-1 rounded-full border border-zinc-700 hover:border-zinc-500 transition-colors whitespace-nowrap'
+            >
+              +{overflowCount} más
+            </button>
+          )}
+          <ClearAllButton onClick={onClearAll} />
+        </div>
       </div>
     </div>
   );
@@ -119,7 +124,7 @@ const ActiveTags: React.FC<ActiveTagsProps> = ({
 
 function TagChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className='flex items-center gap-1 pl-3 pr-1.5 py-1 text-sm bg-zinc-700/60 border border-zinc-600 rounded-full text-zinc-200 whitespace-nowrap'>
+    <Badge className='flex items-center gap-1 pl-3 pr-1.5 py-1 text-sm bg-zinc-700/60 border border-zinc-600 rounded-full text-zinc-200 whitespace-nowrap hover:bg-zinc-700/60'>
       {label}
       <button
         type='button'
@@ -136,7 +141,7 @@ function TagChip({ label, onRemove }: { label: string; onRemove: () => void }) {
           />
         </svg>
       </button>
-    </span>
+    </Badge>
   );
 }
 
