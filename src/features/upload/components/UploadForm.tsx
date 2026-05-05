@@ -30,7 +30,9 @@ const UploadForm = ({
           <SelectInput
             name='materia'
             value={formData.materia}
-            onChange={handleInputChange}
+            onValueChange={(value) =>
+              handleInputChange({ target: { name: 'materia', value } } as React.ChangeEvent<HTMLInputElement>)
+            }
             options={subjects}
             placeholder='Selecciona una materia'
             error={errors.materia}
