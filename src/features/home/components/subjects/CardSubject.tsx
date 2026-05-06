@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import IconOpenBook from '@/shared/components/icons/react/IconOpenBook';
 import IconUniversity from '@/shared/components/icons/react/IconUniversity';
 import IconDownload from '@/shared/components/icons/react/IconDownload';
@@ -10,11 +11,12 @@ import type { SubjectCareer } from '@/features/home/types/subjects';
 type Props = {
   id: string;
   title: string;
+  shortName: string;
   url: string;
   quadmester: number;
   year: number;
   careers: SubjectCareer[];
-  careerId: string;
+  activeCareerId: string;
 };
 
 function formatPlanId(planId: string): string {
@@ -22,11 +24,26 @@ function formatPlanId(planId: string): string {
   return year ? `Plan ${year}` : planId;
 }
 
-export default function Card({ id, title, url, quadmester, year, careers, careerId }: Props) {
-  const careerEntry = careers.find((c) => c.careerId === careerId);
-  const displayYear = careerEntry?.year ?? year;
-  const displayQuadmester = careerEntry?.quadmester ?? quadmester;
-  const planLabel = careerEntry ? formatPlanId(careerEntry.planId) : null;
+const STOPWORDS = new Set(['de', 'del', 'la', 'las', 'los', 'el', 'en', 'y', 'e', 'o', 'u', 'a', 'por', 'con']);
+
+function abbreviateUniversity(name: string): string {
+  if (name.length <= 12) return name;
+  const initials = name
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !STOPWORDS.has(w.toLowerCase()))
+    .map((w) => w[0].toUpperCase())
+    .join('');
+  return initials || name;
+}
+
+function Card({ id, title, shortName, url, quadmester, year, careers, activeCareerId }: Props) {
+  const primaryCareer = careers.find((c) => c.careerId === activeCareerId) ?? careers[0];
+  const displayYear = primaryCareer?.year ?? year;
+  const displayQuadmester = primaryCareer?.quadmester ?? quadmester;
+  const planLabel = primaryCareer ? formatPlanId(primaryCareer.planId) : null;
+  const universityLabel = primaryCareer?.universityName;
+  const facultyLabel = primaryCareer?.facultyName;
+  const careerLabel = primaryCareer?.careerName;
   const urlPrograma = '';
   const urlMoodle = '';
   return (
@@ -36,41 +53,37 @@ export default function Card({ id, title, url, quadmester, year, careers, career
         {/* Added flex-grow here */}
         <div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-500/5 to-transparent rounded-full blur-3xl' />
         <div className='relative z-10'>
-          <h2 className='text-2xl md:text-3xl font-bold text-white mb-2 group-hover:text-yellow-100 transition-colors'>
-            {title}
-          </h2>
-          {planLabel && (
-            <span className='inline-block text-zinc-400 font-medium text-sm bg-zinc-800/60 border border-zinc-700/50 rounded-md px-2 py-0.5'>
-              {planLabel}
-            </span>
+          {(universityLabel || facultyLabel || careerLabel) && (
+            <div className='flex flex-wrap items-center gap-1 mb-2 text-xs text-zinc-500'>
+              {universityLabel && <span>{abbreviateUniversity(universityLabel)}</span>}
+              {universityLabel && facultyLabel && <span>·</span>}
+              {facultyLabel && <span>{facultyLabel}</span>}
+              {(universityLabel || facultyLabel) && careerLabel && <span>·</span>}
+              {careerLabel && <span>{careerLabel}</span>}
+            </div>
           )}
+          <h2 className='text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-yellow-100 transition-colors'>
+            {shortName || title}
+          </h2>
+          <div className='flex flex-wrap items-center gap-2 text-sm text-zinc-400'>
+            {planLabel && (
+              <span className='bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 font-semibold rounded-md px-2 py-0.5'>
+                {planLabel}
+              </span>
+            )}
+            {planLabel && <span className='text-zinc-600'>·</span>}
+            <span>{displayQuadmester}º Cuatrimestre</span>
+            <span className='text-zinc-600'>·</span>
+            <span>{displayYear}º Año</span>
+          </div>
         </div>
       </div>
       {/* Content */}
-      <div className='flex flex-col items-start gap-6 p-6 flex-shrink-0'>
-        {' '}
-        {/* Added flex-shrink-0 here */}
-        {/* Info row */}
-        <div className='flex w-full justify-between items-center flex-wrap gap-3'>
-          <div className='text-zinc-400 flex items-center gap-2 bg-zinc-800/50 px-3 py-2 rounded-lg border border-zinc-700/50'>
-            <svg className='h-4 w-4 text-yellow-400' viewBox='0 0 24 24'>
-              <path
-                fill='currentColor'
-                d='M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m11-9c0 6.075-4.925 11-11 11S1 18.075 1 12S5.925 1 12 1s11 4.925 11 11m-8 4.414l-4-4V5.5h2v6.086L16.414 15z'
-              />
-            </svg>
-            <span className='text-zinc-200 font-medium'>{displayQuadmester}º Cuatrimestre</span>
-          </div>
-
-          <div className='bg-gradient-to-r from-yellow-500/15 to-yellow-600/15 border border-yellow-500/30 text-yellow-200 font-semibold px-4 py-2 rounded-full'>
-            {displayYear}º año
-          </div>
-        </div>
+      <div className='flex flex-col items-start gap-4 p-6 flex-shrink-0'>
         {/* Recursos */}
         <div className='w-full'>
-          <h4 className='font-bold text-white text-lg mb-4 flex items-center gap-2'>
-            <div className='w-2 h-2 bg-yellow-400 rounded-full' />
-            Recursos disponibles:
+          <h4 className='font-semibold tracking-widest text-zinc-500 text-xs uppercase mb-3'>
+            Recursos
           </h4>
 
           <div className='flx flex-col space-y-3 w-full'>
@@ -155,3 +168,5 @@ export default function Card({ id, title, url, quadmester, year, careers, career
     </article>
   );
 }
+
+export default memo(Card);
