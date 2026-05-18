@@ -1,68 +1,104 @@
-import React, { useEffect, useRef, useState } from 'react';
-import FilterPanel from './FilterPanel';
-import ActiveTags from './ActiveTags';
-import type { PropsFilterBar, DraftFilters } from '@/features/home/types/filter';
+import React, { useCallback, useMemo } from 'react';
+import FilterCombobox from './FilterCombobox';
+import type { PropsFilterBar } from '@/features/home/types/filter';
+import { YEARS_FILTER, QUADMESTERS_FILTER } from '@/features/home/constants/filter';
+
+function FilterGroup ({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className='flex items-center gap-3 shrink-0 min-w-0'>
+      <span className='text-sm text-zinc-400 whitespace-nowrap'>{label}</span>
+      <div className='min-w-0'>{children}</div>
+    </div>
+  );
+}
+
+const PillToggleGroup = React.memo(function PillToggleGroup ({
+  label,
+  options,
+  value,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  options: { label: string; value: number }[];
+  value: number;
+  disabled: boolean;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <FilterGroup label={label}>
+      <div className='flex flex-wrap gap-1.5'>
+        {options.map((opt) => {
+          const active = value === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type='button'
+              disabled={disabled}
+              onClick={() => onChange(opt.value)}
+              className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors whitespace-nowrap disabled:opacity-40 disabled:pointer-events-none ${active
+                ? 'bg-zinc-700 border-zinc-600 text-white'
+                : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500'
+                }`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </FilterGroup>
+  );
+});
 
 const FilterBar: React.FC<PropsFilterBar> = ({
-  draft,
   applied,
-  setDraftFilter,
-  applyDraft,
-  cancelDraft,
+  commitFilter,
   setSearch,
   clearAll,
-  removeFilter,
-  activeCount,
   options,
+  scopeError,
+  scopeReady,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const panelWrapperRef = useRef<HTMLDivElement>(null);
+  const canReset = useMemo(
+    () =>
+      Boolean(
+        applied.careerId ||
+        applied.planId ||
+        applied.year !== 0 ||
+        applied.quadmester !== 0 ||
+        applied.search
+      ),
+    [applied.careerId, applied.planId, applied.year, applied.quadmester, applied.search]
+  );
 
-  // Return focus to button when panel closes
-  useEffect(() => {
-    if (!isOpen) buttonRef.current?.focus();
-  }, [isOpen]);
+  const filtersDisabled = Boolean(scopeError) || !applied.facultyId;
 
-  // Close desktop dropdown on click outside
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (panelWrapperRef.current && !panelWrapperRef.current.contains(e.target as Node)) {
-        cancelDraft();
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [isOpen, cancelDraft]);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value),
+    [setSearch]
+  );
 
-  const handleApply = () => {
-    applyDraft();
-    setIsOpen(false);
-  };
-
-  const handleCancel = () => {
-    cancelDraft();
-    setIsOpen(false);
-  };
-
-  const displayedFilters: DraftFilters = isOpen
-    ? draft
-    : {
-        universityId: applied.universityId,
-        facultyId: applied.facultyId,
-        careerId: applied.careerId,
-        planId: applied.planId,
-        year: applied.year,
-        quadmester: applied.quadmester,
-      };
+  const handleCareerChange = useCallback(
+    (id: string) => commitFilter('careerId', id),
+    [commitFilter]
+  );
+  const handlePlanChange = useCallback(
+    (id: string) => commitFilter('planId', id),
+    [commitFilter]
+  );
+  const handleYearChange = useCallback(
+    (v: number) => commitFilter('year', v),
+    [commitFilter]
+  );
+  const handleQuadmesterChange = useCallback(
+    (v: number) => commitFilter('quadmester', v),
+    [commitFilter]
+  );
 
   return (
-    <div className='flex flex-col mb-4 lg:mb-8 w-full'>
-      {/* Search bar row */}
+    <div className='flex flex-col mb-4 lg:mb-8 w-full gap-3'>
       <div className='relative flex items-center gap-2'>
-        <div className='flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2.5 focus-within:border-zinc-500 transition-colors'>
+        <div className='flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-4 focus-within:border-zinc-500 transition-colors'>
           <svg width='18' height='18' viewBox='0 0 24 24' className='shrink-0'>
             <path
               className='stroke-foreground-muted'
@@ -77,58 +113,75 @@ const FilterBar: React.FC<PropsFilterBar> = ({
             type='text'
             placeholder='Ingresá una materia'
             value={applied.search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
           />
         </div>
-
-        {/* Filtros button + desktop dropdown wrapper */}
-        <div ref={panelWrapperRef} className='relative'>
-          <button
-            ref={buttonRef}
-            type='button'
-            onClick={() => setIsOpen((prev) => !prev)}
-            aria-expanded={isOpen}
-            aria-controls='filter-panel'
-            className='flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-zinc-900 border border-zinc-700 rounded-xl hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-zinc-500'
-          >
-            <svg width='16' height='16' viewBox='0 0 24 24' fill='none'>
-              <path
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                d='M3 6h18M7 12h10M11 18h2'
-              />
-            </svg>
-            <span>Filtros</span>
-            {activeCount > 0 && (
-              <span className='flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full gradient-bg text-white'>
-                {activeCount}
-              </span>
-            )}
-          </button>
-
-          {isOpen && (
-            <FilterPanel
-              draft={draft}
-              setDraftFilter={setDraftFilter}
-              options={options}
-              onApply={handleApply}
-              onCancel={handleCancel}
-            />
-          )}
-        </div>
       </div>
 
-      {/* Active tags */}
-      <ActiveTags
-        displayedFilters={displayedFilters}
-        options={options}
-        onRemove={removeFilter}
-        onClearAll={clearAll}
-      />
+      {scopeError && (
+        <p className='text-sm text-red-400' role='alert'>
+          {scopeError}
+        </p>
+      )}
+
+      <div className='flex flex-col gap-2'>
+        <div className='border border-zinc-700 rounded-xl bg-zinc-950/10 px-3 py-3 flex flex-wrap items-center gap-x-6 gap-y-3 overflow-x-auto scrollbar-none lg:overflow-visible'>
+
+
+          <FilterGroup label='Carrera'>
+            <FilterCombobox
+              variant='pill'
+              options={options.careers}
+              value={applied.careerId}
+              onChange={handleCareerChange}
+              placeholder='Seleccionar carrera'
+              disabled={filtersDisabled}
+              isLoading={options.loadingCareers}
+            />
+          </FilterGroup>
+
+          <FilterGroup label='Plan'>
+            <FilterCombobox
+              variant='pill'
+              options={options.plans}
+              value={applied.planId}
+              onChange={handlePlanChange}
+              placeholder='Seleccionar plan'
+              disabled={filtersDisabled || !applied.careerId}
+              isLoading={options.loadingPlans}
+            />
+          </FilterGroup>
+
+          <PillToggleGroup
+            label='Año'
+            options={YEARS_FILTER}
+            value={applied.year}
+            disabled={filtersDisabled || !applied.careerId}
+            onChange={handleYearChange}
+          />
+
+          <PillToggleGroup
+            label='Cuatrimestre'
+            options={QUADMESTERS_FILTER}
+            value={applied.quadmester}
+            disabled={filtersDisabled || !applied.careerId}
+            onChange={handleQuadmesterChange}
+          />
+        </div>
+
+        {canReset && (
+          <button
+            type='button'
+            onClick={clearAll}
+            className='self-start text-xs text-zinc-400 hover:text-zinc-200 underline underline-offset-2 transition-colors'
+          >
+            Restablecer filtros
+          </button>
+        )}
+      </div>
     </div>
   );
 };
 
-export default FilterBar;
+export default React.memo(FilterBar);

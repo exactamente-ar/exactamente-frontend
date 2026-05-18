@@ -1,16 +1,16 @@
 import { useRef, useState } from 'react';
 
-export const usePreviewDrive = (previewUrl: string, downloadUrl: string) => {
+export const usePreview = (fileUrl: string) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const togglePreview = () => {
-    if (!previewUrl) return;
+    if (!fileUrl) return;
 
     if (!previewOpen) {
-      if (iframeRef.current && iframeRef.current.src !== previewUrl) {
-        iframeRef.current.src = previewUrl;
+      if (iframeRef.current && iframeRef.current.src !== fileUrl) {
+        iframeRef.current.src = fileUrl;
         setIframeLoaded(false);
       }
     } else {

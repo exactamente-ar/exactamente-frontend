@@ -19,14 +19,14 @@ type Props = {
   activeCareerId: string;
 };
 
-function formatPlanId(planId: string): string {
+function formatPlanId (planId: string): string {
   const year = planId.match(/\d+$/)?.[0];
   return year ? `Plan ${year}` : planId;
 }
 
 const STOPWORDS = new Set(['de', 'del', 'la', 'las', 'los', 'el', 'en', 'y', 'e', 'o', 'u', 'a', 'por', 'con']);
 
-function abbreviateUniversity(name: string): string {
+function abbreviateUniversity (name: string): string {
   if (name.length <= 12) return name;
   const initials = name
     .split(/\s+/)
@@ -36,7 +36,7 @@ function abbreviateUniversity(name: string): string {
   return initials || name;
 }
 
-function Card({ id, title, shortName, url, quadmester, year, careers, activeCareerId }: Props) {
+function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId }: Props) {
   const primaryCareer = careers.find((c) => c.careerId === activeCareerId) ?? careers[0];
   const displayYear = primaryCareer?.year ?? year;
   const displayQuadmester = primaryCareer?.quadmester ?? quadmester;
@@ -44,10 +44,8 @@ function Card({ id, title, shortName, url, quadmester, year, careers, activeCare
   const universityLabel = primaryCareer?.universityName;
   const facultyLabel = primaryCareer?.facultyName;
   const careerLabel = primaryCareer?.careerName;
-  const urlPrograma = '';
-  const urlMoodle = '';
   return (
-    <article className='group rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex flex-col '>
+    <article className='group rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex flex-col '>
       {/* Header */}
       <div className='relative mx-0.5 mt-0.5 rounded-xl flex-1 flex flex-col bg-gradient-to-br from-zinc-800/40 to-zinc-900/60 px-6 py-8 border-b border-zinc-800/50 flex-grow'>
         {/* Added flex-grow here */}
@@ -86,7 +84,7 @@ function Card({ id, title, shortName, url, quadmester, year, careers, activeCare
             Recursos
           </h4>
 
-          <div className='flx flex-col space-y-3 w-full'>
+          <div className='flex flex-col space-y-3 w-full'>
             <ContainerLink
               url={`.${url}/resumenes`}
               className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100 font-semibold flex items-center gap-3 transition-all duration-200'
@@ -119,7 +117,7 @@ function Card({ id, title, shortName, url, quadmester, year, careers, activeCare
               </div>
               <IconLink size={20} />
             </ContainerLink>
-          {/* 
+            {/* 
             <ContainerLink
               url={urlMoodle}
               target='_blank'

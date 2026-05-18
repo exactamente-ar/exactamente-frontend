@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -37,7 +37,10 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
   variant = 'default',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel = options.find((o) => o.id === value)?.label ?? '';
+  const selectedLabel = useMemo(
+    () => options.find((o) => o.id === value)?.label ?? '',
+    [options, value]
+  );
   const isPill = variant === 'pill';
   const hasSelection = Boolean(selectedLabel);
 
@@ -50,8 +53,24 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
       )
     : 'flex items-center justify-between gap-2 px-3 py-1.5 text-sm bg-zinc-800 border border-zinc-700 rounded-lg h-auto hover:border-zinc-500 hover:bg-zinc-800 font-normal';
 
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (disabled) return;
+      setIsOpen(open);
+    },
+    [disabled]
+  );
+
+  const handleSelect = useCallback(
+    (id: string) => {
+      onChange(id);
+      setIsOpen(false);
+    },
+    [onChange]
+  );
+
   return (
-    <Popover open={isOpen && !disabled} onOpenChange={(open) => !disabled && setIsOpen(open)}>
+    <Popover open={isOpen && !disabled} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant='outline'
@@ -61,7 +80,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
           className={cn(triggerClassName, 'w-full')}
         >
           <span className={cn('truncate', !hasSelection && 'text-zinc-400')}>
-            {isLoading ? 'Cargando...' : selectedLabel || placeholder}
+            {isLoading && !hasSelection ? 'Cargando...' : selectedLabel || placeholder}
           </span>
           <ChevronsUpDown className='shrink-0 text-zinc-400 opacity-70' size={16} />
         </Button>
@@ -79,31 +98,38 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
             className='text-white placeholder:text-zinc-400 border-b border-zinc-700'
           />
           <CommandList>
-            <CommandEmpty className='text-zinc-400 text-sm px-3 py-2'>
-              Sin resultados
-            </CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.id}
-                  value={option.label}
-                  onSelect={() => {
-                    onChange(option.id);
-                    setIsOpen(false);
-                  }}
-                  className='text-zinc-200 hover:bg-zinc-700 cursor-pointer aria-selected:bg-zinc-700/80 aria-selected:text-white'
-                >
-                  {option.label}
-                  <Check
-                    className={cn(
-                      'ml-auto',
-                      value === option.id ? 'opacity-100 text-white' : 'opacity-0'
-                    )}
-                    size={14}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {isLoading && (
+              <div className='flex items-center justify-center gap-2 py-6 text-sm text-zinc-400'>
+                <Loader2 className='animate-spin' size={16} />
+                Cargando...
+              </div>
+            )}
+            {!isLoading && (
+              <CommandEmpty className='text-zinc-400 text-sm px-3 py-2'>
+                Sin resultados
+              </CommandEmpty>
+            )}
+            {!isLoading && (
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.id}
+                    value={option.label}
+                    onSelect={() => handleSelect(option.id)}
+                    className='text-zinc-200 hover:bg-zinc-700 cursor-pointer aria-selected:bg-zinc-700/80 aria-selected:text-white'
+                  >
+                    {option.label}
+                    <Check
+                      className={cn(
+                        'ml-auto',
+                        value === option.id ? 'opacity-100 text-white' : 'opacity-0'
+                      )}
+                      size={14}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>
@@ -111,4 +137,4 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
   );
 };
 
-export default FilterCombobox;
+export default React.memo(FilterCombobox);

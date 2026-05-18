@@ -2,7 +2,7 @@ import type { PropsListOfSubjects } from '../../types/filter';
 import Card from './CardSubject';
 import CardSubjectLoading from './CardSubjectLoading';
 
-function ListOfSubjects({ subjects, onClearAll, loading, hasMore, showMore, careerId }: PropsListOfSubjects) {
+function ListOfSubjects ({ subjects, onClearAll, loading, hasMore, showMore, activeCareerId }: PropsListOfSubjects) {
   if (loading) {
     return (
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8'>
@@ -17,7 +17,7 @@ function ListOfSubjects({ subjects, onClearAll, loading, hasMore, showMore, care
     <div className='flex flex-col items-center'>
       <div className='w-full grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8'>
         {subjects.length === 0 ? (
-          <div className='col-span-full w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
+          <div className='col-span-full w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border gradient-border overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
             <h2 className='text-xl font-semibold text-zinc-100 mb-2'>Sin resultados</h2>
             <p className='text-zinc-400 mb-4'>
               No se encontraron coincidencias con los filtros seleccionados.
@@ -32,7 +32,13 @@ function ListOfSubjects({ subjects, onClearAll, loading, hasMore, showMore, care
             </button>
           </div>
         ) : (
-          subjects.map((subject) => <Card key={subject.id} {...subject} careerId={careerId} />)
+          subjects.map((subject) => (
+            <Card
+              key={subject.id}
+              {...subject}
+              activeCareerId={activeCareerId}
+            />
+          ))
         )}
       </div>
       {hasMore && (

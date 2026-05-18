@@ -5,11 +5,15 @@ export type SubjectCareer = {
   planId: string;
   year: number;
   quadmester: number;
+  careerName: string;
+  facultyName: string;
+  universityName: string;
 };
 
 export type Subject = {
   id: string;
   title: string;
+  shortName: string;
   description: string;
   url: string;
   urlMoodle: string;

@@ -1,5 +1,11 @@
 import type { Subject } from './subjects';
 
+/** Default UNICEN + EXACTAS scope once resolved from the API. */
+export type ResolvedDefaultScope = {
+  universityId: string;
+  facultyId: string;
+};
+
 export type DraftFilters = {
   universityId: string;
   facultyId: string;
@@ -23,19 +29,17 @@ export type FilterOptions = {
   loadingUniversities: boolean;
   loadingFaculties: boolean;
   loadingCareers: boolean;
+  loadingPlans: boolean;
 };
 
 export type PropsFilterBar = {
-  draft: DraftFilters;
   applied: AppliedFilters;
-  setDraftFilter: <K extends keyof DraftFilters>(key: K, value: DraftFilters[K]) => void;
-  applyDraft: () => void;
-  cancelDraft: () => void;
+  commitFilter: <K extends keyof DraftFilters>(key: K, value: DraftFilters[K]) => void;
   setSearch: (search: string) => void;
   clearAll: () => void;
-  removeFilter: (key: keyof DraftFilters) => void;
-  activeCount: number;
   options: FilterOptions;
+  scopeError: string | null;
+  scopeReady: boolean;
 };
 
 export type PropsListOfSubjects = {
@@ -44,5 +48,5 @@ export type PropsListOfSubjects = {
   loading: boolean;
   hasMore: boolean;
   showMore: () => void;
-  careerId: string;
+  activeCareerId: string;
 };

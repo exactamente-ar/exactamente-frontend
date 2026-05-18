@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getCareers, getFaculties, getUniversities } from '@/shared/services/api';
 import type { University, Faculty, Career } from '@/shared/services/api';
 import type { DraftFilters, FilterOption } from '@/features/home/types/filter';
 
-const toOption = (item: { id: string; name: string }): FilterOption => ({
+const toOption = (item: { id: string; shortName: string }): FilterOption => ({
   id: item.id,
-  label: item.name,
+  label: item.shortName,
 });
 
-export const useFilterOptions = (draft: DraftFilters) => {
+export const useFilterOptions = (filters: DraftFilters) => {
   const [universities, setUniversities] = useState<University[]>([]);
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [careers, setCareers] = useState<Career[]>([]);
@@ -17,52 +17,56 @@ export const useFilterOptions = (draft: DraftFilters) => {
   const [loadingCareers, setLoadingCareers] = useState(false);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let cancelled = false;
     setLoadingUniversities(true);
     getUniversities().then((r) => {
-      if (controller.signal.aborted) return;
+      if (cancelled) return;
       setUniversities(r.error ? [] : r.data);
       setLoadingUniversities(false);
     });
-    return () => controller.abort();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
-    if (!draft.universityId) {
+    if (!filters.universityId) {
       setFaculties([]);
       setLoadingFaculties(false);
       return;
     }
-    const controller = new AbortController();
+    let cancelled = false;
     setLoadingFaculties(true);
-    getFaculties({ universityId: draft.universityId }).then((r) => {
-      if (controller.signal.aborted) return;
+    getFaculties({ universityId: filters.universityId }).then((r) => {
+      if (cancelled) return;
       setFaculties(r.error ? [] : r.data);
       setLoadingFaculties(false);
     });
-    return () => controller.abort();
-  }, [draft.universityId]);
+    return () => { cancelled = true; };
+  }, [filters.universityId]);
 
   useEffect(() => {
-    if (!draft.facultyId) {
+    if (!filters.facultyId) {
       setCareers([]);
       setLoadingCareers(false);
       return;
     }
-    const controller = new AbortController();
+    let cancelled = false;
     setLoadingCareers(true);
-    getCareers({ facultyId: draft.facultyId }).then((r) => {
-      if (controller.signal.aborted) return;
+    getCareers({ facultyId: filters.facultyId }).then((r) => {
+      if (cancelled) return;
       setCareers(r.error ? [] : r.data);
       setLoadingCareers(false);
     });
-    return () => controller.abort();
-  }, [draft.facultyId]);
+    return () => { cancelled = true; };
+  }, [filters.facultyId]);
+
+  const universityOptions = useMemo(() => universities.map(toOption), [universities]);
+  const facultyOptions = useMemo(() => faculties.map(toOption), [faculties]);
+  const careerOptions = useMemo(() => careers.map(toOption), [careers]);
 
   return {
-    universityOptions: universities.map(toOption),
-    facultyOptions: faculties.map(toOption),
-    careerOptions: careers.map(toOption),
+    universityOptions,
+    facultyOptions,
+    careerOptions,
     loadingUniversities,
     loadingFaculties,
     loadingCareers,

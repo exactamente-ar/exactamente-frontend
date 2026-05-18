@@ -176,7 +176,11 @@ select option {
   background-repeat: no-repeat;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-animation 8s ease-in-out infinite;
+  animation: gradient-animation 8s linear infinite;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .gradient-bg {
@@ -190,7 +194,11 @@ select option {
   );
   background-size: 300% 300%;
   background-repeat: no-repeat;
-  animation: gradient-animation 8s ease-in-out infinite;
+  animation: gradient-animation 8s linear infinite;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 
@@ -227,7 +235,11 @@ select option {
     #6b46c1
   );
   background-size: 300% 300%;
-  animation: gradient-border 8s ease-in-out infinite;
+  animation: gradient-border 8s linear infinite;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);

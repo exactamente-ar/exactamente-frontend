@@ -66,13 +66,10 @@ type BackendResource = {
   title: string;
   type: 'resumen' | 'parcial' | 'final';
   status: 'published' | 'pending' | 'rejected';
-  driveFileId: string;
-  driveSize: number;
   downloadCount: number;
   publishedAt: string;
   createdAt: string;
-  previewUrl: string;
-  downloadUrl: string;
+  fileUrl: string;
 };
 
 type BackendPaginatedResponse<T> = {
@@ -143,8 +140,7 @@ function mapResource(backend: BackendResource): ResourceFetch {
   return {
     id: backend.id,
     title: backend.title,
-    previewUrl: backend.previewUrl,
-    downloadUrl: backend.downloadUrl,
+    fileUrl: backend.fileUrl,
   };
 }
 

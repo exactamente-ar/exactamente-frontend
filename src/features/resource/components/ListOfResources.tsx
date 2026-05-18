@@ -55,8 +55,7 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
             <CardResource
               key={resource.title + i}
               title={resource.title}
-              previewUrl={resource.previewUrl}
-              downloadUrl={resource.downloadUrl}
+              fileUrl={resource.fileUrl}
               type={type}
               mostRecent={i === 0}
             />
