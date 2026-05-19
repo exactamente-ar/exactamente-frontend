@@ -6,12 +6,7 @@ interface SubmitButtonProps {
   isSubmitting: boolean;
   text: string;
   submittingText: string;
-  errors: {
-    materia?: string;
-    tipoRecurso?: string;
-    titulo?: string;
-    archivo?: string;
-  };
+  errors: Record<string, string | undefined>;
   uploadError?: string | null;
 }
 
