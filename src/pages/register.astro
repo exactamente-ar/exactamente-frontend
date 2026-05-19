@@ -1,0 +1,13 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ContainerSection from "@/shared/components/ContainerSection.astro";
+import RegisterForm from "@/features/auth/components/RegisterForm";
+---
+
+<Layout>
+  <ContainerSection id="register">
+    <div class="flex justify-center py-16">
+      <RegisterForm client:load />
+    </div>
+  </ContainerSection>
+</Layout>
