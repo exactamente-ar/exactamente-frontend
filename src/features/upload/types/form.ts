@@ -14,7 +14,6 @@ export interface UploadFormProps {
     tipoRecurso?: string;
     titulo?: string;
     archivo?: string;
-    captcha?: string;
   };
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -25,6 +24,4 @@ export interface UploadFormProps {
   tiposRecurso: { value: string; label: string; color: string }[];
   uploading: boolean;
   uploadError: string | undefined;
-  captchaToken: string | null;
-  setCaptchaToken: (token: string | null) => void;
 }

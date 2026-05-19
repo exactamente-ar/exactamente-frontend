@@ -11,7 +11,6 @@ interface SubmitButtonProps {
     tipoRecurso?: string;
     titulo?: string;
     archivo?: string;
-    captcha?: string;
   };
   uploadError?: string | null;
 }

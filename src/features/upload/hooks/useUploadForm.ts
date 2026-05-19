@@ -17,8 +17,6 @@ export const useUploadForm = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | undefined>(undefined);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-
   const resetForm = () => {
     setFormData(INITIAL_FORM_DATA);
     setErrors({});
@@ -59,7 +57,6 @@ export const useUploadForm = () => {
     if (!formData.materia) newErrors.materia = 'Selecciona una materia';
     if (!formData.tipoRecurso) newErrors.tipoRecurso = 'Selecciona el tipo de Rescurso';
     if (!formData.titulo.trim()) newErrors.titulo = 'Ingresa un título';
-    if (!captchaToken) newErrors.captcha = 'Por favor, verifica que no eres un robot';
 
     if (!formData.archivo) {
       newErrors.archivo = 'Selecciona un archivo';
@@ -96,9 +93,8 @@ export const useUploadForm = () => {
     });
   };
 
-  const uploadFileToDrive = async (base64: string, token: string): Promise<string> => {
+  const uploadFileToDrive = async (base64: string): Promise<string> => {
     const params = new URLSearchParams({
-      'g-recaptcha-response': token,
       filename: formData.archivo!.name,
       mimetype: formData.archivo!.type,
     });
@@ -126,7 +122,7 @@ export const useUploadForm = () => {
     e.preventDefault();
     setUploadError(undefined);
 
-    if (!validateForm() || !formData.archivo || !captchaToken) {
+    if (!validateForm() || !formData.archivo) {
       return;
     }
 
@@ -135,7 +131,7 @@ export const useUploadForm = () => {
     try {
       const base64 = await convertFileToBase64(formData.archivo);
 
-      const fileUrl = await uploadFileToDrive(base64, captchaToken);
+      const fileUrl = await uploadFileToDrive(base64);
 
       setShowSuccess(true);
       onSuccess?.();
@@ -158,7 +154,5 @@ export const useUploadForm = () => {
     handleFileChange,
     handleSubmit,
     closeSuccess,
-    captchaToken,
-    setCaptchaToken,
   };
 };

@@ -20,8 +20,6 @@ const UploadSection = () => {
     handleSubmit,
     closeSuccess,
     uploading,
-    captchaToken,
-    setCaptchaToken,
     uploadError,
   } = useUploadForm();
   const [subjects, setSubjects] = useState<string[]>([]);
@@ -43,8 +41,6 @@ const UploadSection = () => {
       <div className='max-w-4xl mx-auto pt-12'>
 
         <UploadForm
-          setCaptchaToken={setCaptchaToken}
-          captchaToken={captchaToken}
           uploadError={uploadError}
           uploading={uploading}
           formData={formData}

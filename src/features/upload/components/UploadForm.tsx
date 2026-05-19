@@ -1,4 +1,3 @@
-import ReCAPTCHA from 'react-google-recaptcha';
 import ErrorMessage from './ErrorMessage';
 import TextInput from './TextInput';
 import FormField from './FormField';
@@ -8,8 +7,6 @@ import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
 import type { UploadFormProps } from '../types/form';
 
-
-const SITE_KEY_CAPTCHA = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 
 const UploadForm = ({
   formData,
@@ -21,7 +18,6 @@ const UploadForm = ({
   uploadError,
   subjects,
   tiposRecurso,
-  setCaptchaToken,
 }: UploadFormProps) => {
   return (
     <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border gradient-border  p-6'>
@@ -70,15 +66,6 @@ const UploadForm = ({
           />
         </FormField>
 
-
-        <div>
-          <ReCAPTCHA
-            sitekey={SITE_KEY_CAPTCHA}
-            theme='dark'
-            onChange={(token) => setCaptchaToken(token)}
-          />
-          <ErrorMessage message={errors.captcha} />
-        </div>
 
         <div className='pt-6'>
           <ErrorMessage message={uploadError} />
