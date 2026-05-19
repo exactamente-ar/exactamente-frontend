@@ -1,5 +1,6 @@
 import type { Subject } from '@/features/home/types/subjects';
 import type { ResourceFetch, StringResource } from '@/features/resource/types/resource';
+import type { PublicUser } from '@/features/auth/types/auth';
 
 // Backend types
 type BackendCareer = {
@@ -238,5 +239,55 @@ export async function getResources(
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error fetching resources';
     return { data: [], error: message };
+  }
+}
+
+export async function login(
+  email: string,
+  password: string
+): Promise<ApiResult<{ user: PublicUser; token: string }>> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
+    const json = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: [], error: err instanceof Error ? err.message : 'Unknown error logging in' };
+  }
+}
+
+export async function register(
+  email: string,
+  password: string,
+  displayName: string
+): Promise<ApiResult<{ user: PublicUser; token: string }>> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, displayName }),
+    });
+    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
+    const json = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: [], error: err instanceof Error ? err.message : 'Unknown error registering' };
+  }
+}
+
+export async function getMe(token: string): Promise<ApiResult<PublicUser>> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
+    const json: { user: PublicUser } = await response.json();
+    return { data: json.user, error: null };
+  } catch (err) {
+    return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching user' };
   }
 }
