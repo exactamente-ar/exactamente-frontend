@@ -13,7 +13,7 @@ interface SelectInputProps {
   name: string;
   value: string;
   onValueChange: (value: string) => void;
-  options: string[];
+  options: { value: string; label: string }[];
   placeholder: string;
   error?: string;
 }
@@ -39,11 +39,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
       <SelectContent className='bg-zinc-900 border border-zinc-700 rounded-xl'>
         {options.map((option) => (
           <SelectItem
-            key={option}
-            value={option}
+            key={option.value}
+            value={option.value}
             className='text-white font-bold focus:bg-zinc-700 cursor-pointer'
           >
-            {option}
+            {option.label}
           </SelectItem>
         ))}
       </SelectContent>
