@@ -73,6 +73,21 @@ type BackendResource = {
   fileUrl: string;
 };
 
+export type Resource = {
+  id: string;
+  subjectId: string;
+  title: string;
+  type: 'resumen' | 'parcial' | 'final';
+  status: 'pending' | 'published' | 'rejected';
+  examDate: string | null;
+  period: string | null;
+  notes: string | null;
+  downloadCount: number;
+  publishedAt: string | null;
+  createdAt: string;
+  fileUrl: string | null;
+};
+
 type BackendPaginatedResponse<T> = {
   data: T[];
   total: number;
@@ -289,5 +304,36 @@ export async function getMe(token: string): Promise<ApiResult<PublicUser>> {
     return { data: json.user, error: null };
   } catch (err) {
     return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching user' };
+  }
+}
+
+export async function uploadResource(
+  data: {
+    subjectId: string;
+    type: string;
+    file: File;
+    period?: string;
+    notes?: string;
+  },
+  token: string
+): Promise<ApiResult<Resource>> {
+  try {
+    const form = new FormData();
+    form.append('file', data.file);
+    form.append('subjectId', data.subjectId);
+    form.append('type', data.type);
+    if (data.period) form.append('period', data.period);
+    if (data.notes) form.append('notes', data.notes);
+
+    const response = await fetch(`${BASE_URL}/api/v1/resources`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    });
+    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
+    const json: Resource = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: [], error: err instanceof Error ? err.message : 'Unknown error uploading resource' };
   }
 }
