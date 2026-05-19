@@ -15,10 +15,10 @@ const SuccessModal = ({ showSuccess, closeSuccess }: SuccessModalProps) => {
             <IconCheckCircle size={32} className='stroke-green-600' />
           </div>
           <DialogTitle className='text-2xl font-bold text-foreground'>
-            !Recurso enviado!
+            ¡Recurso enviado!
           </DialogTitle>
           <DialogDescription className='text-foreground-secondary'>
-            Tu recurso ha sido enviado exitosamente. Sera revisado y publicado pronto.
+            Tu recurso fue enviado y está pendiente de revisión. Lo publicaremos a la brevedad.
           </DialogDescription>
           <button
             onClick={closeSuccess}
