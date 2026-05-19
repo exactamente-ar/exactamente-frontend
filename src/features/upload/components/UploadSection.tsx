@@ -3,35 +3,43 @@ import SuccessModal from './SuccesModal';
 import UploadForm from './UploadForm';
 import { useEffect, useState } from 'react';
 import { getSubjects } from '@/shared/services/api';
+import { AuthProvider } from '@/features/auth/context/AuthContext';
+import { AuthGuard } from '@/features/auth/components/AuthGuard';
 
 const tiposRecurso = [
-  { value: 'resumen', label: 'Resumen', color: 'from-emerald-500 to-emerald-600' },
-  { value: 'parcial', label: 'Parcial', color: 'from-blue-500 to-blue-600' },
-  { value: 'final', label: 'Final', color: 'from-purple-500 to-purple-600' },
+  { value: 'resumen', label: 'Resumen' },
+  { value: 'parcial', label: 'Parcial' },
+  { value: 'final', label: 'Final' },
 ];
 
-const UploadSection = () => {
+function UploadSectionInner() {
   const {
     formData,
     errors,
     showSuccess,
-    handleInputChange,
-    handleFileChange,
-    handleSubmit,
-    closeSuccess,
     uploading,
     uploadError,
+    onSubjectChange,
+    onTypeChange,
+    onPeriodChange,
+    onNotesChange,
+    onFileChange,
+    onImagesChange,
+    onFileModeChange,
+    handleSubmit,
+    closeSuccess,
   } = useUploadForm();
-  const [subjects, setSubjects] = useState<string[]>([]);
+
+  const [subjects, setSubjects] = useState<{ value: string; label: string }[]>([]);
+
   useEffect(() => {
     const skeleton = document.getElementById('upload-skeleton');
-    if (skeleton) {
-      skeleton.style.display = 'none';
-    }
+    if (skeleton) skeleton.style.display = 'none';
   }, []);
+
   useEffect(() => {
     getSubjects().then(({ data }) => {
-      setSubjects(data.map((subject) => subject.title));
+      setSubjects(data.map((s) => ({ value: s.id, label: s.title })));
     });
   }, []);
 
@@ -39,21 +47,33 @@ const UploadSection = () => {
     <>
       <SuccessModal showSuccess={showSuccess} closeSuccess={closeSuccess} />
       <div className='max-w-4xl mx-auto pt-12'>
-
         <UploadForm
-          uploadError={uploadError}
-          uploading={uploading}
           formData={formData}
           errors={errors}
-          handleInputChange={handleInputChange}
-          handleFileChange={handleFileChange}
-          handleSubmit={handleSubmit}
           subjects={subjects}
           tiposRecurso={tiposRecurso}
+          uploading={uploading}
+          uploadError={uploadError}
+          onSubjectChange={onSubjectChange}
+          onTypeChange={onTypeChange}
+          onPeriodChange={onPeriodChange}
+          onNotesChange={onNotesChange}
+          onFileChange={onFileChange}
+          onImagesChange={onImagesChange}
+          onFileModeChange={onFileModeChange}
+          onSubmit={handleSubmit}
         />
       </div>
     </>
   );
-};
+}
 
-export default UploadSection;
+export default function UploadSection() {
+  return (
+    <AuthProvider>
+      <AuthGuard>
+        <UploadSectionInner />
+      </AuthGuard>
+    </AuthProvider>
+  );
+}
