@@ -12,10 +12,14 @@ import type { UploadFormProps } from '../types/form';
 const UploadForm: React.FC<UploadFormProps> = ({
   formData,
   errors,
+  careers,
+  plans,
   subjects,
   tiposRecurso,
   uploading,
   uploadError,
+  onCareerChange,
+  onPlanChange,
   onSubjectChange,
   onTypeChange,
   onPeriodChange,
@@ -27,14 +31,38 @@ const UploadForm: React.FC<UploadFormProps> = ({
 }) => (
   <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border gradient-border p-6'>
     <form onSubmit={onSubmit} className='space-y-8'>
+      <FormField label='Carrera' required>
+        <SelectInput
+          name='careerId'
+          value={formData.careerId}
+          onValueChange={onCareerChange}
+          options={careers}
+          placeholder='Seleccioná una carrera'
+          error={errors.careerId}
+        />
+      </FormField>
+
+      <FormField label='Plan' required>
+        <SelectInput
+          name='planId'
+          value={formData.planId}
+          onValueChange={onPlanChange}
+          options={plans}
+          placeholder={formData.careerId ? 'Seleccioná un plan' : 'Primero seleccioná una carrera'}
+          error={errors.planId}
+          disabled={!formData.careerId}
+        />
+      </FormField>
+
       <FormField label='Materia' required>
         <SelectInput
           name='subjectId'
           value={formData.subjectId}
           onValueChange={onSubjectChange}
           options={subjects}
-          placeholder='Selecciona una materia'
+          placeholder={formData.planId ? 'Seleccioná una materia' : 'Primero seleccioná un plan'}
           error={errors.subjectId}
+          disabled={!formData.planId}
         />
       </FormField>
 
