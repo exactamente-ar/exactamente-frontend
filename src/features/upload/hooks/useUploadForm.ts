@@ -7,6 +7,8 @@ import type { UploadFormState, UploadFormErrors } from '../types/form';
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
 const INITIAL_STATE: UploadFormState = {
+  careerId: '',
+  planId: '',
   subjectId: '',
   type: '',
   period: '',
@@ -72,7 +74,8 @@ export function useUploadForm() {
 
   const validate = (): boolean => {
     const newErrors: UploadFormErrors = {};
-    if (!formData.subjectId) newErrors.subjectId = 'Selecciona una materia';
+    if (!formData.careerId) newErrors.careerId = 'Seleccioná una carrera';
+    if (!formData.subjectId) newErrors.subjectId = 'Seleccioná una materia';
     if (!formData.type) newErrors.type = 'Selecciona el tipo de recurso';
     if (formData.fileMode === 'pdf' && !formData.file) newErrors.file = 'Seleccioná un archivo PDF';
     if (formData.fileMode === 'images' && formData.imageFiles.length === 0) newErrors.file = 'Agregá al menos una imagen';
@@ -136,6 +139,14 @@ export function useUploadForm() {
     showSuccess,
     uploading,
     uploadError,
+    onCareerChange: (v: string) => {
+      setFormData((prev) => ({ ...prev, careerId: v, planId: '', subjectId: '' }));
+      setErrors((prev) => ({ ...prev, careerId: undefined, planId: undefined, subjectId: undefined }));
+    },
+    onPlanChange: (v: string) => {
+      setFormData((prev) => ({ ...prev, planId: v, subjectId: '' }));
+      setErrors((prev) => ({ ...prev, planId: undefined, subjectId: undefined }));
+    },
     onSubjectChange: (v: string) => updateField('subjectId', v),
     onTypeChange: (v: string) => updateField('type', v as UploadFormState['type']),
     onPeriodChange: (v: string) => updateField('period', v),
