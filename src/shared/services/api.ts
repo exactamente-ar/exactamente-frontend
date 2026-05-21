@@ -45,6 +45,13 @@ export type Faculty = {
   shortName: string;
 };
 
+export type CareerPlan = {
+  id: string;
+  careerId: string;
+  name: string;
+  year: number;
+};
+
 type BackendSubject = {
   id: string;
   facultyId: string;
@@ -202,6 +209,22 @@ export function getFaculties(params: { universityId: string }): Promise<ApiResul
       return { data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })), error: null };
     } catch (err) {
       return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching faculties' };
+    }
+  });
+}
+
+export function getCareerPlans(careerId: string): Promise<ApiResult<CareerPlan[]>> {
+  const url = new URL(`${BASE_URL}/api/v1/career-plans`);
+  url.searchParams.set('careerId', careerId);
+  const key = url.toString();
+  return withCache(key, async () => {
+    try {
+      const response = await fetch(key);
+      if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
+      const json: { data: Array<{ id: string; careerId: string; name: string; year: number; createdAt: string }> } = await response.json();
+      return { data: json.data.map(({ id, careerId, name, year }) => ({ id, careerId, name, year })), error: null };
+    } catch (err) {
+      return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching career plans' };
     }
   });
 }
