@@ -2,7 +2,8 @@ import { useUploadForm } from '@/features/upload/hooks/useUploadForm';
 import SuccessModal from './SuccesModal';
 import UploadForm from './UploadForm';
 import { useEffect, useState } from 'react';
-import { getSubjects } from '@/shared/services/api';
+import { getCareers, getSubjects, getCareerPlans } from '@/shared/services/api';
+import type { Subject } from '@/features/home/types/subjects';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 
@@ -19,6 +20,8 @@ function UploadSectionInner() {
     showSuccess,
     uploading,
     uploadError,
+    onCareerChange,
+    onPlanChange,
     onSubjectChange,
     onTypeChange,
     onPeriodChange,
@@ -30,6 +33,9 @@ function UploadSectionInner() {
     closeSuccess,
   } = useUploadForm();
 
+  const [careers, setCareers] = useState<{ value: string; label: string }[]>([]);
+  const [plans, setPlans] = useState<{ value: string; label: string }[]>([]);
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
   const [subjects, setSubjects] = useState<{ value: string; label: string }[]>([]);
 
   useEffect(() => {
@@ -38,10 +44,38 @@ function UploadSectionInner() {
   }, []);
 
   useEffect(() => {
-    getSubjects().then(({ data }) => {
-      setSubjects(data.map((s) => ({ value: s.id, label: s.title })));
+    getCareers().then(({ data }) => {
+      setCareers(data.map((c) => ({ value: c.id, label: c.name })));
     });
   }, []);
+
+  useEffect(() => {
+    if (!formData.careerId) {
+      setPlans([]);
+      setAllSubjects([]);
+      setSubjects([]);
+      return;
+    }
+    getCareerPlans(formData.careerId).then(({ data }) => {
+      const mapped = data.map((p) => ({ value: p.id, label: p.name }));
+      setPlans(mapped);
+      if (mapped.length === 1) onPlanChange(mapped[0].value);
+    });
+    getSubjects({ careerId: formData.careerId }).then(({ data }) => {
+      setAllSubjects(data);
+    });
+  }, [formData.careerId]);
+
+  useEffect(() => {
+    if (!formData.planId) {
+      setSubjects([]);
+      return;
+    }
+    const filtered = allSubjects
+      .filter((s) => s.careers.some((c) => c.planId === formData.planId))
+      .map((s) => ({ value: s.id, label: s.title }));
+    setSubjects(filtered);
+  }, [formData.planId, allSubjects]);
 
   return (
     <>
@@ -50,10 +84,14 @@ function UploadSectionInner() {
         <UploadForm
           formData={formData}
           errors={errors}
+          careers={careers}
+          plans={plans}
           subjects={subjects}
           tiposRecurso={tiposRecurso}
           uploading={uploading}
           uploadError={uploadError}
+          onCareerChange={onCareerChange}
+          onPlanChange={onPlanChange}
           onSubjectChange={onSubjectChange}
           onTypeChange={onTypeChange}
           onPeriodChange={onPeriodChange}
