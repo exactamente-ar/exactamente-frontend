@@ -46,12 +46,12 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
 
   const triggerClassName = isPill
     ? cn(
-        'flex items-center justify-between gap-2 px-4 py-2 text-sm rounded-full border transition-colors min-w-[10rem] max-w-[min(100vw-3rem,20rem)] h-auto font-medium',
+        'flex items-center justify-between gap-2 px-4 py-2 text-sm rounded-full border transition-colors min-w-[10rem] max-w-[min(100vw-3rem,20rem)] h-auto font-medium cursor-pointer',
         hasSelection
-          ? 'bg-zinc-700 border-zinc-600 text-white hover:bg-zinc-700'
-          : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500 hover:bg-transparent'
+          ? 'bg-zinc-700 border-zinc-600 text-white hover:bg-zinc-600 hover:text-white'
+          : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-700/40 hover:text-zinc-300'
       )
-    : 'flex items-center justify-between gap-2 px-3 py-1.5 text-sm bg-zinc-800 border border-zinc-700 rounded-lg h-auto hover:border-zinc-500 hover:bg-zinc-800 font-normal';
+    : 'flex items-center justify-between gap-2 px-3 py-1.5 text-sm bg-zinc-800 border border-zinc-700 rounded-lg h-auto hover:border-zinc-500 hover:bg-zinc-700 font-normal cursor-pointer';
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -116,7 +116,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
                     key={option.id}
                     value={option.label}
                     onSelect={() => handleSelect(option.id)}
-                    className='text-zinc-200 hover:bg-zinc-700 cursor-pointer aria-selected:bg-zinc-700/80 aria-selected:text-white'
+                    className='text-zinc-200 cursor-pointer hover:bg-zinc-700 data-[selected=true]:bg-zinc-700 data-[selected=true]:text-zinc-100'
                   >
                     {option.label}
                     <Check

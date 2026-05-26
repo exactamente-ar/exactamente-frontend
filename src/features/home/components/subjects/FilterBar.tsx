@@ -98,7 +98,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({
   return (
     <div className='flex flex-col mb-4 lg:mb-8 w-full gap-3'>
       <div className='relative flex items-center gap-2'>
-        <div className='flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-4 focus-within:border-zinc-500 transition-colors'>
+        <div className='flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-4 transition-colors search-gradient-border'>
           <svg width='18' height='18' viewBox='0 0 24 24' className='shrink-0'>
             <path
               className='stroke-foreground-muted'
@@ -111,7 +111,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({
           </svg>
           <input
             type='text'
-            placeholder='Ingresá una materia'
+            placeholder='Buscar una materia'
             value={applied.search}
             onChange={handleSearchChange}
             className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
@@ -157,7 +157,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({
             label='Año'
             options={YEARS_FILTER}
             value={applied.year}
-            disabled={filtersDisabled || !applied.careerId}
+            disabled={filtersDisabled}
             onChange={handleYearChange}
           />
 
@@ -165,7 +165,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({
             label='Cuatrimestre'
             options={QUADMESTERS_FILTER}
             value={applied.quadmester}
-            disabled={filtersDisabled || !applied.careerId}
+            disabled={filtersDisabled}
             onChange={handleQuadmesterChange}
           />
         </div>

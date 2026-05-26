@@ -16,6 +16,7 @@ interface SelectInputProps {
   options: { value: string; label: string }[];
   placeholder: string;
   error?: string;
+  disabled?: boolean;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -25,12 +26,13 @@ const SelectInput: React.FC<SelectInputProps> = ({
   options,
   placeholder,
   error,
+  disabled,
 }) => (
   <>
-    <Select value={value} onValueChange={onValueChange} name={name}>
+    <Select value={value} onValueChange={onValueChange} name={name} disabled={disabled}>
       <SelectTrigger
         className={cn(
-          'w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 h-auto font-bold text-foreground-secondary focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] transition-all duration-200',
+          'search-gradient-border w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 h-auto font-bold text-foreground-secondary transition-all duration-200 cursor-pointer focus:ring-0 focus:ring-offset-0 focus:outline-none',
           error && 'border-red-300 bg-red-900/10'
         )}
       >
@@ -41,7 +43,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
           <SelectItem
             key={option.value}
             value={option.value}
-            className='text-white font-bold focus:bg-zinc-700 cursor-pointer'
+            className='text-white font-bold focus:bg-zinc-700 focus:text-white cursor-pointer'
           >
             {option.label}
           </SelectItem>
