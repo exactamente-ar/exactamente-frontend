@@ -19,7 +19,7 @@ function SubmitButton({ isSubmitting, text, submittingText, errors, uploadError 
       type='submit'
       disabled={isSubmitting}
       className={cn(
-        'w-full bg-primary text-black font-bold py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:bg-primary disabled:opacity-70 disabled:cursor-not-allowed h-auto',
+        'w-full bg-primary text-black font-bold py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:bg-primary disabled:opacity-70 disabled:cursor-not-allowed h-auto cursor-pointer',
         hasError && 'border-4 border-red-500 shadow-lg shadow-red-500/20'
       )}
     >
