@@ -13,13 +13,15 @@ interface TextInputProps {
 
 const TextInput: React.FC<TextInputProps> = ({ name, value, onChange, placeholder, error }) => (
   <>
-    <Input
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className={cn(error && 'border-red-300 bg-red-900/10')}
-    />
+    <div className='search-gradient-border rounded-xl'>
+      <Input
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={cn('placeholder:text-muted-foreground', error && 'border-red-300 bg-red-900/10')}
+      />
+    </div>
     <ErrorMessage message={error} />
   </>
 );

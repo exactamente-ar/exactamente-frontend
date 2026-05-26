@@ -10,7 +10,7 @@ const INITIAL_STATE: UploadFormState = {
   careerId: '',
   planId: '',
   subjectId: '',
-  type: '',
+  type: 'resumen',
   period: '',
   notes: '',
   file: null,
@@ -76,7 +76,6 @@ export function useUploadForm() {
     const newErrors: UploadFormErrors = {};
     if (!formData.careerId) newErrors.careerId = 'Seleccioná una carrera';
     if (!formData.subjectId) newErrors.subjectId = 'Seleccioná una materia';
-    if (!formData.type) newErrors.type = 'Selecciona el tipo de recurso';
     if (formData.fileMode === 'pdf' && !formData.file) newErrors.file = 'Seleccioná un archivo PDF';
     if (formData.fileMode === 'images' && formData.imageFiles.length === 0) newErrors.file = 'Agregá al menos una imagen';
     setErrors(newErrors);

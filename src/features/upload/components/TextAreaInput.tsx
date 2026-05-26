@@ -16,13 +16,16 @@ const TextAreaInput: React.FC<TextAreaInputProps> = ({
   placeholder,
   rows = 4,
 }) => (
-  <Textarea
-    name={name}
-    value={value}
-    onChange={onChange}
-    rows={rows}
-    placeholder={placeholder}
-  />
+  <div className='search-gradient-border rounded-xl'>
+    <Textarea
+      name={name}
+      value={value}
+      onChange={onChange}
+      rows={rows}
+      placeholder={placeholder}
+      className='placeholder:text-muted-foreground'
+    />
+  </div>
 );
 
 export default TextAreaInput;

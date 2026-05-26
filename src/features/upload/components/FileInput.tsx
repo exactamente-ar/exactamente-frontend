@@ -70,9 +70,9 @@ const FileInput: React.FC<FileInputProps> = ({
             key={mode}
             type='button'
             onClick={() => onFileModeChange(mode)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
               fileMode === mode
-                ? 'bg-[#0084ff] text-white'
+                ? 'gradient-bg-dark text-white'
                 : 'bg-black/20 text-foreground-secondary hover:bg-black/40'
             }`}
           >
@@ -83,10 +83,10 @@ const FileInput: React.FC<FileInputProps> = ({
 
       {fileMode === 'pdf' && (
         <div
-          className={`relative border border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+          className={`dashed-gradient-hover relative border border-dashed rounded-xl p-8 h-44 text-center transition-all duration-200 ${
             error
               ? 'border-red-300 bg-red-900/10'
-              : 'border-primary/30 bg-black/20 hover:border-[#0084ff] hover:bg-[#0084ff]/5'
+              : 'border-primary/30 bg-black/20'
           }`}
         >
           <input
@@ -95,7 +95,7 @@ const FileInput: React.FC<FileInputProps> = ({
             onChange={handlePdfChange}
             className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
           />
-          <div className='flex flex-col items-center pointer-events-none'>
+          <div className='flex flex-col items-center justify-center h-full pointer-events-none'>
             <div className='w-12 h-12 bg-yellow-900/35 border border-yellow-500 rounded-xl flex items-center justify-center mb-4'>
               <IconDocument size={24} className='fill-yellow-500' />
             </div>
@@ -119,10 +119,10 @@ const FileInput: React.FC<FileInputProps> = ({
       {fileMode === 'images' && (
         <div className='space-y-3'>
           <div
-            className={`relative border border-dashed rounded-xl p-6 text-center transition-all duration-200 ${
+            className={`dashed-gradient-hover relative border border-dashed rounded-xl p-6 h-44 flex flex-col items-center justify-center text-center transition-all duration-200 ${
               error
                 ? 'border-red-300 bg-red-900/10'
-                : 'border-primary/30 bg-black/20 hover:border-[#0084ff] hover:bg-[#0084ff]/5'
+                : 'border-primary/30 bg-black/20'
             }`}
           >
             <input

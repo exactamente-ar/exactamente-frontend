@@ -2,7 +2,7 @@ export interface UploadFormState {
   careerId: string;
   planId: string;
   subjectId: string;
-  type: 'resumen' | 'parcial' | 'final' | '';
+  type: 'resumen' | 'parcial' | 'final';
   period: string;
   notes: string;
   file: File | null;
