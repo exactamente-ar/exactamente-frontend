@@ -1,12 +1,10 @@
 import { memo } from 'react';
 import IconOpenBook from '@/shared/components/icons/react/IconOpenBook';
 import IconUniversity from '@/shared/components/icons/react/IconUniversity';
-import IconDownload from '@/shared/components/icons/react/IconDownload';
 import IconDocument from '@/shared/components/icons/react/IconDocument';
 import IconLink from '@/shared/components/icons/react/IconLink';
-import IconMoodle from '@/shared/components/icons/react/IconMoodle';
 import ContainerLink from '@/shared/components/ContainerLink.tsx';
-import type { SubjectCareer } from '@/features/home/types/subjects';
+import type { SubjectCareer, ResourceCounts } from '@/features/home/types/subjects';
 
 type Props = {
   id: string;
@@ -17,7 +15,41 @@ type Props = {
   year: number;
   careers: SubjectCareer[];
   activeCareerId: string;
+  resourceCounts: ResourceCounts;
 };
+
+type ResourceButtonProps = {
+  resourceUrl: string;
+  uploadUrl: string;
+  count: number;
+  label: string;
+  Icon: React.ComponentType<{ size: number; className?: string }>;
+  activeClass: string;
+  activeIconClass: string;
+};
+
+function ResourceButton({ resourceUrl, uploadUrl, count, label, Icon, activeClass, activeIconClass }: ResourceButtonProps) {
+  const isEmpty = count === 0;
+  return (
+    <ContainerLink
+      url={isEmpty ? uploadUrl : resourceUrl}
+      className={`group/resource hover:scale-105 justify-between active:scale-95 font-semibold flex items-center gap-3 transition-all duration-200 ${
+        isEmpty
+          ? 'bg-gradient-to-br from-zinc-800/30 to-zinc-900/20 border border-zinc-700/30 hover:border-zinc-600/50 text-zinc-500 hover:text-zinc-400'
+          : `grayscale-50 ${activeClass}`
+      }`}
+    >
+      <div className='flex items-center gap-2'>
+        <Icon size={20} className={isEmpty ? 'fill-zinc-600' : activeIconClass} />
+        <span>{label}</span>
+      </div>
+      <div className='flex items-center gap-1.5'>
+        <span className='text-xs opacity-60'>{count}</span>
+        <IconLink size={20} />
+      </div>
+    </ContainerLink>
+  );
+}
 
 function formatPlanId (planId: string): string {
   const year = planId.match(/\d+$/)?.[0];
@@ -36,7 +68,7 @@ function abbreviateUniversity (name: string): string {
   return initials || name;
 }
 
-function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId }: Props) {
+function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId, resourceCounts }: Props) {
   const primaryCareer = careers.find((c) => c.careerId === activeCareerId) ?? careers[0];
   const displayYear = primaryCareer?.year ?? year;
   const displayQuadmester = primaryCareer?.quadmester ?? quadmester;
@@ -44,6 +76,8 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
   const universityLabel = primaryCareer?.universityName;
   const facultyLabel = primaryCareer?.facultyName;
   const careerLabel = primaryCareer?.careerName;
+  const planId = primaryCareer?.planId ?? '';
+  const uploadBase = `/upload?careerId=${activeCareerId}&planId=${planId}&subjectId=${id}`;
   return (
     <article className='group rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex flex-col '>
       {/* Header */}
@@ -85,38 +119,33 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
           </h4>
 
           <div className='flex flex-col space-y-3 w-full'>
-            <ContainerLink
-              url={`.${url}/resumenes`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100 font-semibold flex items-center gap-3 transition-all duration-200'
-            >
-              <div className='flex items-center gap-2'>
-                <IconOpenBook size={20} className='fill-emerald-200' />
-                <span> Resumenes </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-
-            <ContainerLink
-              url={`.${url}/parciales`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-blue-500/50 to-blue-600/10 border border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100 font-semibold flex items-center gap-3 transition-all duration-200'
-            >
-              <div className='flex items-center gap-2'>
-                <IconDocument size={20} className='fill-blue-200' />
-                <span> Parciales </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-
-            <ContainerLink
-              url={`.${url}/finales`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-purple-500/50 to-purple-600/10 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100 font-semibold flex items-center gap-3 transition-all duration-200'
-            >
-              <div className='flex items-center gap-2'>
-                <IconUniversity size={20} className='fill-purple-200' />
-                <span> Finales </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
+            <ResourceButton
+              resourceUrl={`.${url}/resumenes`}
+              uploadUrl={`${uploadBase}&type=resumen`}
+              count={resourceCounts.resumen}
+              label='Resumenes'
+              Icon={IconOpenBook}
+              activeClass='bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100'
+              activeIconClass='fill-emerald-200'
+            />
+            <ResourceButton
+              resourceUrl={`.${url}/parciales`}
+              uploadUrl={`${uploadBase}&type=parcial`}
+              count={resourceCounts.parcial}
+              label='Parciales'
+              Icon={IconDocument}
+              activeClass='bg-gradient-to-br from-blue-500/50 to-blue-600/10 border border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100'
+              activeIconClass='fill-blue-200'
+            />
+            <ResourceButton
+              resourceUrl={`.${url}/finales`}
+              uploadUrl={`${uploadBase}&type=final`}
+              count={resourceCounts.final}
+              label='Finales'
+              Icon={IconUniversity}
+              activeClass='bg-gradient-to-br from-purple-500/50 to-purple-600/10 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100'
+              activeIconClass='fill-purple-200'
+            />
             {/* 
             <ContainerLink
               url={urlMoodle}

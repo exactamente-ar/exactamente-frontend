@@ -59,9 +59,11 @@ async function imagesToPdf(imageFiles: File[]): Promise<File> {
   return new File([blob], 'imagenes.pdf', { type: 'application/pdf' });
 }
 
-export function useUploadForm() {
+type InitialValues = Partial<Pick<UploadFormState, 'careerId' | 'planId' | 'subjectId' | 'type'>>;
+
+export function useUploadForm(initialValues?: InitialValues) {
   const { token, logout } = useAuth();
-  const [formData, setFormData] = useState<UploadFormState>(INITIAL_STATE);
+  const [formData, setFormData] = useState<UploadFormState>({ ...INITIAL_STATE, ...initialValues });
   const [errors, setErrors] = useState<UploadFormErrors>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);

@@ -23,6 +23,18 @@ function LoginGate() {
   );
 }
 
+function parseInitialValues() {
+  if (typeof window === 'undefined') return {};
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get('type');
+  return {
+    careerId: params.get('careerId') ?? undefined,
+    planId: params.get('planId') ?? undefined,
+    subjectId: params.get('subjectId') ?? undefined,
+    type: (type === 'resumen' || type === 'parcial' || type === 'final') ? type : undefined,
+  };
+}
+
 function UploadSectionInner() {
   const {
     formData,
@@ -41,7 +53,7 @@ function UploadSectionInner() {
     onFileModeChange,
     handleSubmit,
     closeSuccess,
-  } = useUploadForm();
+  } = useUploadForm(parseInitialValues());
 
   const [careers, setCareers] = useState<{ value: string; label: string }[]>([]);
   const [plans, setPlans] = useState<{ value: string; label: string }[]>([]);
@@ -69,7 +81,7 @@ function UploadSectionInner() {
     getCareerPlans(formData.careerId).then(({ data }) => {
       const mapped = data.map((p) => ({ value: p.id, label: p.name }));
       setPlans(mapped);
-      if (mapped.length === 1) onPlanChange(mapped[0].value);
+      if (mapped.length === 1 && !formData.planId) onPlanChange(mapped[0].value);
     });
     getSubjects({ careerId: formData.careerId }).then(({ data }) => {
       setAllSubjects(data);

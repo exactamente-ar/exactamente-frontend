@@ -10,6 +10,8 @@ export type SubjectCareer = {
   universityName: string;
 };
 
+export type ResourceCounts = { resumen: number; parcial: number; final: number };
+
 export type Subject = {
   id: string;
   title: string;
@@ -23,6 +25,7 @@ export type Subject = {
   quadmester: number;
   year: number;
   careers: SubjectCareer[];
+  resourceCounts: ResourceCounts;
 };
 
 export type TipoMateria = (typeof TIPOS_MATERIA)[keyof typeof TIPOS_MATERIA];

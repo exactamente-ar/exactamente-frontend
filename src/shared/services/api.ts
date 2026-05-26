@@ -66,6 +66,7 @@ type BackendSubject = {
   careers: Array<{ careerId: string; planId: string; year: number; quadmester: number; careerName: string; facultyName: string; universityName: string }>;
   prerequisites: string[];
   correlatives: string[];
+  resourceCounts: { resumen: number; parcial: number; final: number };
 };
 
 type BackendResource = {
@@ -156,6 +157,7 @@ function mapSubject(backend: BackendSubject): Subject {
     required: backend.prerequisites,
     correlatives: backend.correlatives,
     careers: backend.careers,
+    resourceCounts: backend.resourceCounts ?? { resumen: 0, parcial: 0, final: 0 },
   };
 }
 
