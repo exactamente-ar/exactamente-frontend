@@ -280,43 +280,6 @@ export async function getResources(
   }
 }
 
-export async function login(
-  email: string,
-  password: string
-): Promise<ApiResult<{ user: PublicUser; token: string }>> {
-  try {
-    const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
-    const json = await response.json();
-    return { data: json, error: null };
-  } catch (err) {
-    return { data: [], error: err instanceof Error ? err.message : 'Unknown error logging in' };
-  }
-}
-
-export async function register(
-  email: string,
-  password: string,
-  displayName: string
-): Promise<ApiResult<{ user: PublicUser; token: string }>> {
-  try {
-    const response = await fetch(`${BASE_URL}/api/v1/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, displayName }),
-    });
-    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
-    const json = await response.json();
-    return { data: json, error: null };
-  } catch (err) {
-    return { data: [], error: err instanceof Error ? err.message : 'Unknown error registering' };
-  }
-}
-
 export async function getMe(token: string): Promise<ApiResult<PublicUser>> {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/auth/me`, {

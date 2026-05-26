@@ -1,15 +1,13 @@
-import React, { type ReactNode, useEffect } from 'react';
+import React, { type ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
-export function AuthGuard({ children }: { children: ReactNode }) {
-  const { loading, token } = useAuth();
+interface AuthGuardProps {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
 
-  useEffect(() => {
-    if (!loading && !token) {
-      const pathname = window.location.pathname;
-      window.location.href = `/login?redirect=${encodeURIComponent(pathname)}`;
-    }
-  }, [loading, token]);
+export function AuthGuard({ children, fallback = null }: AuthGuardProps) {
+  const { loading, token } = useAuth();
 
   if (loading) {
     return (
@@ -19,7 +17,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!token) return null;
+  if (!token) return <>{fallback}</>;
 
   return <>{children}</>;
 }

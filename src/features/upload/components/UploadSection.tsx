@@ -6,12 +6,22 @@ import { getCareers, getSubjects, getCareerPlans } from '@/shared/services/api';
 import type { Subject } from '@/features/home/types/subjects';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
+import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 
 const tiposRecurso = [
   { value: 'resumen', label: 'Resumen' },
   { value: 'parcial', label: 'Parcial' },
   { value: 'final', label: 'Final' },
 ];
+
+function LoginGate() {
+  return (
+    <div className='max-w-md mx-auto pt-12 text-center space-y-4'>
+      <p className='text-zinc-400'>Iniciá sesión para subir recursos</p>
+      <GoogleLoginButton />
+    </div>
+  );
+}
 
 function UploadSectionInner() {
   const {
@@ -80,28 +90,30 @@ function UploadSectionInner() {
   return (
     <>
       <SuccessModal showSuccess={showSuccess} closeSuccess={closeSuccess} />
-      <div className='max-w-4xl mx-auto pt-12'>
-        <UploadForm
-          formData={formData}
-          errors={errors}
-          careers={careers}
-          plans={plans}
-          subjects={subjects}
-          tiposRecurso={tiposRecurso}
-          uploading={uploading}
-          uploadError={uploadError}
-          onCareerChange={onCareerChange}
-          onPlanChange={onPlanChange}
-          onSubjectChange={onSubjectChange}
-          onTypeChange={onTypeChange}
-          onPeriodChange={onPeriodChange}
-          onNotesChange={onNotesChange}
-          onFileChange={onFileChange}
-          onImagesChange={onImagesChange}
-          onFileModeChange={onFileModeChange}
-          onSubmit={handleSubmit}
-        />
-      </div>
+      <AuthGuard fallback={<LoginGate />}>
+        <div className='max-w-4xl mx-auto pt-12'>
+          <UploadForm
+            formData={formData}
+            errors={errors}
+            careers={careers}
+            plans={plans}
+            subjects={subjects}
+            tiposRecurso={tiposRecurso}
+            uploading={uploading}
+            uploadError={uploadError}
+            onCareerChange={onCareerChange}
+            onPlanChange={onPlanChange}
+            onSubjectChange={onSubjectChange}
+            onTypeChange={onTypeChange}
+            onPeriodChange={onPeriodChange}
+            onNotesChange={onNotesChange}
+            onFileChange={onFileChange}
+            onImagesChange={onImagesChange}
+            onFileModeChange={onFileModeChange}
+            onSubmit={handleSubmit}
+          />
+        </div>
+      </AuthGuard>
     </>
   );
 }
@@ -109,9 +121,7 @@ function UploadSectionInner() {
 export default function UploadSection() {
   return (
     <AuthProvider>
-      <AuthGuard>
-        <UploadSectionInner />
-      </AuthGuard>
+      <UploadSectionInner />
     </AuthProvider>
   );
 }
