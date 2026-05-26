@@ -40,7 +40,7 @@ function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
   if (typeof window === 'undefined') {
     if (defaultScope) {
       return {
-        applied: { ...EMPTY_DRAFT, universityId: defaultScope.universityId, facultyId: defaultScope.facultyId, search: '' },
+        applied: { ...EMPTY_DRAFT, universityId: defaultScope.universityId, facultyId: defaultScope.facultyId, careerId: defaultScope.careerId, search: '' },
         urlHadUniversity: false,
       };
     }
@@ -68,7 +68,7 @@ function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
 
   if (defaultScope) {
     return {
-      applied: { ...EMPTY_DRAFT, universityId: defaultScope.universityId, facultyId: defaultScope.facultyId, search },
+      applied: { ...EMPTY_DRAFT, universityId: defaultScope.universityId, facultyId: defaultScope.facultyId, careerId: defaultScope.careerId, search },
       urlHadUniversity: false,
     };
   }
@@ -96,9 +96,10 @@ export const useFilterState = (defaultScope: ResolvedDefaultScope | null) => {
         ...prev,
         universityId: defaultScope.universityId,
         facultyId: defaultScope.facultyId,
+        careerId: defaultScope.careerId,
       };
     });
-  }, [defaultScope?.universityId, defaultScope?.facultyId]);
+  }, [defaultScope?.universityId, defaultScope?.facultyId, defaultScope?.careerId]);
 
   // Sync URL when applied changes (debounced so rapid search keystrokes don't spam replaceState)
   useEffect(() => {
@@ -135,6 +136,7 @@ export const useFilterState = (defaultScope: ResolvedDefaultScope | null) => {
         ...EMPTY_DRAFT,
         universityId: ds.universityId,
         facultyId: ds.facultyId,
+        careerId: ds.careerId,
         search: '',
       });
     } else {

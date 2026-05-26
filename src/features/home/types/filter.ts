@@ -1,9 +1,10 @@
 import type { Subject } from './subjects';
 
-/** Default UNICEN + EXACTAS scope once resolved from the API. */
+/** Default UNICEN + EXACTAS + C1 scope once resolved from the API. */
 export type ResolvedDefaultScope = {
   universityId: string;
   facultyId: string;
+  careerId: string;
 };
 
 export type DraftFilters = {
