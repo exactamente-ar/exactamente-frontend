@@ -37,7 +37,7 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
           <div
             className={`w-5 h-5 font-bold rounded-full border mr-3 flex items-center justify-center ${
               value === tipo.value
-                ? 'border-transparent bg-gradient-to-br from-violet-500 via-pink-500 to-teal-400'
+                ? 'border-zinc-500 bg-zinc-600'
                 : 'border-primary/30'
             }`}
           >
