@@ -120,7 +120,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
 
           <div className='flex flex-col space-y-3 w-full'>
             <ResourceButton
-              resourceUrl={`.${url}/resumenes`}
+              resourceUrl={`./${id}/resumenes`}
               uploadUrl={`${uploadBase}&type=resumen`}
               count={resourceCounts.resumen}
               label='Resumenes'
@@ -129,7 +129,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
               activeIconClass='fill-emerald-200'
             />
             <ResourceButton
-              resourceUrl={`.${url}/parciales`}
+              resourceUrl={`./${id}/parciales`}
               uploadUrl={`${uploadBase}&type=parcial`}
               count={resourceCounts.parcial}
               label='Parciales'
@@ -138,7 +138,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
               activeIconClass='fill-blue-200'
             />
             <ResourceButton
-              resourceUrl={`.${url}/finales`}
+              resourceUrl={`./${id}/finales`}
               uploadUrl={`${uploadBase}&type=final`}
               count={resourceCounts.final}
               label='Finales'

@@ -10,10 +10,10 @@ import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/shared/components/Breadcrumb.astro';
 import ContainerLink from '@/shared/components/ContainerLink.astro';
 import ContainerSection from '@/shared/components/ContainerSection.astro';
-import { getSubjectBySlug } from '@/shared/services/api';
+import { getSubjectById } from '@/shared/services/api';
 
 const { id } = Astro.params;
-const subject = await getSubjectBySlug(id as string);
+const subject = await getSubjectById(id as string);
 
 if (!subject) {
   return Astro.redirect('/');

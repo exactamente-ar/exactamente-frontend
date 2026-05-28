@@ -259,6 +259,17 @@ export function getSubjects(params?: Record<string, string>): Promise<ApiResult<
   });
 }
 
+export async function getSubjectById(id: string): Promise<Subject | null> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/subjects/${id}`);
+    if (!response.ok) return null;
+    const json: { subject: BackendSubject } = await response.json();
+    return mapSubject(json.subject);
+  } catch {
+    return null;
+  }
+}
+
 export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
   // Si el backend soporta filtro `slug`, devuelve sólo la materia buscada.
   // Si no lo soporta, ignora el param y trae el set completo: el find() local

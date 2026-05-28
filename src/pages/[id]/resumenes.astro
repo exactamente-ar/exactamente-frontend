@@ -13,10 +13,10 @@ import ContainerLink from '@/shared/components/ContainerLink.astro';
 import IconDocument from '@/shared/components/icons/IconDocument.astro';
 import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
 import ResourcesView from '@/features/resource/components/ResourcesView';
-import { getSubjectBySlug } from '@/shared/services/api';
+import { getSubjectById } from '@/shared/services/api';
 
 const { id } = Astro.params;
-const subject = await getSubjectBySlug(id as string);
+const subject = await getSubjectById(id as string);
 
 if (!subject) {
   return Astro.redirect('/');
