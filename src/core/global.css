@@ -270,15 +270,39 @@ select option {
 }
 
 .dashed-gradient-hover {
+  position: relative;
   border-width: 1.5px;
+}
+
+.dashed-gradient-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    45deg,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  animation: gradient-border 8s linear infinite;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='white' stroke-width='1.5' stroke-dasharray='6 4'/%3E%3C/svg%3E");
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='white' stroke-width='1.5' stroke-dasharray='6 4'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .dashed-gradient-hover:hover {
   border-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='g'%3E%3Cstop offset='0' stop-color='%236b46c1'/%3E%3Cstop offset='.33' stop-color='%23b83280'/%3E%3Cstop offset='.66' stop-color='%2338b2ac'/%3E%3Cstop offset='1' stop-color='%236b46c1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='url(%23g)' stroke-width='1.5' stroke-dasharray='6 4'/%3E%3C/svg%3E");
-  background-origin: border-box;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+}
+
+.dashed-gradient-hover:hover::after {
+  opacity: 1;
 }
 
 .gradient-separator {
