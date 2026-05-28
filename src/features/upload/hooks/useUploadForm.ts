@@ -121,7 +121,7 @@ export function useUploadForm(initialValues?: InitialValues) {
           subtype: formData.subtype || undefined,
           examYear: formData.examYear ? Number(formData.examYear) : undefined,
           examMonth: formData.examMonth ? Number(formData.examMonth) : undefined,
-          topic: formData.topic ? Number(formData.topic) : undefined,
+          topic: formData.topic && formData.topic !== 'none' ? Number(formData.topic) : undefined,
           notes: formData.notes || undefined,
         },
         token!
@@ -161,7 +161,7 @@ export function useUploadForm(initialValues?: InitialValues) {
           subtype: formData.subtype || undefined,
           examYear: Number(formData.examYear),
           examMonth: Number(formData.examMonth),
-          topic: formData.topic ? Number(formData.topic) : undefined,
+          topic: formData.topic && formData.topic !== 'none' ? Number(formData.topic) : undefined,
         },
         token
       );

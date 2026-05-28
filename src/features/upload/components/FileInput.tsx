@@ -96,8 +96,8 @@ const FileInput: React.FC<FileInputProps> = ({
             className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
           />
           <div className='flex flex-col items-center justify-center h-full pointer-events-none'>
-            <div className='w-12 h-12 bg-zinc-800 border border-zinc-600 rounded-xl flex items-center justify-center mb-4'>
-              <IconDocument size={24} className='fill-zinc-400' />
+            <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${file ? 'search-gradient-border gradient-active bg-black/60' : 'bg-zinc-800 border border-zinc-600'}`}>
+              <IconDocument size={24} className={file ? 'fill-white' : 'fill-zinc-400'} />
             </div>
             {file ? (
               <>

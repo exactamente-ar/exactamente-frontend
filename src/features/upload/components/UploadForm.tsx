@@ -9,8 +9,8 @@ import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
 import type { UploadFormProps } from '../types/form';
 
-const YEARS = Array.from({ length: 2027 - 2000 + 1 }, (_, i) => {
-  const y = 2027 - i;
+const YEARS = Array.from({ length: 2026 - 2000 + 1 }, (_, i) => {
+  const y = 2026 - i;
   return { value: String(y), label: String(y) };
 });
 
@@ -37,10 +37,11 @@ const SUBTYPES = [
 ];
 
 const TOPICS = [
-  { value: '', label: 'Sin tema' },
+  { value: 'none', label: 'Sin tema' },
   { value: '1', label: 'Tema 1' },
   { value: '2', label: 'Tema 2' },
   { value: '3', label: 'Tema 3' },
+  { value: '4', label: 'Tema 4' },
 ];
 
 const UploadForm: React.FC<UploadFormProps> = ({
@@ -129,37 +130,37 @@ const UploadForm: React.FC<UploadFormProps> = ({
       )}
 
       {formData.type === 'parcial' && (
-        <FormField label='Subtipo' required>
+        <FormField label='Tipo de evaluación' required>
           <SelectInput
             name='subtype'
             value={formData.subtype}
             onValueChange={onSubtypeChange}
             options={SUBTYPES}
-            placeholder='Seleccioná el subtipo'
+            placeholder='Seleccioná el tipo de evaluación'
             error={errors.subtype}
           />
         </FormField>
       )}
 
       <div className='grid grid-cols-2 gap-4'>
-        <FormField label='Año del examen' required>
+        <FormField label='Año' required>
           <SelectInput
             name='examYear'
             value={formData.examYear}
             onValueChange={onExamYearChange}
             options={YEARS}
-            placeholder='Año'
+            placeholder='Seleccioná el año'
             error={errors.examYear}
           />
         </FormField>
 
-        <FormField label='Mes del examen' required>
+        <FormField label='Mes' required>
           <SelectInput
             name='examMonth'
             value={formData.examMonth}
             onValueChange={onExamMonthChange}
             options={MONTHS}
-            placeholder='Mes'
+            placeholder='Seleccioná el mes'
             error={errors.examMonth}
           />
         </FormField>
@@ -172,7 +173,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
             value={formData.topic}
             onValueChange={onTopicChange}
             options={TOPICS}
-            placeholder='Sin tema'
+            placeholder='Seleccioná el tema'
           />
         </FormField>
       )}

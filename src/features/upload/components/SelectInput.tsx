@@ -38,7 +38,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
       >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className='bg-zinc-900 border border-zinc-700 rounded-xl'>
+      <SelectContent className='bg-zinc-900 border border-zinc-700 rounded-xl max-h-60 overflow-y-auto'>
         {options.map((option) => (
           <SelectItem
             key={option.value}

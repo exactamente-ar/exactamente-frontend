@@ -26,13 +26,16 @@ function LoginGate() {
 function parseInitialValues() {
   if (typeof window === 'undefined') return {};
   const params = new URLSearchParams(window.location.search);
+  const careerId = params.get('careerId');
+  const planId = params.get('planId');
+  const subjectId = params.get('subjectId');
   const type = params.get('type');
-  return {
-    careerId: params.get('careerId') ?? undefined,
-    planId: params.get('planId') ?? undefined,
-    subjectId: params.get('subjectId') ?? undefined,
-    type: (type === 'resumen' || type === 'parcial' || type === 'final') ? type : undefined,
-  };
+  const result: Record<string, string> = {};
+  if (careerId) result.careerId = careerId;
+  if (planId) result.planId = planId;
+  if (subjectId) result.subjectId = subjectId;
+  if (type === 'resumen' || type === 'parcial' || type === 'final') result.type = type;
+  return result;
 }
 
 function UploadSectionInner() {
