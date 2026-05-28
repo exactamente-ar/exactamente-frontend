@@ -1,26 +1,25 @@
 ---
+export const prerender = false;
+
 import ContainerSection from '@/shared/components/ContainerSection.astro';
 
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/shared/components/Breadcrumb.astro';
 
-
 import IconDocument from '@/shared/components/icons/IconDocument.astro';
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
 import ContainerLink from '@/shared/components/ContainerLink.astro';
 
 import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
 import IconOpenBook from '@/shared/components/icons/IconOpenBook.astro';
 import ResourcesView from '@/features/resource/components/ResourcesView';
-
-export async function getStaticPaths() {
-  return MATERIAS_SISTEMAS.map((materia) => ({
-    params: { id: materia.url },
-  }));
-}
+import { getSubjectBySlug } from '@/shared/services/api';
 
 const { id } = Astro.params;
-const subject = MATERIAS_SISTEMAS.filter((subject) => subject.url == `/${id}`)[0];
+const subject = await getSubjectBySlug(id as string);
+
+if (!subject) {
+  return Astro.redirect('/');
+}
 ---
 
 <Layout>

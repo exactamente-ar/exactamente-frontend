@@ -5,7 +5,7 @@ import CardResource from './CardResource';
 import CardResourceLoading from './CardResourceLoading';
 
 interface Props {
-  resources: ResourceFetch[];
+  resources: ResourceFetch[] | null;
   type: string;
   error: string | null;
   loading: boolean;
@@ -55,7 +55,7 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
             <CardResource
               key={resource.title + i}
               title={resource.title}
-              urlDrive={resource.urlDrive}
+              fileUrl={resource.fileUrl}
               type={type}
               mostRecent={i === 0}
             />

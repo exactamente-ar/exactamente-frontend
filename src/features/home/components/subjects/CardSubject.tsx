@@ -1,96 +1,152 @@
+import { memo } from 'react';
 import IconOpenBook from '@/shared/components/icons/react/IconOpenBook';
 import IconUniversity from '@/shared/components/icons/react/IconUniversity';
-import IconDownload from '@/shared/components/icons/react/IconDownload';
 import IconDocument from '@/shared/components/icons/react/IconDocument';
 import IconLink from '@/shared/components/icons/react/IconLink';
-import IconMoodle from '@/shared/components/icons/react/IconMoodle';
 import ContainerLink from '@/shared/components/ContainerLink.tsx';
+import type { SubjectCareer, ResourceCounts } from '@/features/home/types/subjects';
 
 type Props = {
   id: string;
   title: string;
+  shortName: string;
   url: string;
   quadmester: number;
   year: number;
+  careers: SubjectCareer[];
+  activeCareerId: string;
+  resourceCounts: ResourceCounts;
 };
 
-export default function Card({ id, title, url, quadmester, year }: Props) {
-  const urlPrograma = '';
-  const urlMoodle = '';
+type ResourceButtonProps = {
+  resourceUrl: string;
+  uploadUrl: string;
+  count: number;
+  label: string;
+  Icon: React.ComponentType<{ size: number; className?: string }>;
+  activeClass: string;
+  activeIconClass: string;
+};
+
+function ResourceButton({ resourceUrl, uploadUrl, count, label, Icon, activeClass, activeIconClass }: ResourceButtonProps) {
+  const isEmpty = count === 0;
   return (
-    <article className='group rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex flex-col '>
+    <ContainerLink
+      url={isEmpty ? uploadUrl : resourceUrl}
+      className={`group/resource hover:scale-105 justify-between active:scale-95 font-semibold flex items-center gap-3 transition-all duration-200 ${
+        isEmpty
+          ? 'bg-gradient-to-br from-zinc-800/30 to-zinc-900/20 border border-zinc-700/30 hover:border-zinc-600/50 text-zinc-500 hover:text-zinc-400'
+          : `grayscale-50 ${activeClass}`
+      }`}
+    >
+      <div className='flex items-center gap-2'>
+        <Icon size={20} className={isEmpty ? 'fill-zinc-600' : activeIconClass} />
+        <span>{label}</span>
+      </div>
+      <div className='flex items-center gap-1.5'>
+        <span className='text-xs opacity-60'>{count}</span>
+        <IconLink size={20} />
+      </div>
+    </ContainerLink>
+  );
+}
+
+function formatPlanId (planId: string): string {
+  const year = planId.match(/\d+$/)?.[0];
+  return year ? `Plan ${year}` : planId;
+}
+
+const STOPWORDS = new Set(['de', 'del', 'la', 'las', 'los', 'el', 'en', 'y', 'e', 'o', 'u', 'a', 'por', 'con']);
+
+function abbreviateUniversity (name: string): string {
+  if (name.length <= 12) return name;
+  const initials = name
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !STOPWORDS.has(w.toLowerCase()))
+    .map((w) => w[0].toUpperCase())
+    .join('');
+  return initials || name;
+}
+
+function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId, resourceCounts }: Props) {
+  const primaryCareer = careers.find((c) => c.careerId === activeCareerId) ?? careers[0];
+  const displayYear = primaryCareer?.year ?? year;
+  const displayQuadmester = primaryCareer?.quadmester ?? quadmester;
+  const planLabel = primaryCareer ? formatPlanId(primaryCareer.planId) : null;
+  const universityLabel = primaryCareer?.universityName;
+  const facultyLabel = primaryCareer?.facultyName;
+  const careerLabel = primaryCareer?.careerName;
+  const planId = primaryCareer?.planId ?? '';
+  const uploadBase = `/upload?careerId=${activeCareerId}&planId=${planId}&subjectId=${id}`;
+  return (
+    <article className='group rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex flex-col '>
       {/* Header */}
       <div className='relative mx-0.5 mt-0.5 rounded-xl flex-1 flex flex-col bg-gradient-to-br from-zinc-800/40 to-zinc-900/60 px-6 py-8 border-b border-zinc-800/50 flex-grow'>
         {/* Added flex-grow here */}
         <div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-500/5 to-transparent rounded-full blur-3xl' />
         <div className='relative z-10'>
-          <h2 className='text-2xl md:text-3xl font-bold text-white mb-2 group-hover:text-yellow-100 transition-colors'>
-            {title}
+          {(universityLabel || facultyLabel || careerLabel) && (
+            <div className='flex flex-wrap items-center gap-1 mb-2 text-xs text-zinc-500'>
+              {universityLabel && <span>{abbreviateUniversity(universityLabel)}</span>}
+              {universityLabel && facultyLabel && <span>·</span>}
+              {facultyLabel && <span>{facultyLabel}</span>}
+              {(universityLabel || facultyLabel) && careerLabel && <span>·</span>}
+              {careerLabel && <span>{careerLabel}</span>}
+            </div>
+          )}
+          <h2 className='text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-yellow-100 transition-colors'>
+            {shortName || title}
           </h2>
-          <h3 className='text-zinc-400 font-medium text-lg'>Ingeniería en Sistemas</h3>
+          <div className='flex flex-wrap items-center gap-2 text-sm text-zinc-400'>
+            {planLabel && (
+              <span className='bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 font-semibold rounded-md px-2 py-0.5'>
+                {planLabel}
+              </span>
+            )}
+            {planLabel && <span className='text-zinc-600'>·</span>}
+            <span>{displayQuadmester}º Cuatrimestre</span>
+            <span className='text-zinc-600'>·</span>
+            <span>{displayYear}º Año</span>
+          </div>
         </div>
       </div>
       {/* Content */}
-      <div className='flex flex-col items-start gap-6 p-6 flex-shrink-0'>
-        {' '}
-        {/* Added flex-shrink-0 here */}
-        {/* Info row */}
-        <div className='flex w-full justify-between items-center flex-wrap gap-3'>
-          <div className='text-zinc-400 flex items-center gap-2 bg-zinc-800/50 px-3 py-2 rounded-lg border border-zinc-700/50'>
-            <svg className='h-4 w-4 text-yellow-400' viewBox='0 0 24 24'>
-              <path
-                fill='currentColor'
-                d='M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m11-9c0 6.075-4.925 11-11 11S1 18.075 1 12S5.925 1 12 1s11 4.925 11 11m-8 4.414l-4-4V5.5h2v6.086L16.414 15z'
-              />
-            </svg>
-            <span className='text-zinc-200 font-medium'>{quadmester}º Cuatrimestre</span>
-          </div>
-
-          <div className='bg-gradient-to-r from-yellow-500/15 to-yellow-600/15 border border-yellow-500/30 text-yellow-200 font-semibold px-4 py-2 rounded-full'>
-            {year}º año
-          </div>
-        </div>
+      <div className='flex flex-col items-start gap-4 p-6 flex-shrink-0'>
         {/* Recursos */}
         <div className='w-full'>
-          <h4 className='font-bold text-white text-lg mb-4 flex items-center gap-2'>
-            <div className='w-2 h-2 bg-yellow-400 rounded-full' />
-            Recursos disponibles:
+          <h4 className='font-semibold tracking-widest text-zinc-500 text-xs uppercase mb-3'>
+            Recursos
           </h4>
 
-          <div className='flx flex-col space-y-3 w-full'>
-            <ContainerLink
-              url={`.${url}/resumenes`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100 font-semibold flex items-center gap-3 transition-all duration-200'
-            >
-              <div className='flex items-center gap-2'>
-                <IconOpenBook size={20} className='fill-emerald-200' />
-                <span> Resumenes </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-
-            <ContainerLink
-              url={`.${url}/parciales`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-blue-500/50 to-blue-600/10 border border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100 font-semibold flex items-center gap-3 transition-all duration-200'
-            >
-              <div className='flex items-center gap-2'>
-                <IconDocument size={20} className='fill-blue-200' />
-                <span> Parciales </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-
-            <ContainerLink
-              url={`.${url}/finales`}
-              className='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-purple-500/50 to-purple-600/10 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100 font-semibold flex items-center gap-3 transition-all duration-200'
-            >
-              <div className='flex items-center gap-2'>
-                <IconUniversity size={20} className='fill-purple-200' />
-                <span> Finales </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-          {/* 
+          <div className='flex flex-col space-y-3 w-full'>
+            <ResourceButton
+              resourceUrl={`.${url}/resumenes`}
+              uploadUrl={`${uploadBase}&type=resumen`}
+              count={resourceCounts.resumen}
+              label='Resumenes'
+              Icon={IconOpenBook}
+              activeClass='bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100'
+              activeIconClass='fill-emerald-200'
+            />
+            <ResourceButton
+              resourceUrl={`.${url}/parciales`}
+              uploadUrl={`${uploadBase}&type=parcial`}
+              count={resourceCounts.parcial}
+              label='Parciales'
+              Icon={IconDocument}
+              activeClass='bg-gradient-to-br from-blue-500/50 to-blue-600/10 border border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100'
+              activeIconClass='fill-blue-200'
+            />
+            <ResourceButton
+              resourceUrl={`.${url}/finales`}
+              uploadUrl={`${uploadBase}&type=final`}
+              count={resourceCounts.final}
+              label='Finales'
+              Icon={IconUniversity}
+              activeClass='bg-gradient-to-br from-purple-500/50 to-purple-600/10 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100'
+              activeIconClass='fill-purple-200'
+            />
+            {/* 
             <ContainerLink
               url={urlMoodle}
               target='_blank'
@@ -139,3 +195,5 @@ export default function Card({ id, title, url, quadmester, year }: Props) {
     </article>
   );
 }
+
+export default memo(Card);

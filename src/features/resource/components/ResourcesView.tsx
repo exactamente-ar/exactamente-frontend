@@ -1,5 +1,4 @@
 import HeaderResources from '@/features/resource/components/HeaderResources';
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
 import { useResources } from '@/features/resource/hooks/useResources';
 import type { StringResource } from '@/features/resource/types/resource';
 import ListOfResources from './ListOfResources';

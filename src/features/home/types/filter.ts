@@ -1,21 +1,53 @@
-import type { Subject } from "./subjects";
+import type { Subject } from './subjects';
 
-export type FilterT = {
-  search: string;
-  year: number;
-  quadmester: number;
-  carrer: string;
+/** Default UNICEN + EXACTAS + C1 scope once resolved from the API. */
+export type ResolvedDefaultScope = {
+  universityId: string;
+  facultyId: string;
+  careerId: string;
 };
 
-export interface PropsFilterBar {
-  setFilters: React.Dispatch<React.SetStateAction<FilterT>>;
-  filters: FilterT;
-}
+export type DraftFilters = {
+  universityId: string;
+  facultyId: string;
+  careerId: string;
+  planId: string;
+  year: number;
+  quadmester: number;
+};
+
+export type AppliedFilters = DraftFilters & {
+  search: string;
+};
+
+export type FilterOption = { id: string; label: string };
+
+export type FilterOptions = {
+  universities: FilterOption[];
+  faculties: FilterOption[];
+  careers: FilterOption[];
+  plans: FilterOption[];
+  loadingUniversities: boolean;
+  loadingFaculties: boolean;
+  loadingCareers: boolean;
+  loadingPlans: boolean;
+};
+
+export type PropsFilterBar = {
+  applied: AppliedFilters;
+  commitFilter: <K extends keyof DraftFilters>(key: K, value: DraftFilters[K]) => void;
+  setSearch: (search: string) => void;
+  clearAll: () => void;
+  options: FilterOptions;
+  scopeError: string | null;
+  scopeReady: boolean;
+};
 
 export type PropsListOfSubjects = {
   subjects: Subject[];
-  setFilters: React.Dispatch<React.SetStateAction<FilterT>>;
+  onClearAll: () => void;
   loading: boolean;
   hasMore: boolean;
   showMore: () => void;
+  activeCareerId: string;
 };

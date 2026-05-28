@@ -1,148 +1,134 @@
 import { useState } from 'react';
-import type { FormData } from '../types/form';
+import { jsPDF } from 'jspdf';
+import { uploadResource } from '@/shared/services/api';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import type { UploadFormState, UploadFormErrors } from '../types/form';
 
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-const INITIAL_FORM_DATA: FormData = {
-  materia: '',
-  tipoRecurso: '',
-  titulo: '',
-  archivo: null,
+const INITIAL_STATE: UploadFormState = {
+  careerId: '',
+  planId: '',
+  subjectId: '',
+  type: 'resumen',
+  period: '',
+  notes: '',
+  file: null,
+  imageFiles: [],
+  fileMode: 'pdf',
 };
 
-const SCRIPT_URL = import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL;
+function loadImage(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(`Error cargando ${file.name}`)); };
+    img.src = url;
+  });
+}
 
-export const useUploadForm = () => {
-  const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+async function imagesToPdf(imageFiles: File[]): Promise<File> {
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+
+  for (let i = 0; i < imageFiles.length; i++) {
+    if (i > 0) doc.addPage();
+    const img = await loadImage(imageFiles[i]);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    canvas.getContext('2d')!.drawImage(img, 0, 0);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+    const pageRatio = pageW / pageH;
+    let drawW: number, drawH: number, x: number, y: number;
+    if (imgRatio > pageRatio) {
+      drawW = pageW; drawH = pageW / imgRatio;
+      x = 0; y = (pageH - drawH) / 2;
+    } else {
+      drawH = pageH; drawW = pageH * imgRatio;
+      x = (pageW - drawW) / 2; y = 0;
+    }
+    doc.addImage(dataUrl, 'JPEG', x, y, drawW, drawH);
+  }
+
+  const blob = doc.output('blob');
+  return new File([blob], 'imagenes.pdf', { type: 'application/pdf' });
+}
+
+type InitialValues = Partial<Pick<UploadFormState, 'careerId' | 'planId' | 'subjectId' | 'type'>>;
+
+export function useUploadForm(initialValues?: InitialValues) {
+  const { token, logout } = useAuth();
+  const [formData, setFormData] = useState<UploadFormState>({ ...INITIAL_STATE, ...initialValues });
+  const [errors, setErrors] = useState<UploadFormErrors>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | undefined>(undefined);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
-  const resetForm = () => {
-    setFormData(INITIAL_FORM_DATA);
-    setErrors({});
-    setShowSuccess(false);
-    setUploading(false);
-    setUploadError(undefined);
+  const updateField = <K extends keyof UploadFormState>(key: K, value: UploadFormState[K]) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+    if (key in errors) setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
-  const closeSuccess = () => setShowSuccess(false);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (file && file.size > 10 * 1024 * 1024) {
-      setErrors((prev) => ({
-        ...prev,
-        archivo: 'El archivo supera el límite de 10MB',
-      }));
-      return;
-    }
-    setFormData((prev) => ({ ...prev, archivo: file }));
-    if (errors.archivo) {
-      setErrors((prev) => ({ ...prev, archivo: '' }));
-    }
-  };
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.materia) newErrors.materia = 'Selecciona una materia';
-    if (!formData.tipoRecurso) newErrors.tipoRecurso = 'Selecciona el tipo de Rescurso';
-    if (!formData.titulo.trim()) newErrors.titulo = 'Ingresa un título';
-    if (!captchaToken) newErrors.captcha = 'Por favor, verifica que no eres un robot';
-
-    if (!formData.archivo) {
-      newErrors.archivo = 'Selecciona un archivo';
-    } else {
-      const maxSize = 10 * 1024 * 1024; // 10 MB
-      const allowedTypes = [
-        'application/pdf',
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'image/webp',
-      ];
-
-      if (formData.archivo.size > maxSize) {
-        newErrors.archivo = 'El archivo debe pesar menos de 10 MB';
-      } else if (!allowedTypes.includes(formData.archivo.type)) {
-        newErrors.archivo = 'Solo se permiten archivos PDF e imágenes (jpg, png, gif, webp)';
-      }
-    }
-
+  const validate = (): boolean => {
+    const newErrors: UploadFormErrors = {};
+    if (!formData.careerId) newErrors.careerId = 'Seleccioná una carrera';
+    if (!formData.subjectId) newErrors.subjectId = 'Seleccioná una materia';
+    if (formData.fileMode === 'pdf' && !formData.file) newErrors.file = 'Seleccioná un archivo PDF';
+    if (formData.fileMode === 'images' && formData.imageFiles.length === 0) newErrors.file = 'Agregá al menos una imagen';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result?.toString().split(',')[1];
-        base64 ? resolve(base64) : reject('No se pudo leer el archivo.');
-      };
-      reader.onerror = () => reject('Error al leer el archivo con FileReader.');
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const uploadFileToDrive = async (base64: string, token: string): Promise<string> => {
-    const params = new URLSearchParams({
-      'g-recaptcha-response': token,
-      filename: formData.archivo!.name,
-      mimetype: formData.archivo!.type,
-    });
-
-    const response = await fetch(`${SCRIPT_URL}?${params.toString()}`, {
-      method: 'POST',
-      body: base64,
-      headers: { 'Content-Type': 'text/plain' },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
-    }
-
-    const result = await response.json();
-    if (result.status !== 'success') {
-      throw new Error(result.message || 'Error al subir el archivo');
-    }
-
-    return result.fileUrl;
-  };
-
-  const handleSubmit = (onSuccess?: () => void) => async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploadError(undefined);
-
-    if (!validateForm() || !formData.archivo || !captchaToken) {
-      return;
-    }
+    if (!validate() || !token) return;
 
     setUploading(true);
-
     try {
-      const base64 = await convertFileToBase64(formData.archivo);
+      let finalFile: File;
 
-      const fileUrl = await uploadFileToDrive(base64, captchaToken);
+      if (formData.fileMode === 'images') {
+        finalFile = await imagesToPdf(formData.imageFiles);
+        if (finalFile.size > MAX_FILE_SIZE) {
+          setErrors((prev) => ({ ...prev, file: 'El PDF generado supera los 20 MB. Reducí la cantidad de imágenes.' }));
+          setUploading(false);
+          return;
+        }
+      } else {
+        finalFile = formData.file!;
+      }
+
+      const result = await uploadResource(
+        {
+          subjectId: formData.subjectId,
+          type: formData.type,
+          file: finalFile,
+          period: formData.period || undefined,
+          notes: formData.notes || undefined,
+        },
+        token
+      );
+
+      if (result.error) {
+        if (result.error.includes('401')) {
+          logout();
+          window.location.href = '/login?redirect=/upload';
+          return;
+        }
+        setUploadError(result.error);
+        return;
+      }
 
       setShowSuccess(true);
-      onSuccess?.();
-
-      setTimeout(() => resetForm(), 3000);
-    } catch (error: any) {
-      setUploadError(error.message || 'Ocurrió un error durante la subida.');
+      setFormData(INITIAL_STATE);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Error al subir el recurso');
     } finally {
       setUploading(false);
     }
@@ -154,11 +140,22 @@ export const useUploadForm = () => {
     showSuccess,
     uploading,
     uploadError,
-    handleInputChange,
-    handleFileChange,
+    onCareerChange: (v: string) => {
+      setFormData((prev) => ({ ...prev, careerId: v, planId: '', subjectId: '' }));
+      setErrors((prev) => ({ ...prev, careerId: undefined, planId: undefined, subjectId: undefined }));
+    },
+    onPlanChange: (v: string) => {
+      setFormData((prev) => ({ ...prev, planId: v, subjectId: '' }));
+      setErrors((prev) => ({ ...prev, planId: undefined, subjectId: undefined }));
+    },
+    onSubjectChange: (v: string) => updateField('subjectId', v),
+    onTypeChange: (v: string) => updateField('type', v as UploadFormState['type']),
+    onPeriodChange: (v: string) => updateField('period', v),
+    onNotesChange: (v: string) => updateField('notes', v),
+    onFileChange: (f: File | null) => updateField('file', f),
+    onImagesChange: (files: File[]) => updateField('imageFiles', files),
+    onFileModeChange: (mode: 'pdf' | 'images') => updateField('fileMode', mode),
     handleSubmit,
-    closeSuccess,
-    captchaToken,
-    setCaptchaToken,
+    closeSuccess: () => setShowSuccess(false),
   };
-};
+}

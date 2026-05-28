@@ -4,28 +4,25 @@ import IconVisibility from '@/shared/components/icons/react/IconVisibility';
 import IconVisibilityOff from '@/shared/components/icons/react/IconVisibilityOff';
 import HeaderCardResource from './HeaderCardResource';
 import ContainerLink from '../../../shared/components/ContainerLink';
-import { usePreviewDrive } from '@/features/resource/hooks/usePreviewDrive';
+import { usePreview } from '@/features/resource/hooks/usePreview';
 
 interface Props {
   title: string;
-  urlDrive: string;
+  fileUrl: string;
   type: string;
   mostRecent: boolean;
 }
 
-const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) => {
+const CardResource: React.FC<Props> = ({ title, fileUrl, type, mostRecent }) => {
   const partsTitle = title.split('.');
 
   const {
-    fileId,
-    previewUrl,
-    downloadUrl,
     previewOpen,
     iframeLoaded,
     iframeRef,
     togglePreview,
     handleIframeLoad,
-  } = usePreviewDrive(urlDrive);
+  } = usePreview(fileUrl);
 
   return (
     <div className='flex flex-col bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-xl hover:border-zinc-700/80 transition-all duration-300 group overflow-hidden'>
@@ -49,7 +46,7 @@ const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) =>
               )}
               <iframe
                 ref={iframeRef}
-                src={previewUrl}
+                src={fileUrl}
                 className={`preview-iframe w-full h-96 transition-opacity duration-500 ${
                   iframeLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
@@ -66,7 +63,7 @@ const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) =>
         <div className='flex gap-2 justify-between items-end flex-col sm:flex-row'>
           <div className='flex gap-3 items-center flex-col sm:flex-row w-full sm:w-min'>
             <ContainerLink
-              url={downloadUrl}
+              url={fileUrl}
               className='group/download w-full sm:w-max  text-white font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 '
               target='_blank'
               rel='noopener noreferrer'
@@ -82,7 +79,7 @@ const CardResource: React.FC<Props> = ({ title, urlDrive, type, mostRecent }) =>
                   ? 'bg-red-800/50 hover:bg-red-700/60 border-red-700 hover:border-red-600 text-white'
                   : 'bg-zinc-800/50 hover:bg-zinc-700/60 border-zinc-700 hover:border-zinc-600 text-zinc-200'
               }`}
-              disabled={!fileId}
+              disabled={!fileUrl}
             >
               {previewOpen ? (
                 <IconVisibilityOff size={20} className='fill-foreground' />

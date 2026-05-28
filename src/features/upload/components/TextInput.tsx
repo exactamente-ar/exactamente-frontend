@@ -1,3 +1,6 @@
+import React from 'react';
+import { Input } from '@/shared/components/ui/input';
+import { cn } from '@/shared/lib/utils';
 import ErrorMessage from './ErrorMessage';
 
 interface TextInputProps {
@@ -10,17 +13,17 @@ interface TextInputProps {
 
 const TextInput: React.FC<TextInputProps> = ({ name, value, onChange, placeholder, error }) => (
   <>
-    <input
-      type='text'
-      name={name}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className={`w-full text-foreground-secondary font-bold px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] transition-all duration-200 ${
-        error ? 'border-red-300 bg-red-900/10' : 'border-primary/30 bg-black/20'
-      }`}
-    />
+    <div className='search-gradient-border rounded-xl'>
+      <Input
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={cn('placeholder:text-muted-foreground', error && 'border-red-300 bg-red-900/10')}
+      />
+    </div>
     <ErrorMessage message={error} />
   </>
 );
+
 export default TextInput;

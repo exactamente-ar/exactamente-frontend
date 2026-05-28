@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getByIdResources } from '@/features/resource/services/resource';
-import type { StringResource } from '@/features/resource/types/resource';
+import type { ResourceFetch, StringResource } from '@/features/resource/types/resource';
 
 export const useResources = (id: string, type: StringResource) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ResourceFetch[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -20,20 +20,15 @@ export const useResources = (id: string, type: StringResource) => {
 
       try {
         const { data, error } = await getByIdResources(id, type);
-        const sortedResources = [...data].sort((a, b) => {
-          const yearA = parseInt(a.title.split(' ')[1], 10);
-          const yearB = parseInt(b.title.split(' ')[1], 10);
-          return yearB - yearA; // mayor a menor
-        });
 
         if (error) {
           setError(error);
           setData(null);
         } else {
-          setData(sortedResources);
+          setData(data);
         }
       } catch (err) {
-        setError(error);
+        setError(err instanceof Error ? err.message : 'Unknown error');
         setData(null);
       } finally {
         setLoading(false);
@@ -41,7 +36,7 @@ export const useResources = (id: string, type: StringResource) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, type]);
 
   return { data, error, loading };
 };
