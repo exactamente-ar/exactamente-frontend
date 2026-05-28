@@ -73,7 +73,7 @@ export function useResolvedDefaultScope() {
       }
       const career = carRes.data.find((c) => matchShort(c.shortName, DEFAULT_CAREER_SHORT));
       if (!career) {
-        if (!cached) { setScopeError('No se encontró la carrera C1 en la API.'); setScopeReady(true); }
+        if (!cached) { setScopeError(`No se encontró la carrera ${DEFAULT_CAREER_SHORT} en la API.`); setScopeReady(true); }
         return;
       }
       const scope: ResolvedDefaultScope = { universityId: university.id, facultyId: faculty.id, careerId: career.id };
