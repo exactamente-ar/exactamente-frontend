@@ -53,10 +53,14 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
         <>
           {(resources ?? []).map((resource, i) => (
             <CardResource
-              key={resource.title + i}
+              key={resource.id}
               title={resource.title}
               fileUrl={resource.fileUrl}
               type={type}
+              subtype={resource.subtype}
+              examYear={resource.examYear}
+              examMonth={resource.examMonth}
+              topic={resource.topic}
               mostRecent={i === 0}
             />
           ))}

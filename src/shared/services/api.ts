@@ -74,6 +74,10 @@ type BackendResource = {
   subjectId: string;
   title: string;
   type: 'resumen' | 'parcial' | 'final';
+  subtype: 'parcial' | 'recuperatorio' | 'prefinal' | 'parcialito' | null;
+  examYear: number | null;
+  examMonth: number | null;
+  topic: number | null;
   status: 'published' | 'pending' | 'rejected';
   downloadCount: number;
   publishedAt: string;
@@ -166,6 +170,11 @@ function mapResource(backend: BackendResource): ResourceFetch {
     id: backend.id,
     title: backend.title,
     fileUrl: backend.fileUrl,
+    type: backend.type,
+    subtype: backend.subtype ?? null,
+    examYear: backend.examYear ?? null,
+    examMonth: backend.examMonth ?? null,
+    topic: backend.topic ?? null,
   };
 }
 
@@ -300,7 +309,11 @@ export async function uploadResource(
     subjectId: string;
     type: string;
     file: File;
-    period?: string;
+    title?: string;
+    subtype?: string;
+    examYear?: number;
+    examMonth?: number;
+    topic?: number;
     notes?: string;
   },
   token: string
@@ -310,7 +323,11 @@ export async function uploadResource(
     form.append('file', data.file);
     form.append('subjectId', data.subjectId);
     form.append('type', data.type);
-    if (data.period) form.append('period', data.period);
+    form.append('examYear', String(data.examYear));
+    form.append('examMonth', String(data.examMonth));
+    if (data.title) form.append('title', data.title);
+    if (data.subtype) form.append('subtype', data.subtype);
+    if (data.topic != null) form.append('topic', String(data.topic));
     if (data.notes) form.append('notes', data.notes);
 
     const response = await fetch(`${BASE_URL}/api/v1/resources`, {
@@ -323,5 +340,33 @@ export async function uploadResource(
     return { data: json, error: null };
   } catch (err) {
     return { data: [], error: err instanceof Error ? err.message : 'Unknown error uploading resource' };
+  }
+}
+
+export async function checkDuplicate(
+  data: {
+    subjectId: string;
+    type: 'resumen' | 'parcial' | 'final';
+    subtype?: string;
+    examYear?: number;
+    examMonth?: number;
+    topic?: number;
+  },
+  token: string
+): Promise<ApiResult<{ hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> }>> {
+  try {
+    const response = await fetch(`${BASE_URL}/api/v1/resources/check-duplicate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
+    const json = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: [], error: err instanceof Error ? err.message : 'Unknown error checking duplicate' };
   }
 }
