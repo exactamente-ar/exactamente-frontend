@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { RotateCcw } from 'lucide-react';
 import FilterCombobox from './FilterCombobox';
 import type { PropsFilterBar } from '@/features/home/types/filter';
 import { YEARS_FILTER, QUADMESTERS_FILTER } from '@/features/home/constants/filter';
@@ -96,9 +97,9 @@ const FilterBar: React.FC<PropsFilterBar> = ({
   );
 
   return (
-    <div className='flex flex-col mb-4 lg:mb-8 w-full gap-3'>
-      <div className='relative flex items-center gap-2'>
-        <div className='flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-4 transition-colors search-gradient-border'>
+    <div className='flex flex-col mb-4 lg:mb-8 w-full gap-2'>
+      <div className='border border-zinc-700 rounded-xl bg-zinc-950/10'>
+        <div className='search-gradient-border rounded-t-xl flex items-center gap-2 px-4 py-4'>
           <svg width='18' height='18' viewBox='0 0 24 24' className='shrink-0'>
             <path
               className='stroke-foreground-muted'
@@ -114,21 +115,11 @@ const FilterBar: React.FC<PropsFilterBar> = ({
             placeholder='Buscar una materia'
             value={applied.search}
             onChange={handleSearchChange}
-            className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
+className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
           />
         </div>
-      </div>
 
-      {scopeError && (
-        <p className='text-sm text-red-400' role='alert'>
-          {scopeError}
-        </p>
-      )}
-
-      <div className='flex flex-col gap-2'>
-        <div className='border border-zinc-700 rounded-xl bg-zinc-950/10 px-3 py-3 flex flex-wrap items-center gap-x-6 gap-y-3 overflow-x-auto scrollbar-none lg:overflow-visible'>
-
-
+        <div className='border-t border-zinc-700 px-3 py-3 flex flex-wrap items-center gap-x-6 gap-y-3 overflow-x-auto scrollbar-none lg:overflow-visible'>
           <FilterGroup label='Carrera'>
             <FilterCombobox
               variant='pill'
@@ -170,16 +161,24 @@ const FilterBar: React.FC<PropsFilterBar> = ({
           />
         </div>
 
-        {canReset && (
-          <button
-            type='button'
-            onClick={clearAll}
-            className='self-start text-xs text-zinc-400 hover:text-zinc-200 underline underline-offset-2 transition-colors'
-          >
-            Restablecer filtros
-          </button>
-        )}
       </div>
+
+      {scopeError && (
+        <p className='text-sm text-red-400' role='alert'>
+          {scopeError}
+        </p>
+      )}
+
+      {canReset && (
+        <button
+          type='button'
+          onClick={clearAll}
+          className='self-start flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200 underline underline-offset-2 transition-colors cursor-pointer'
+        >
+          <RotateCcw size={11} />
+          Restablecer filtros
+        </button>
+      )}
     </div>
   );
 };
