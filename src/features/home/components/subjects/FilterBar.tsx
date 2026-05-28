@@ -35,7 +35,7 @@ const PillToggleGroup = React.memo(function PillToggleGroup ({
             <button
               key={opt.value}
               type='button'
-              disabled={disabled}
+              disabled={disabled || undefined}
               onClick={() => onChange(opt.value)}
               className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors whitespace-nowrap disabled:opacity-40 disabled:pointer-events-none ${active
                 ? 'bg-zinc-700 border-zinc-600 text-white'
@@ -98,8 +98,8 @@ const FilterBar: React.FC<PropsFilterBar> = ({
 
   return (
     <div className='flex flex-col mb-4 lg:mb-8 w-full gap-2'>
-      <div className='border border-zinc-700 rounded-xl bg-zinc-950/10'>
-        <div className='search-gradient-border rounded-t-xl flex items-center gap-2 px-4 py-4'>
+      <div className='border border-zinc-700 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95'>
+        <div className='search-gradient-border rounded-t-xl flex items-center gap-2 px-4 py-4 bg-gradient-to-br from-zinc-800/40 to-zinc-900/60'>
           <svg width='18' height='18' viewBox='0 0 24 24' className='shrink-0'>
             <path
               className='stroke-foreground-muted'

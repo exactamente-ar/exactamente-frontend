@@ -5,6 +5,12 @@ import GoogleAnalytics from '@/shared/components/GoogleAnalytics.astro';
 import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
+import Aurora from '@/shared/components/Aurora';
+
+interface Props {
+  hideFooterSponsor?: boolean;
+}
+const { hideFooterSponsor = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,6 +28,15 @@ import Header from '@/shared/components/Header.astro';
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
     <div class="fixed inset-0 bg-noise opacity-10 -z-0"></div>
     <div class="fixed inset-0 bg-black/70 -z-20"></div>
+    <!-- <div class='absolute w-full h-screen top-0 -z-30'>
+      <Aurora
+        client:visible
+        colorStops={["#3A29FF", "#FF94B4", "#FF3232"]}
+        blend={0.5}
+        amplitude={1.0}
+        speed={0.5}
+      />
+    </div> -->
     <div class='absolute w-full h-screen md:h-[50vh] bottom-0 -z-30'>
       <div
         class='absolute -top-96 md:-top-32 w-full h-96 md:h-32 bg-gradient-to-b from-transparent to-primary-foreground'
@@ -32,10 +47,10 @@ import Header from '@/shared/components/Header.astro';
       >
       </div>
     </div>
+    <Header />
     <ContainerPage>
-      <Header />
       <slot />
-      <Footer />
     </ContainerPage>
+    <Footer hideSponsor={hideFooterSponsor} />
   </body>
 </html>

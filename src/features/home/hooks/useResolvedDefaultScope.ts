@@ -34,13 +34,18 @@ function writeCache(scope: ResolvedDefaultScope) {
 }
 
 export function useResolvedDefaultScope() {
-  const cached = typeof window !== 'undefined' ? readCache() : null;
-  const [defaultScope, setDefaultScope] = useState<ResolvedDefaultScope | null>(cached);
+  const [defaultScope, setDefaultScope] = useState<ResolvedDefaultScope | null>(null);
   const [scopeError, setScopeError] = useState<string | null>(null);
-  const [scopeReady, setScopeReady] = useState<boolean>(Boolean(cached));
+  const [scopeReady, setScopeReady] = useState<boolean>(false);
 
   useEffect(() => {
     let cancelled = false;
+
+    const cached = readCache();
+    if (cached) {
+      setDefaultScope(cached);
+      setScopeReady(true);
+    }
 
     (async () => {
       const uniRes = await getUniversities();

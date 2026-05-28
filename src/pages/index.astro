@@ -1,8 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import SubjectsSection from "@/features/home/components/subjects/SubjectsSection.astro";
+import SponsorsSection from "@/features/home/components/sponsors/SponsorsSection.astro";
 ---
 
-<Layout>
+<Layout hideFooterSponsor={true}>
   <SubjectsSection />
+  <SponsorsSection />
 </Layout>

@@ -76,7 +76,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
           variant='outline'
           role='combobox'
           aria-expanded={isOpen}
-          disabled={disabled}
+          disabled={disabled || undefined}
           className={cn(triggerClassName, 'w-full')}
         >
           <span className={cn('truncate', !hasSelection && 'text-zinc-400')}>

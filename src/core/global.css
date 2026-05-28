@@ -30,7 +30,7 @@
   /* 🧱 UI neutra / tarjetas / inputs (modo oscuro) */
   --color-muted: #1f2937; /* Fondo oscuro para elementos secundarios: tarjetas, inputs (Slate 800) */
   --color-muted-foreground: #94a3b8; /* slate-400, neutro para shadcn */
-  --color-border: #334155; /* slate-700, neutro para shadcn */
+  --color-border: rgba(255, 255, 255, 0.12); /* blanco translúcido */
   --color-input: #111827; /* Fondo de inputs oscuro (Slate 900) */
   --color-input-placeholder: #a89f48; /* Placeholder en tono amarillo pálido para buen contraste */
 
@@ -355,4 +355,68 @@ select option {
   mask-composite: exclude;
   z-index: -1;
   opacity: 0.3;
+}
+
+.gradient-border-top {
+  position: relative;
+}
+
+.gradient-border-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  animation: gradient-border 8s linear infinite;
+  opacity: 0.4;
+}
+
+.gradient-border-bottom {}
+
+.gradient-border-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    #6b46c1,
+    #b83280,
+    #f6e05e,
+    #38b2ac,
+    #6b46c1
+  );
+  background-size: 300% 300%;
+  animation: gradient-border 8s linear infinite;
+  opacity: 0.1;
+}
+
+.gradient-border-all::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background-size: 300% 300%;
+  animation: gradient-border 8s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.1;
 }
