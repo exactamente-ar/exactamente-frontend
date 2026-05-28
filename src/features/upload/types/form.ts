@@ -3,7 +3,11 @@ export interface UploadFormState {
   planId: string;
   subjectId: string;
   type: 'resumen' | 'parcial' | 'final';
-  period: string;
+  title: string;
+  subtype: string;
+  examYear: string;
+  examMonth: string;
+  topic: string;
   notes: string;
   file: File | null;
   imageFiles: File[];
@@ -15,6 +19,10 @@ export interface UploadFormErrors {
   planId?: string;
   subjectId?: string;
   type?: string;
+  title?: string;
+  subtype?: string;
+  examYear?: string;
+  examMonth?: string;
   file?: string;
 }
 
@@ -27,14 +35,20 @@ export interface UploadFormProps {
   tiposRecurso: { value: string; label: string }[];
   uploading: boolean;
   uploadError: string | undefined;
+  duplicateWarning: { hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> } | null;
   onCareerChange: (careerId: string) => void;
   onPlanChange: (planId: string) => void;
   onSubjectChange: (subjectId: string) => void;
   onTypeChange: (type: string) => void;
-  onPeriodChange: (value: string) => void;
+  onTitleChange: (value: string) => void;
+  onSubtypeChange: (value: string) => void;
+  onExamYearChange: (value: string) => void;
+  onExamMonthChange: (value: string) => void;
+  onTopicChange: (value: string) => void;
   onNotesChange: (value: string) => void;
   onFileChange: (file: File | null) => void;
   onImagesChange: (files: File[]) => void;
   onFileModeChange: (mode: 'pdf' | 'images') => void;
+  onDuplicateConfirm: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }

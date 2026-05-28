@@ -9,6 +9,40 @@ import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
 import type { UploadFormProps } from '../types/form';
 
+const YEARS = Array.from({ length: 2027 - 2000 + 1 }, (_, i) => {
+  const y = 2027 - i;
+  return { value: String(y), label: String(y) };
+});
+
+const MONTHS = [
+  { value: '1', label: 'Enero' },
+  { value: '2', label: 'Febrero' },
+  { value: '3', label: 'Marzo' },
+  { value: '4', label: 'Abril' },
+  { value: '5', label: 'Mayo' },
+  { value: '6', label: 'Junio' },
+  { value: '7', label: 'Julio' },
+  { value: '8', label: 'Agosto' },
+  { value: '9', label: 'Septiembre' },
+  { value: '10', label: 'Octubre' },
+  { value: '11', label: 'Noviembre' },
+  { value: '12', label: 'Diciembre' },
+];
+
+const SUBTYPES = [
+  { value: 'parcial', label: 'Parcial' },
+  { value: 'recuperatorio', label: 'Recuperatorio' },
+  { value: 'prefinal', label: 'Pre-final' },
+  { value: 'parcialito', label: 'Parcialito' },
+];
+
+const TOPICS = [
+  { value: '', label: 'Sin tema' },
+  { value: '1', label: 'Tema 1' },
+  { value: '2', label: 'Tema 2' },
+  { value: '3', label: 'Tema 3' },
+];
+
 const UploadForm: React.FC<UploadFormProps> = ({
   formData,
   errors,
@@ -18,15 +52,21 @@ const UploadForm: React.FC<UploadFormProps> = ({
   tiposRecurso,
   uploading,
   uploadError,
+  duplicateWarning,
   onCareerChange,
   onPlanChange,
   onSubjectChange,
   onTypeChange,
-  onPeriodChange,
+  onTitleChange,
+  onSubtypeChange,
+  onExamYearChange,
+  onExamMonthChange,
+  onTopicChange,
   onNotesChange,
   onFileChange,
   onImagesChange,
   onFileModeChange,
+  onDuplicateConfirm,
   onSubmit,
 }) => (
   <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border gradient-border p-6'>
@@ -76,14 +116,66 @@ const UploadForm: React.FC<UploadFormProps> = ({
         />
       </FormField>
 
-      <FormField label='Período'>
-        <TextInput
-          name='period'
-          value={formData.period}
-          onChange={(e) => onPeriodChange(e.target.value)}
-          placeholder='Ej: 1C 2024, Final Feb 2024'
-        />
-      </FormField>
+      {formData.type === 'resumen' && (
+        <FormField label='Título' required>
+          <TextInput
+            name='title'
+            value={formData.title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            placeholder='Ej: Resumen Cálculo I'
+            error={errors.title}
+          />
+        </FormField>
+      )}
+
+      {formData.type === 'parcial' && (
+        <FormField label='Subtipo' required>
+          <SelectInput
+            name='subtype'
+            value={formData.subtype}
+            onValueChange={onSubtypeChange}
+            options={SUBTYPES}
+            placeholder='Seleccioná el subtipo'
+            error={errors.subtype}
+          />
+        </FormField>
+      )}
+
+      <div className='grid grid-cols-2 gap-4'>
+        <FormField label='Año del examen' required>
+          <SelectInput
+            name='examYear'
+            value={formData.examYear}
+            onValueChange={onExamYearChange}
+            options={YEARS}
+            placeholder='Año'
+            error={errors.examYear}
+          />
+        </FormField>
+
+        <FormField label='Mes del examen' required>
+          <SelectInput
+            name='examMonth'
+            value={formData.examMonth}
+            onValueChange={onExamMonthChange}
+            options={MONTHS}
+            placeholder='Mes'
+            error={errors.examMonth}
+          />
+        </FormField>
+      </div>
+
+      {(formData.type === 'parcial' || formData.type === 'final') && (
+        <FormField label='Tema'>
+          <SelectInput
+            name='topic'
+            value={formData.topic}
+            onValueChange={onTopicChange}
+            options={TOPICS}
+            placeholder='Sin tema'
+          />
+        </FormField>
+      )}
 
       <FormField label='Notas'>
         <TextAreaInput
@@ -108,6 +200,18 @@ const UploadForm: React.FC<UploadFormProps> = ({
       </FormField>
 
       <div className='pt-6'>
+        {duplicateWarning?.hasSimilar && (
+          <div className='mb-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-yellow-200'>
+            <p className='text-sm font-semibold mb-2'>Ya existe un recurso similar en revisión o publicado. ¿Querés subirlo de todas formas?</p>
+            <button
+              type='button'
+              onClick={onDuplicateConfirm}
+              className='text-sm font-bold underline hover:text-yellow-100'
+            >
+              Subir de todas formas
+            </button>
+          </div>
+        )}
         <ErrorMessage message={uploadError} />
         <SubmitButton
           uploadError={uploadError}

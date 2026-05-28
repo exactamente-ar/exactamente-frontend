@@ -42,15 +42,21 @@ function UploadSectionInner() {
     showSuccess,
     uploading,
     uploadError,
+    duplicateWarning,
     onCareerChange,
     onPlanChange,
     onSubjectChange,
     onTypeChange,
-    onPeriodChange,
+    onTitleChange,
+    onSubtypeChange,
+    onExamYearChange,
+    onExamMonthChange,
+    onTopicChange,
     onNotesChange,
     onFileChange,
     onImagesChange,
     onFileModeChange,
+    onDuplicateConfirm,
     handleSubmit,
     closeSuccess,
   } = useUploadForm(parseInitialValues());
@@ -113,15 +119,21 @@ function UploadSectionInner() {
             tiposRecurso={tiposRecurso}
             uploading={uploading}
             uploadError={uploadError}
+            duplicateWarning={duplicateWarning}
             onCareerChange={onCareerChange}
             onPlanChange={onPlanChange}
             onSubjectChange={onSubjectChange}
             onTypeChange={onTypeChange}
-            onPeriodChange={onPeriodChange}
+            onTitleChange={onTitleChange}
+            onSubtypeChange={onSubtypeChange}
+            onExamYearChange={onExamYearChange}
+            onExamMonthChange={onExamMonthChange}
+            onTopicChange={onTopicChange}
             onNotesChange={onNotesChange}
             onFileChange={onFileChange}
             onImagesChange={onImagesChange}
             onFileModeChange={onFileModeChange}
+            onDuplicateConfirm={onDuplicateConfirm}
             onSubmit={handleSubmit}
           />
         </div>

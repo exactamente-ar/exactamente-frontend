@@ -10,12 +10,14 @@ interface Props {
   title: string;
   fileUrl: string;
   type: string;
+  subtype: string | null;
+  examYear: number | null;
+  examMonth: number | null;
+  topic: number | null;
   mostRecent: boolean;
 }
 
-const CardResource: React.FC<Props> = ({ title, fileUrl, type, mostRecent }) => {
-  const partsTitle = title.split('.');
-
+const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear, examMonth, topic, mostRecent }) => {
   const {
     previewOpen,
     iframeLoaded,
@@ -27,10 +29,13 @@ const CardResource: React.FC<Props> = ({ title, fileUrl, type, mostRecent }) => 
   return (
     <div className='flex flex-col bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-xl hover:border-zinc-700/80 transition-all duration-300 group overflow-hidden'>
       <HeaderCardResource
-        fileFormat={partsTitle[1]}
-        title={partsTitle[0]}
-        mostRecent={mostRecent}
+        title={title}
         type={type}
+        subtype={subtype}
+        examYear={examYear}
+        examMonth={examMonth}
+        topic={topic}
+        mostRecent={mostRecent}
       />
 
       {/* Vista previa */}
