@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import FilterBar from './FilterBar';
 import ListOfSubjects from './ListOfSubjects';
 import { useFilterState } from '@/features/home/hooks/useFilterState';
@@ -21,6 +21,12 @@ function SubjectsView() {
     useFilterOptions(filtersForOptions);
 
   const { filteredSubjects, loading, showMore, hasMore, planOptions } = useSubjects(filterState.applied, scopeReady);
+
+  useEffect(() => {
+    if (planOptions.length === 1 && filterState.applied.planId !== planOptions[0].id) {
+      filterState.commitFilter('planId', planOptions[0].id);
+    }
+  }, [planOptions]);
 
   const options = useMemo<FilterOptions>(
     () => ({

@@ -7,13 +7,13 @@ const sponsors = [
     logo: "/sponsors/hacktandil.svg",
     luma: "https://luma.com/hacktandil",
   },
-  {
-    name: "Nodo Serrano",
-    description: "Comunidad tech",
-    href: "https://nodoserrano.org",
-    logo: null,
-    luma: "https://luma.com/nodoserrano",
-  },
+  // {
+  //   name: "Nodo Serrano",
+  //   description: "Comunidad tech",
+  //   href: "https://nodoserrano.org",
+  //   logo: null,
+  //   luma: "https://luma.com/nodoserrano",
+  // },
 ];
 ---
 
@@ -22,7 +22,7 @@ const sponsors = [
     Con el apoyo <span class="gradient-text">de</span>
   </h2>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div class="flex justify-center w-full max-w-sm mx-auto">
     {
       sponsors.map((s) => (
         <div class="relative flex flex-col rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20">
