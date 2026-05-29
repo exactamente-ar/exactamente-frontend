@@ -1,11 +1,15 @@
+/** Match against API `shortName` (case-insensitive) to set default scope. */
+export const DEFAULT_UNIVERSITY_SHORT = 'UNICEN';
+export const DEFAULT_FACULTY_SHORT = 'EXACTAS';
+export const DEFAULT_CAREER_SHORT = 'Ing. en Sistemas';
+
 export const INITIAL_FILTERS = {
   search: '',
   quadmester: 0,
   year: 0,
-  carrer: 'Ingenieria en Sistemas',
+  careerId: '',
+  planId: '',
 };
-
-export const CARRERS_FILTER = ['Ingenieria en Sistemas'];
 
 export const YEARS_FILTER = [
   { label: 'Todos', value: 0 },

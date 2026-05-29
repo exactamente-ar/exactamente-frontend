@@ -1,36 +1,27 @@
+import { Button } from '@/shared/components/ui/button';
+import { cn } from '@/shared/lib/utils';
 import IconDownload from '@/shared/components/icons/react/IconDownload';
 
 interface SubmitButtonProps {
   isSubmitting: boolean;
   text: string;
   submittingText: string;
-  errors: {
-    materia?: string;
-    tipoRecurso?: string;
-    titulo?: string;
-    archivo?: string;
-    captcha?: string;
-  };
+  errors: Record<string, string | undefined>;
   uploadError?: string | null;
 }
 
-function SubmitButton({
-  isSubmitting,
-  text,
-  submittingText,
-  errors,
-  uploadError,
-}: SubmitButtonProps) {
+function SubmitButton({ isSubmitting, text, submittingText, errors, uploadError }: SubmitButtonProps) {
   const hasError =
     !!uploadError || Object.values(errors).some((error) => error && error.length > 0);
 
   return (
-    <button
+    <Button
       type='submit'
       disabled={isSubmitting}
-      className={`  cursor-pointer w-full bg-primary text-black font-bold py-3 rounded-xl  transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed ${
-        hasError && 'border-4 border-red-500 shadowlg-xl shadow-red-500/20 hover:shadow-red-500/30'
-      }`}
+      className={cn(
+        'w-full bg-primary text-black font-bold py-3 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:bg-primary disabled:opacity-70 disabled:cursor-not-allowed h-auto cursor-pointer',
+        hasError && 'border-4 border-red-500 shadow-lg shadow-red-500/20'
+      )}
     >
       {isSubmitting ? (
         <span className='flex items-center gap-2'>
@@ -53,7 +44,7 @@ function SubmitButton({
           {text}
         </>
       )}
-    </button>
+    </Button>
   );
 }
 

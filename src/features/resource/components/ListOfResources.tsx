@@ -5,13 +5,19 @@ import CardResource from './CardResource';
 import CardResourceLoading from './CardResourceLoading';
 
 interface Props {
-  resources: ResourceFetch[];
+  resources: ResourceFetch[] | null;
   type: string;
   error: string | null;
   loading: boolean;
 }
 
 const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = true }) => {
+  const sorted = [...(resources ?? [])].sort((a, b) => {
+    const yearDiff = (b.examYear ?? 0) - (a.examYear ?? 0);
+    if (yearDiff !== 0) return yearDiff;
+    return (b.examMonth ?? 0) - (a.examMonth ?? 0);
+  });
+
   if (loading) {
     return (
       <div className='grid grid-cols-1 gap-4 mt-4'>
@@ -33,11 +39,11 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
 
   return (
     <div className='grid grid-cols-1 gap-4 mt-4'>
-      {resources && resources.length == 0 ? (
+      {sorted.length === 0 ? (
         <div className='flex flex-col w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
           <h2 className='text-xl font-semibold text-zinc-100 mb-2'>Sin resultados</h2>
           <p className='text-zinc-400 mb-4'>No se encontraron {type} disponibles.</p>
-            <a 
+            <a
             href='/upload'
         className='mx-auto cursor-pointer flex items-center  duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
 
@@ -51,17 +57,21 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
         </div>
       ) : (
         <>
-          {(resources ?? []).map((resource, i) => (
+          {sorted.map((resource, i) => (
             <CardResource
-              key={resource.title + i}
+              key={resource.id}
               title={resource.title}
-              urlDrive={resource.urlDrive}
+              fileUrl={resource.fileUrl}
               type={type}
+              subtype={resource.subtype}
+              examYear={resource.examYear}
+              examMonth={resource.examMonth}
+              topic={resource.topic}
               mostRecent={i === 0}
             />
           ))}
 
-          <a 
+          <a
             href='/upload'
             className='mx-auto cursor-pointer flex items-center mt-10 duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
 

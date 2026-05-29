@@ -1,12 +1,12 @@
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
 import type { Subject } from '@/features/home/types/subjects';
 
 interface Props {
   subjectCurrent: Subject | undefined;
   correlatives: string[];
+  subjects: Subject[];
 }
 
-export default function InfoSubjectSelect({ subjectCurrent, correlatives }: Props) {
+export default function InfoSubjectSelect({ subjectCurrent, correlatives, subjects }: Props) {
   return (
     <div className='mt-12 p-6 bg-yellow-900/20 border border-yellow-500/30 rounded-2xl'>
       <h3 className='text-yellow-400 font-bold text-lg mb-4'>Materia Seleccionada</h3>
@@ -31,7 +31,7 @@ export default function InfoSubjectSelect({ subjectCurrent, correlatives }: Prop
               {subjectCurrent && subjectCurrent.required.length > 0 ? (
                 <ul className='text-gray-300 text-sm ml-4'>
                   {subjectCurrent?.required.map((reqId) => {
-                    const reqMateria = MATERIAS_SISTEMAS.find((m) => m.id === reqId);
+                    const reqMateria = subjects.find((m) => m.id === reqId);
                     return <li key={reqId}>• {reqMateria?.title || reqId}</li>;
                   })}
                 </ul>
@@ -44,7 +44,7 @@ export default function InfoSubjectSelect({ subjectCurrent, correlatives }: Prop
               {correlatives.length > 0 ? (
                 <ul className='text-gray-300 text-sm ml-4'>
                   {correlatives.map((corrId) => {
-                    const corrMateria = MATERIAS_SISTEMAS.find((m) => m.id === corrId);
+                    const corrMateria = subjects.find((m) => m.id === corrId);
                     return <li key={corrId}>• {corrMateria?.title || corrId}</li>;
                   })}
                 </ul>

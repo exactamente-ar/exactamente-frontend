@@ -1,18 +1,12 @@
-export interface TypeResource {
-  date: string;
-  downloads: number;
-  from: string;
-  mostRecent: boolean;
-  size: string;
-  type: string;
-  title: string;
-}
-
 export type ResourceFetch = {
   id: string;
-  idMateria: string;
   title: string;
-  urlDrive: string;
+  fileUrl: string;
+  type: 'resumen' | 'parcial' | 'final';
+  subtype: 'parcial' | 'recuperatorio' | 'prefinal' | 'parcialito' | null;
+  examYear: number | null;
+  examMonth: number | null;
+  topic: number | null;
 };
 
 export type StringResource = 'Parciales' | 'Resumenes' | 'Finales';

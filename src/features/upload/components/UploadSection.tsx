@@ -1,59 +1,154 @@
 import { useUploadForm } from '@/features/upload/hooks/useUploadForm';
 import SuccessModal from './SuccesModal';
-import { MATERIAS_SISTEMAS } from '@/shared/data/materias';
 import UploadForm from './UploadForm';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { getCareers, getSubjects, getCareerPlans } from '@/shared/services/api';
+import type { Subject } from '@/features/home/types/subjects';
+import { AuthProvider } from '@/features/auth/context/AuthContext';
+import { AuthGuard } from '@/features/auth/components/AuthGuard';
+import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 
-const subjects = MATERIAS_SISTEMAS.map((subject) => subject.title);
 const tiposRecurso = [
-  { value: 'resumen', label: 'Resumen', color: 'from-emerald-500 to-emerald-600' },
-  { value: 'parcial', label: 'Parcial', color: 'from-blue-500 to-blue-600' },
-  { value: 'final', label: 'Final', color: 'from-purple-500 to-purple-600' },
+  { value: 'resumen', label: 'Resumen' },
+  { value: 'parcial', label: 'Parcial' },
+  { value: 'final', label: 'Final' },
 ];
 
-const UploadSection = () => {
+function LoginGate() {
+  return (
+    <div className='max-w-md mx-auto pt-12 text-center space-y-4'>
+      <p className='text-zinc-400'>Iniciá sesión para subir recursos</p>
+      <GoogleLoginButton />
+    </div>
+  );
+}
+
+function parseInitialValues() {
+  if (typeof window === 'undefined') return {};
+  const params = new URLSearchParams(window.location.search);
+  const careerId = params.get('careerId');
+  const planId = params.get('planId');
+  const subjectId = params.get('subjectId');
+  const type = params.get('type');
+  const result: Record<string, string> = {};
+  if (careerId) result.careerId = careerId;
+  if (planId) result.planId = planId;
+  if (subjectId) result.subjectId = subjectId;
+  if (type === 'resumen' || type === 'parcial' || type === 'final') result.type = type;
+  return result;
+}
+
+function UploadSectionInner() {
   const {
     formData,
     errors,
     showSuccess,
-    handleInputChange,
-    handleFileChange,
+    uploading,
+    uploadError,
+    duplicateWarning,
+    onCareerChange,
+    onPlanChange,
+    onSubjectChange,
+    onTypeChange,
+    onTitleChange,
+    onSubtypeChange,
+    onExamYearChange,
+    onExamMonthChange,
+    onTopicChange,
+    onNotesChange,
+    onFileChange,
+    onImagesChange,
+    onFileModeChange,
+    onDuplicateConfirm,
     handleSubmit,
     closeSuccess,
-    uploading,
-    captchaToken,
-    setCaptchaToken,
-    uploadError,
-  } = useUploadForm();
-  console.log(errors);
+  } = useUploadForm(parseInitialValues());
+
+  const [careers, setCareers] = useState<{ value: string; label: string }[]>([]);
+  const [plans, setPlans] = useState<{ value: string; label: string }[]>([]);
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
+  const [subjects, setSubjects] = useState<{ value: string; label: string }[]>([]);
+
   useEffect(() => {
     const skeleton = document.getElementById('upload-skeleton');
-    if (skeleton) {
-      skeleton.style.display = 'none';
-    }
+    if (skeleton) skeleton.style.display = 'none';
   }, []);
+
+  useEffect(() => {
+    getCareers().then(({ data }) => {
+      setCareers(data.map((c) => ({ value: c.id, label: c.name })));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!formData.careerId) {
+      setPlans([]);
+      setAllSubjects([]);
+      setSubjects([]);
+      return;
+    }
+    getCareerPlans(formData.careerId).then(({ data }) => {
+      const mapped = data.map((p) => ({ value: p.id, label: p.name }));
+      setPlans(mapped);
+      if (mapped.length === 1 && !formData.planId) onPlanChange(mapped[0].value);
+    });
+    getSubjects({ careerId: formData.careerId }).then(({ data }) => {
+      setAllSubjects(data);
+    });
+  }, [formData.careerId]);
+
+  useEffect(() => {
+    if (!formData.planId) {
+      setSubjects([]);
+      return;
+    }
+    const filtered = allSubjects
+      .filter((s) => s.careers.some((c) => c.planId === formData.planId))
+      .map((s) => ({ value: s.id, label: s.title }));
+    setSubjects(filtered);
+  }, [formData.planId, allSubjects]);
 
   return (
     <>
       <SuccessModal showSuccess={showSuccess} closeSuccess={closeSuccess} />
-      <div className='max-w-4xl mx-auto pt-12'>
-
-        <UploadForm
-          setCaptchaToken={setCaptchaToken}
-          captchaToken={captchaToken}
-          uploadError={uploadError}
-          uploading={uploading}
-          formData={formData}
-          errors={errors}
-          handleInputChange={handleInputChange}
-          handleFileChange={handleFileChange}
-          handleSubmit={handleSubmit}
-          subjects={subjects}
-          tiposRecurso={tiposRecurso}
-        />
-      </div>
+      <AuthGuard fallback={<LoginGate />}>
+        <div className='max-w-4xl mx-auto pt-12'>
+          <UploadForm
+            formData={formData}
+            errors={errors}
+            careers={careers}
+            plans={plans}
+            subjects={subjects}
+            tiposRecurso={tiposRecurso}
+            uploading={uploading}
+            uploadError={uploadError}
+            duplicateWarning={duplicateWarning}
+            onCareerChange={onCareerChange}
+            onPlanChange={onPlanChange}
+            onSubjectChange={onSubjectChange}
+            onTypeChange={onTypeChange}
+            onTitleChange={onTitleChange}
+            onSubtypeChange={onSubtypeChange}
+            onExamYearChange={onExamYearChange}
+            onExamMonthChange={onExamMonthChange}
+            onTopicChange={onTopicChange}
+            onNotesChange={onNotesChange}
+            onFileChange={onFileChange}
+            onImagesChange={onImagesChange}
+            onFileModeChange={onFileModeChange}
+            onDuplicateConfirm={onDuplicateConfirm}
+            onSubmit={handleSubmit}
+          />
+        </div>
+      </AuthGuard>
     </>
   );
-};
+}
 
-export default UploadSection;
+export default function UploadSection() {
+  return (
+    <AuthProvider>
+      <UploadSectionInner />
+    </AuthProvider>
+  );
+}

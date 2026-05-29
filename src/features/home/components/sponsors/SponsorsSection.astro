@@ -1,0 +1,73 @@
+---
+const sponsors = [
+  {
+    name: "HackTandil",
+    description: "Comunidad tech",
+    href: "https://hacktandil.org",
+    logo: "/sponsors/hacktandil.svg",
+    luma: "https://luma.com/hacktandil",
+  },
+  // {
+  //   name: "Nodo Serrano",
+  //   description: "Comunidad tech",
+  //   href: "https://nodoserrano.org",
+  //   logo: null,
+  //   luma: "https://luma.com/nodoserrano",
+  // },
+];
+---
+
+<section class="relative w-full py-16 md:py-20">
+  <h2 class="text-3xl sm:text-4xl font-bold mb-10 text-center text-foreground">
+    Con el apoyo <span class="gradient-text">de</span>
+  </h2>
+
+  <div class="flex justify-center w-full max-w-sm mx-auto">
+    {
+      sponsors.map((s) => (
+        <div class="relative flex flex-col rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="relative flex flex-col items-center justify-center gap-3 px-8 pt-10 pb-6 text-center border-b border-zinc-800 hover:bg-white/5 transition-colors duration-200"
+          >
+            <div class="gradient-bg-animated p-[1px] rounded-2xl h-20 w-20 shrink-0">
+              <div class="flex h-full w-full items-center justify-center rounded-[calc(1rem-1px)] bg-zinc-950 overflow-hidden">
+              {s.logo ? (
+                <img src={s.logo} alt={s.name} class="h-14 w-14 object-contain" />
+              ) : (
+                <span class="text-xl font-bold text-foreground-muted">
+                  {s.name.split(" ").map((w: string) => w[0]).join("")}
+                </span>
+              )}
+              </div>
+            </div>
+            <span class="text-base font-bold text-foreground">{s.name}</span>
+            <span class="text-sm text-foreground-muted">{s.description}</span>
+          </a>
+
+          {s.luma && (
+            <a
+              href={s.luma}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center justify-center gap-2 px-8 py-4 text-sm text-foreground-muted hover:text-foreground hover:bg-white/5 transition-colors duration-200"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="shrink-0">
+                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Ver próximos eventos
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="group-hover:translate-x-0.5 transition-transform shrink-0">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>

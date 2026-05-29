@@ -1,3 +1,6 @@
+import React from 'react';
+import { Textarea } from '@/shared/components/ui/textarea';
+
 interface TextAreaInputProps {
   name: string;
   value: string;
@@ -13,13 +16,16 @@ const TextAreaInput: React.FC<TextAreaInputProps> = ({
   placeholder,
   rows = 4,
 }) => (
-  <textarea
-    name={name}
-    value={value}
-    onChange={onChange}
-    rows={rows}
-    placeholder={placeholder}
-    className='w-full text-foreground-secondary font-bold px-4 py-3 border border-primary/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-[#0084ff] transition-all duration-200 bg-black/20 resize-none'
-  />
+  <div className='search-gradient-border rounded-xl'>
+    <Textarea
+      name={name}
+      value={value}
+      onChange={onChange}
+      rows={rows}
+      placeholder={placeholder}
+      className='placeholder:text-muted-foreground'
+    />
+  </div>
 );
+
 export default TextAreaInput;

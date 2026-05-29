@@ -20,9 +20,9 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
       {options.map((tipo) => (
         <label
           key={tipo.value}
-          className={`relative flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+          className={`search-gradient-border relative flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
             value === tipo.value
-              ? 'border-[#0084ff] bg-[#0084ff]/10'
+              ? 'gradient-active border-transparent bg-black/30'
               : 'border-primary/30 bg-black/20 hover:border-gray-400'
           }`}
         >
@@ -35,8 +35,10 @@ const RadioGroupInput: React.FC<RadioGroupInputProps> = ({
             className='sr-only'
           />
           <div
-            className={`w-5 h-5 text-foreground-secondary font-bold rounded-full border mr-3 flex items-center justify-center ${
-              value === tipo.value ? 'border-[#0084ff] bg-[#0084ff]' : 'border-primary/30'
+            className={`w-5 h-5 font-bold rounded-full border mr-3 flex items-center justify-center ${
+              value === tipo.value
+                ? 'border-zinc-500 bg-zinc-600'
+                : 'border-primary/30'
             }`}
           >
             {value === tipo.value && <div className='w-2 h-2 bg-black rounded-full'></div>}

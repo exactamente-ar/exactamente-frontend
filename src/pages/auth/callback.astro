@@ -1,0 +1,48 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout>
+  <div class="flex items-center justify-center min-h-[60vh]">
+    <div class="w-8 h-8 border-2 border-primary/30 border-t-white rounded-full animate-spin" />
+  </div>
+</Layout>
+
+<script>
+  import { getMe } from '@/shared/services/api';
+
+  const BASE_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000';
+
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+
+  if (!code) {
+    window.location.replace('/upload');
+  } else {
+    try {
+      const exchangeRes = await fetch(`${BASE_URL}/api/v1/auth/exchange`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+
+      if (!exchangeRes.ok) {
+        window.location.replace('/upload');
+      } else {
+        const { token } = await exchangeRes.json() as { token: string };
+        const result = await getMe(token);
+        if (result.error) {
+          window.location.replace('/upload');
+        } else {
+          localStorage.setItem(
+            'exactamente_auth',
+            JSON.stringify({ user: result.data, token })
+          );
+          window.location.replace('/upload');
+        }
+      }
+    } catch {
+      window.location.replace('/upload');
+    }
+  }
+</script>

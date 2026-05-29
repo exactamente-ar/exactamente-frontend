@@ -8,4 +8,3 @@ export const TIPOS_MATERIA = {
   OTRA: 'otra',
 } as const;
 
-export const INITIAL_SELECTED_SUBJECT = 'A1C1M1';
