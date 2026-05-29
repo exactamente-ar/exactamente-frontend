@@ -7,8 +7,7 @@ export function GoogleLoginButton() {
   return (
     <Button
       type='button'
-      variant='outline'
-      className='w-full gap-3'
+      className='w-full gap-3 bg-primary text-black font-bold rounded-full py-3 h-auto cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:bg-primary'
       onClick={() => {
         window.location.href = GOOGLE_AUTH_URL;
       }}
