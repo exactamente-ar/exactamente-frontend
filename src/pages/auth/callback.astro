@@ -11,20 +11,37 @@ import Layout from "@/layouts/Layout.astro";
 <script>
   import { getMe } from '@/shared/services/api';
 
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+  const BASE_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000';
 
-  if (!token) {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+
+  if (!code) {
     window.location.replace('/upload');
   } else {
-    const result = await getMe(token);
-    if (result.error) {
-      window.location.replace('/upload');
-    } else {
-      localStorage.setItem(
-        'exactamente_auth',
-        JSON.stringify({ user: result.data, token })
-      );
+    try {
+      const exchangeRes = await fetch(`${BASE_URL}/api/v1/auth/exchange`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+
+      if (!exchangeRes.ok) {
+        window.location.replace('/upload');
+      } else {
+        const { token } = await exchangeRes.json() as { token: string };
+        const result = await getMe(token);
+        if (result.error) {
+          window.location.replace('/upload');
+        } else {
+          localStorage.setItem(
+            'exactamente_auth',
+            JSON.stringify({ user: result.data, token })
+          );
+          window.location.replace('/upload');
+        }
+      }
+    } catch {
       window.location.replace('/upload');
     }
   }
