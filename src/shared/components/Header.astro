@@ -1,5 +1,6 @@
 ---
 import ContainerLink from './ContainerLink.astro';
+import UserMenu from '@/features/auth/components/UserMenu';
 ---
 
 <header class='fixed top-2 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-6xl 2xl:max-w-8xl rounded-2xl bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-md gradient-border-all shadow-2xl shadow-black/50' id='blur-element'>
@@ -41,6 +42,10 @@ import ContainerLink from './ContainerLink.astro';
         >
           Subir Recurso
         </ContainerLink>
+
+        <div class='hidden sm:flex'>
+          <UserMenu client:load />
+        </div>
 
         <div class='block md:hidden'>
           <button
@@ -114,6 +119,9 @@ import ContainerLink from './ContainerLink.astro';
       >
         Subir Recurso
       </a>
+      <div class='flex justify-center mt-4'>
+        <UserMenu client:load />
+      </div>
     </div>
   </div>
 

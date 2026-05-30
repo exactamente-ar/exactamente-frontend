@@ -11,15 +11,26 @@ const { hideSponsor = false } = Astro.props;
       {!hideSponsor && (
       <div class='flex flex-col gap-2'>
         <span class='text-xs uppercase tracking-widest text-zinc-500'>Con el apoyo de</span>
-        <a
-          href='https://hacktandil.org'
-          target='_blank'
-          rel='noopener noreferrer'
-          class='inline-flex items-center gap-2 border border-border rounded-lg px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 hover:border-white/20 transition-colors duration-200 w-fit'
-        >
-          <img src='/sponsors/hacktandil.svg' alt='' class='h-5 w-auto' />
-          <span>HackTandil</span>
-        </a>
+        <div class='flex gap-2'>
+          <a
+            href='https://hacktandil.org'
+            target='_blank'
+            rel='noopener noreferrer'
+            class='inline-flex items-center gap-2 border border-border rounded-lg px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 hover:border-white/20 transition-colors duration-200 w-fit'
+          >
+            <img src='/sponsors/hacktandil.svg' alt='' class='h-5 w-auto' />
+            <span>HackTandil</span>
+          </a>
+          <a
+            href='https://nodoserrano.org'
+            target='_blank'
+            rel='noopener noreferrer'
+            class='inline-flex items-center gap-2 border border-border rounded-lg px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 hover:border-white/20 transition-colors duration-200 w-fit'
+          >
+            <img src='/sponsors/nodoserrano.png' alt='' class='h-5 w-auto' />
+            <span>Nodo Serrano</span>
+          </a>
+        </div>
       </div>
       )}
 
@@ -60,7 +71,11 @@ const { hideSponsor = false } = Astro.props;
       <p class='text-sm text-zinc-600'>
         © Todos los derechos reservados 2025.
       </p>
-      <span class='text-sm text-zinc-600'>Facultad de Ciencias Exactas</span>
+      <div class='flex items-center gap-4'>
+        <a href='/privacy' class='text-sm text-zinc-600 hover:text-zinc-400 transition-colors duration-200'>Privacidad</a>
+        <a href='/terms' class='text-sm text-zinc-600 hover:text-zinc-400 transition-colors duration-200'>Términos</a>
+        <span class='text-sm text-zinc-600'>Facultad de Ciencias Exactas</span>
+      </div>
     </div>
   </div>
 </footer>
