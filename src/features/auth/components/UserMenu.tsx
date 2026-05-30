@@ -35,17 +35,22 @@ function UserMenuInner() {
 
   return (
     <div ref={ref} className='relative'>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className='flex items-center justify-center w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 overflow-hidden hover:border-zinc-500 hover:bg-zinc-700 transition-all duration-200'
-        aria-label='Menú de usuario'
+      <div
+        className='p-[2px] rounded-full cursor-pointer'
+        style={{ background: 'linear-gradient(135deg, rgba(244,63,94,0.5), rgba(168,85,247,0.5), rgba(59,130,246,0.5), rgba(16,185,129,0.5))' }}
       >
-        {user.photoUrl ? (
-          <img src={user.photoUrl} alt={user.displayName} className='w-full h-full object-cover' referrerPolicy='no-referrer' />
-        ) : (
-          <span className='text-sm font-bold text-zinc-200'>{getInitials(user.displayName)}</span>
-        )}
-      </button>
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className='flex items-center justify-center w-9 h-9 rounded-full bg-zinc-800 overflow-hidden transition-all duration-200'
+          aria-label='Menú de usuario'
+        >
+          {user.photoUrl ? (
+            <img src={user.photoUrl} alt={user.displayName} className='w-full h-full object-cover' referrerPolicy='no-referrer' />
+          ) : (
+            <span className='text-sm font-bold text-zinc-200'>{getInitials(user.displayName)}</span>
+          )}
+        </button>
+      </div>
 
       {open && (
         <div className='absolute right-0 top-full mt-2 w-48 rounded-xl bg-zinc-900 border border-zinc-800 shadow-2xl shadow-black/40 backdrop-blur-md overflow-hidden z-50'>
