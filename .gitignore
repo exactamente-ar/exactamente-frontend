@@ -45,3 +45,9 @@ coverage
 # ───────────────
 .DS_Store
 Thumbs.db
+
+# ───────────────
+# Claude Code
+# ───────────────
+docs/superpowers/
+.claude/

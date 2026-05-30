@@ -32,6 +32,7 @@ const sponsors = [
             href={s.href}
             target="_blank"
             rel="noopener noreferrer"
+            onclick={`gtag('event', 'sponsor_click', { sponsor: '${s.name}', type: 'website' })`}
             class="relative flex flex-col items-center justify-center gap-3 px-8 pt-10 pb-6 text-center border-b border-zinc-800 hover:bg-white/5 transition-colors duration-200"
           >
             <div class="gradient-bg-animated p-[1px] rounded-2xl h-20 w-20 shrink-0">
@@ -54,6 +55,7 @@ const sponsors = [
               href={s.luma}
               target="_blank"
               rel="noopener noreferrer"
+              onclick={`gtag('event', 'sponsor_click', { sponsor: '${s.name}', type: 'events' })`}
               class="group flex items-center justify-center gap-2 px-8 py-4 text-sm text-foreground-muted hover:text-foreground hover:bg-white/5 transition-colors duration-200"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="shrink-0">
