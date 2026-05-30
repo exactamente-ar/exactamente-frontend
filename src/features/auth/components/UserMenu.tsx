@@ -38,7 +38,7 @@ function UserMenuInner() {
       <div className='relative rounded-xl gradient-border-all'>
         <button
           onClick={() => setOpen((v) => !v)}
-          className='flex items-center justify-center w-9 h-9 rounded-xl bg-zinc-800 overflow-hidden transition-all duration-200 cursor-pointer'
+          className='flex items-center justify-center w-11 h-11 rounded-xl bg-zinc-800 overflow-hidden transition-all duration-200 cursor-pointer'
           aria-label='Menú de usuario'
         >
           {user.photoUrl ? (

@@ -418,5 +418,5 @@ select option {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.5;
 }
