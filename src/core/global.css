@@ -418,5 +418,23 @@ select option {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  opacity: 0.1;
+}
+
+.gradient-border-all-strong::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background-size: 300% 300%;
+  animation: gradient-border 8s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
   opacity: 0.5;
 }

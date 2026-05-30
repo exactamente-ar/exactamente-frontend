@@ -35,7 +35,7 @@ function UserMenuInner() {
 
   return (
     <div ref={ref} className='relative'>
-      <div className='relative rounded-xl gradient-border-all'>
+      <div className='relative rounded-xl gradient-border-all-strong'>
         <button
           onClick={() => setOpen((v) => !v)}
           className='flex items-center justify-center w-11 h-11 rounded-xl bg-zinc-800 overflow-hidden transition-all duration-200 cursor-pointer'
