@@ -2,14 +2,14 @@
 const sponsors = [
   {
     name: "HackTandil",
-    description: "Comunidad tech",
+    description: "Un espacio comunitario para conocer personas que hacen tecnología en Tandil",
     href: "https://hacktandil.org",
     logo: "/sponsors/hacktandil.svg",
     luma: "https://luma.com/hacktandil",
   },
   {
     name: "Nodo Serrano",
-    description: "Comunidad tech",
+    description: "Comunidad Web3 en Tandil<br>Charlas y experiencias para entender y construir el futuro descentralizado",
     href: "https://nodoserrano.org",
     logo: "/sponsors/nodoserrano.png",
     luma: "https://luma.com/nodoserrano",
@@ -25,7 +25,7 @@ const sponsors = [
   <div class="flex flex-wrap justify-center gap-6 w-full">
     {
       sponsors.map((s) => (
-        <div class="relative flex flex-col flex-1 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20">
+        <div class="relative flex flex-col w-full sm:flex-1 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border border-zinc-800 overflow-hidden hover:border-zinc-700 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20">
           <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
           <a
@@ -47,7 +47,7 @@ const sponsors = [
               </div>
             </div>
             <span class="text-base font-bold text-foreground">{s.name}</span>
-            <span class="text-sm text-foreground-muted">{s.description}</span>
+            <span class="text-sm text-foreground-muted" set:html={s.description} />
           </a>
 
           {s.luma && (
