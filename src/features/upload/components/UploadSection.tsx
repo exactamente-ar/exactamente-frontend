@@ -54,6 +54,7 @@ function UploadSectionInner() {
     onSubtypeChange,
     onExamYearChange,
     onExamMonthChange,
+    onExamDayChange,
     onTopicChange,
     onNotesChange,
     onFileChange,
@@ -131,6 +132,7 @@ function UploadSectionInner() {
             onSubtypeChange={onSubtypeChange}
             onExamYearChange={onExamYearChange}
             onExamMonthChange={onExamMonthChange}
+            onExamDayChange={onExamDayChange}
             onTopicChange={onTopicChange}
             onNotesChange={onNotesChange}
             onFileChange={onFileChange}

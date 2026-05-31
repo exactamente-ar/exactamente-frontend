@@ -324,6 +324,7 @@ export async function uploadResource(
     subtype?: string;
     examYear?: number;
     examMonth?: number;
+    examDay?: number;
     topic?: number;
     notes?: string;
   },
@@ -338,6 +339,7 @@ export async function uploadResource(
     form.append('examMonth', String(data.examMonth));
     if (data.title) form.append('title', data.title);
     if (data.subtype) form.append('subtype', data.subtype);
+    if (data.examDay != null) form.append('examDay', String(data.examDay));
     if (data.topic != null) form.append('topic', String(data.topic));
     if (data.notes) form.append('notes', data.notes);
 

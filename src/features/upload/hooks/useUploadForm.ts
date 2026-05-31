@@ -15,6 +15,7 @@ const INITIAL_STATE: UploadFormState = {
   subtype: '',
   examYear: '',
   examMonth: '',
+  examDay: '',
   topic: '',
   notes: '',
   file: null,
@@ -90,6 +91,7 @@ export function useUploadForm(initialValues?: InitialValues) {
     if (formData.type === 'parcial' && !formData.subtype) newErrors.subtype = 'Seleccioná el subtipo';
     if (!formData.examYear) newErrors.examYear = 'Seleccioná el año del examen';
     if (!formData.examMonth) newErrors.examMonth = 'Seleccioná el mes del examen';
+    if (formData.type === 'final' && !formData.examDay) newErrors.examDay = 'Ingresá el día del examen';
     if (formData.fileMode === 'pdf' && !formData.file) newErrors.file = 'Seleccioná un archivo PDF';
     if (formData.fileMode === 'images' && formData.imageFiles.length === 0) newErrors.file = 'Agregá al menos una imagen';
     setErrors(newErrors);
@@ -121,6 +123,7 @@ export function useUploadForm(initialValues?: InitialValues) {
           subtype: formData.subtype || undefined,
           examYear: formData.examYear ? Number(formData.examYear) : undefined,
           examMonth: formData.examMonth ? Number(formData.examMonth) : undefined,
+          examDay: formData.type === 'final' && formData.examDay ? Number(formData.examDay) : undefined,
           topic: formData.topic && formData.topic !== 'none' ? Number(formData.topic) : undefined,
           notes: formData.notes || undefined,
         },
@@ -192,13 +195,14 @@ export function useUploadForm(initialValues?: InitialValues) {
     },
     onSubjectChange: (v: string) => updateField('subjectId', v),
     onTypeChange: (v: string) => {
-      setFormData((prev) => ({ ...prev, type: v as UploadFormState['type'], title: '', subtype: '' }));
-      setErrors((prev) => ({ ...prev, type: undefined, title: undefined, subtype: undefined }));
+      setFormData((prev) => ({ ...prev, type: v as UploadFormState['type'], title: '', subtype: '', examDay: '' }));
+      setErrors((prev) => ({ ...prev, type: undefined, title: undefined, subtype: undefined, examDay: undefined }));
     },
     onTitleChange: (v: string) => updateField('title', v),
     onSubtypeChange: (v: string) => updateField('subtype', v),
     onExamYearChange: (v: string) => updateField('examYear', v),
     onExamMonthChange: (v: string) => updateField('examMonth', v),
+    onExamDayChange: (v: string) => updateField('examDay', v),
     onTopicChange: (v: string) => updateField('topic', v),
     onNotesChange: (v: string) => updateField('notes', v),
     onFileChange: (f: File | null) => updateField('file', f),
