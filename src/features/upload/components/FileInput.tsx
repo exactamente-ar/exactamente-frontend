@@ -10,6 +10,7 @@ interface FileInputProps {
   imageFiles: File[];
   onImagesChange: (files: File[]) => void;
   error?: string;
+  disabled?: boolean;
 }
 
 const MAX_SIZE = 20 * 1024 * 1024;
@@ -23,6 +24,7 @@ const FileInput: React.FC<FileInputProps> = ({
   imageFiles,
   onImagesChange,
   error,
+  disabled = false,
 }) => {
   const [thumbUrls, setThumbUrls] = useState<string[]>([]);
   const imgInputRef = useRef<HTMLInputElement>(null);
@@ -62,7 +64,7 @@ const FileInput: React.FC<FileInputProps> = ({
   };
 
   return (
-    <div className='space-y-3'>
+    <div className={`space-y-3 ${disabled ? 'opacity-40 pointer-events-none select-none' : ''}`}>
       {/* Mode toggle */}
       <div className='flex rounded-xl border border-primary/30 overflow-hidden w-fit'>
         {(['pdf', 'images'] as const).map((mode) => (

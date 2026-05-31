@@ -211,55 +211,56 @@ const UploadForm: React.FC<UploadFormProps> = ({
       </FormField>
 
       <FormField label='Archivo' required>
+        <FileInput
+          fileMode={formData.fileMode}
+          onFileModeChange={onFileModeChange}
+          file={formData.file}
+          onFileChange={onFileChange}
+          imageFiles={formData.imageFiles}
+          onImagesChange={onImagesChange}
+          error={errors.file}
+          disabled={!isAuthenticated && !isAuthLoading}
+        />
+      </FormField>
+
+      <div className='pt-6'>
         {isAuthLoading ? (
-          <div className='flex justify-center py-6'>
+          <div className='flex justify-center py-3'>
             <div className='w-6 h-6 border-2 border-primary/30 border-t-white rounded-full animate-spin' />
           </div>
         ) : !isAuthenticated ? (
-          <div className='rounded-lg border border-dashed border-zinc-700 bg-zinc-900/50 p-6 flex flex-col items-center gap-3 text-center'>
-            <p className='text-sm text-zinc-400'>Iniciá sesión para poder adjuntar un archivo</p>
+          <div className='flex flex-col items-center gap-3'>
+            <p className='text-sm text-zinc-400'>Iniciá sesión para enviar el recurso</p>
             <GoogleLoginButton onBeforeRedirect={() => {
               const { file, imageFiles, ...draft } = formData;
               localStorage.setItem('exactamente_upload_draft', JSON.stringify(draft));
             }} />
           </div>
         ) : (
-          <FileInput
-            fileMode={formData.fileMode}
-            onFileModeChange={onFileModeChange}
-            file={formData.file}
-            onFileChange={onFileChange}
-            imageFiles={formData.imageFiles}
-            onImagesChange={onImagesChange}
-            error={errors.file}
-          />
+          <>
+            {duplicateWarning?.hasSimilar && (
+              <div className='mb-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-yellow-200'>
+                <p className='text-sm font-semibold mb-2'>Ya existe un recurso similar en revisión o publicado. ¿Querés subirlo de todas formas?</p>
+                <button
+                  type='button'
+                  onClick={onDuplicateConfirm}
+                  className='text-sm font-bold underline hover:text-yellow-100'
+                >
+                  Subir de todas formas
+                </button>
+              </div>
+            )}
+            <ErrorMessage message={uploadError} />
+            <SubmitButton
+              uploadError={uploadError}
+              errors={errors}
+              isSubmitting={uploading}
+              text='Enviar Recurso'
+              submittingText='Subiendo...'
+            />
+          </>
         )}
-      </FormField>
-
-      {isAuthenticated && (
-        <div className='pt-6'>
-          {duplicateWarning?.hasSimilar && (
-            <div className='mb-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-yellow-200'>
-              <p className='text-sm font-semibold mb-2'>Ya existe un recurso similar en revisión o publicado. ¿Querés subirlo de todas formas?</p>
-              <button
-                type='button'
-                onClick={onDuplicateConfirm}
-                className='text-sm font-bold underline hover:text-yellow-100'
-              >
-                Subir de todas formas
-              </button>
-            </div>
-          )}
-          <ErrorMessage message={uploadError} />
-          <SubmitButton
-            uploadError={uploadError}
-            errors={errors}
-            isSubmitting={uploading}
-            text='Enviar Recurso'
-            submittingText='Subiendo...'
-          />
-        </div>
-      )}
+      </div>
     </form>
   </div>
 );
