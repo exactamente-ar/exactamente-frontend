@@ -3,12 +3,13 @@ import { Button } from '@/shared/components/ui/button';
 
 const GOOGLE_AUTH_URL = `${import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000'}/api/v1/auth/google`;
 
-export function GoogleLoginButton() {
+export function GoogleLoginButton({ onBeforeRedirect }: { onBeforeRedirect?: () => void } = {}) {
   return (
     <Button
       type='button'
       className='w-full gap-3 bg-primary text-black font-bold rounded-full py-3 h-auto cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:bg-primary'
       onClick={() => {
+        onBeforeRedirect?.();
         window.location.href = GOOGLE_AUTH_URL;
       }}
     >

@@ -16,6 +16,13 @@ const tiposRecurso = [
 
 function parseInitialValues() {
   if (typeof window === 'undefined') return {};
+
+  const draftRaw = localStorage.getItem('exactamente_upload_draft');
+  if (draftRaw) {
+    localStorage.removeItem('exactamente_upload_draft');
+    try { return JSON.parse(draftRaw); } catch {}
+  }
+
   const params = new URLSearchParams(window.location.search);
   const careerId = params.get('careerId');
   const planId = params.get('planId');

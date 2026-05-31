@@ -64,7 +64,7 @@ async function imagesToPdf(imageFiles: File[]): Promise<File> {
   return new File([blob], 'imagenes.pdf', { type: 'application/pdf' });
 }
 
-type InitialValues = Partial<Pick<UploadFormState, 'careerId' | 'planId' | 'subjectId' | 'type'>>;
+type InitialValues = Partial<Omit<UploadFormState, 'file' | 'imageFiles'>>;
 
 type DuplicateWarning = { hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> };
 

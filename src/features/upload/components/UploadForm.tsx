@@ -230,7 +230,10 @@ const UploadForm: React.FC<UploadFormProps> = ({
         ) : !isAuthenticated ? (
           <div className='flex flex-col items-center gap-3'>
             <p className='text-sm text-zinc-400'>Iniciá sesión para enviar el recurso</p>
-            <GoogleLoginButton />
+            <GoogleLoginButton onBeforeRedirect={() => {
+              const { file, imageFiles, ...draft } = formData;
+              localStorage.setItem('exactamente_upload_draft', JSON.stringify(draft));
+            }} />
           </div>
         ) : (
           <>
