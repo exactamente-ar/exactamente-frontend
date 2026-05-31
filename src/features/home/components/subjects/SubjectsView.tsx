@@ -6,6 +6,7 @@ import { useFilterOptions } from '@/features/home/hooks/useFilterOptions';
 import { useResolvedDefaultScope } from '@/features/home/hooks/useResolvedDefaultScope';
 import { useSubjects } from '@/features/home/hooks/useSubjects';
 import type { FilterOptions } from '@/features/home/types/filter';
+import { DEFAULT_PLAN_YEAR } from '@/features/home/constants/filter';
 
 function SubjectsView() {
   const { defaultScope, scopeError, scopeReady } = useResolvedDefaultScope();
@@ -25,6 +26,11 @@ function SubjectsView() {
   useEffect(() => {
     if (planOptions.length === 1 && filterState.applied.planId !== planOptions[0].id) {
       filterState.commitFilter('planId', planOptions[0].id);
+      return;
+    }
+    if (planOptions.length > 1 && !filterState.applied.planId) {
+      const defaultPlan = planOptions.find((p) => p.id.match(/\d+$/)?.[0] === String(DEFAULT_PLAN_YEAR));
+      if (defaultPlan) filterState.commitFilter('planId', defaultPlan.id);
     }
   }, [planOptions]);
 

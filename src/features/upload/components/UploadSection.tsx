@@ -3,6 +3,7 @@ import SuccessModal from './SuccesModal';
 import UploadForm from './UploadForm';
 import { useEffect, useState } from 'react';
 import { getCareers, getSubjects, getCareerPlans } from '@/shared/services/api';
+import { DEFAULT_PLAN_YEAR } from '@/features/home/constants/filter';
 import type { Subject } from '@/features/home/types/subjects';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
@@ -91,7 +92,14 @@ function UploadSectionInner() {
     getCareerPlans(formData.careerId).then(({ data }) => {
       const mapped = data.map((p) => ({ value: p.id, label: p.name }));
       setPlans(mapped);
-      if (mapped.length === 1 && !formData.planId) onPlanChange(mapped[0].value);
+      if (!formData.planId) {
+        if (mapped.length === 1) {
+          onPlanChange(mapped[0].value);
+        } else if (mapped.length > 1) {
+          const defaultPlan = data.find((p) => p.year === DEFAULT_PLAN_YEAR);
+          if (defaultPlan) onPlanChange(defaultPlan.id);
+        }
+      }
     });
     getSubjects({ careerId: formData.careerId }).then(({ data }) => {
       setAllSubjects(data);

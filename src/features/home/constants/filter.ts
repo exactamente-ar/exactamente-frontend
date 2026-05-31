@@ -3,6 +3,8 @@ export const DEFAULT_UNIVERSITY_SHORT = 'UNICEN';
 export const DEFAULT_FACULTY_SHORT = 'EXACTAS';
 export const DEFAULT_CAREER_SHORT = 'Ing. en Sistemas';
 
+export const DEFAULT_PLAN_YEAR = 2024;
+
 export const INITIAL_FILTERS = {
   search: '',
   quadmester: 0,
