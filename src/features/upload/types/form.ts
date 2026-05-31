@@ -7,6 +7,7 @@ export interface UploadFormState {
   subtype: string;
   examYear: string;
   examMonth: string;
+  examDay: string;
   topic: string;
   notes: string;
   file: File | null;
@@ -23,6 +24,7 @@ export interface UploadFormErrors {
   subtype?: string;
   examYear?: string;
   examMonth?: string;
+  examDay?: string;
   file?: string;
 }
 
@@ -44,6 +46,7 @@ export interface UploadFormProps {
   onSubtypeChange: (value: string) => void;
   onExamYearChange: (value: string) => void;
   onExamMonthChange: (value: string) => void;
+  onExamDayChange: (value: string) => void;
   onTopicChange: (value: string) => void;
   onNotesChange: (value: string) => void;
   onFileChange: (file: File | null) => void;

@@ -14,6 +14,11 @@ const YEARS = Array.from({ length: 2026 - 2000 + 1 }, (_, i) => {
   return { value: String(y), label: String(y) };
 });
 
+const DAYS = Array.from({ length: 31 }, (_, i) => ({
+  value: String(i + 1),
+  label: String(i + 1),
+}));
+
 const MONTHS = [
   { value: '1', label: 'Enero' },
   { value: '2', label: 'Febrero' },
@@ -62,6 +67,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
   onSubtypeChange,
   onExamYearChange,
   onExamMonthChange,
+  onExamDayChange,
   onTopicChange,
   onNotesChange,
   onFileChange,
@@ -165,6 +171,19 @@ const UploadForm: React.FC<UploadFormProps> = ({
           />
         </FormField>
       </div>
+
+      {formData.type === 'final' && (
+        <FormField label='Día' required>
+          <SelectInput
+            name='examDay'
+            value={formData.examDay}
+            onValueChange={onExamDayChange}
+            options={DAYS}
+            placeholder='Seleccioná el día'
+            error={errors.examDay}
+          />
+        </FormField>
+      )}
 
       {(formData.type === 'parcial' || formData.type === 'final') && (
         <FormField label='Tema'>
