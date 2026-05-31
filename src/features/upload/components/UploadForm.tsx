@@ -7,6 +7,7 @@ import FileInput from './FileInput';
 import RadioGroupInput from './RadioGroupInput';
 import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
+import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 import type { UploadFormProps } from '../types/form';
 
 const YEARS = Array.from({ length: 2026 - 2000 + 1 }, (_, i) => {
@@ -75,6 +76,8 @@ const UploadForm: React.FC<UploadFormProps> = ({
   onFileModeChange,
   onDuplicateConfirm,
   onSubmit,
+  isAuthenticated,
+  isAuthLoading,
 }) => (
   <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border gradient-border p-6'>
     <form onSubmit={onSubmit} className='space-y-8'>
@@ -220,26 +223,42 @@ const UploadForm: React.FC<UploadFormProps> = ({
       </FormField>
 
       <div className='pt-6'>
-        {duplicateWarning?.hasSimilar && (
-          <div className='mb-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-yellow-200'>
-            <p className='text-sm font-semibold mb-2'>Ya existe un recurso similar en revisión o publicado. ¿Querés subirlo de todas formas?</p>
-            <button
-              type='button'
-              onClick={onDuplicateConfirm}
-              className='text-sm font-bold underline hover:text-yellow-100'
-            >
-              Subir de todas formas
-            </button>
+        {isAuthLoading ? (
+          <div className='flex justify-center py-3'>
+            <div className='w-6 h-6 border-2 border-primary/30 border-t-white rounded-full animate-spin' />
           </div>
+        ) : !isAuthenticated ? (
+          <div className='flex flex-col items-center gap-3'>
+            <p className='text-sm text-zinc-400'>Iniciá sesión para enviar el recurso</p>
+            <GoogleLoginButton onBeforeRedirect={() => {
+              const { file, imageFiles, ...draft } = formData;
+              localStorage.setItem('exactamente_upload_draft', JSON.stringify(draft));
+            }} />
+          </div>
+        ) : (
+          <>
+            {duplicateWarning?.hasSimilar && (
+              <div className='mb-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-yellow-200'>
+                <p className='text-sm font-semibold mb-2'>Ya existe un recurso similar en revisión o publicado. ¿Querés subirlo de todas formas?</p>
+                <button
+                  type='button'
+                  onClick={onDuplicateConfirm}
+                  className='text-sm font-bold underline hover:text-yellow-100'
+                >
+                  Subir de todas formas
+                </button>
+              </div>
+            )}
+            <ErrorMessage message={uploadError} />
+            <SubmitButton
+              uploadError={uploadError}
+              errors={errors}
+              isSubmitting={uploading}
+              text='Enviar Recurso'
+              submittingText='Subiendo...'
+            />
+          </>
         )}
-        <ErrorMessage message={uploadError} />
-        <SubmitButton
-          uploadError={uploadError}
-          errors={errors}
-          isSubmitting={uploading}
-          text='Enviar Recurso'
-          submittingText='Subiendo...'
-        />
       </div>
     </form>
   </div>

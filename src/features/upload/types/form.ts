@@ -54,4 +54,6 @@ export interface UploadFormProps {
   onFileModeChange: (mode: 'pdf' | 'images') => void;
   onDuplicateConfirm: () => void;
   onSubmit: (e: React.FormEvent) => void;
+  isAuthenticated: boolean;
+  isAuthLoading: boolean;
 }
