@@ -148,7 +148,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
         </FormField>
       )}
 
-      <div className='grid grid-cols-2 gap-4'>
+      <div className={`grid gap-4 ${formData.type === 'final' ? 'grid-cols-3' : 'grid-cols-2'}`}>
         <FormField label='Año' required>
           <SelectInput
             name='examYear'
@@ -170,20 +170,20 @@ const UploadForm: React.FC<UploadFormProps> = ({
             error={errors.examMonth}
           />
         </FormField>
-      </div>
 
-      {formData.type === 'final' && (
-        <FormField label='Día' required>
-          <SelectInput
-            name='examDay'
-            value={formData.examDay}
-            onValueChange={onExamDayChange}
-            options={DAYS}
-            placeholder='Seleccioná el día'
-            error={errors.examDay}
-          />
-        </FormField>
-      )}
+        {formData.type === 'final' && (
+          <FormField label='Día' required>
+            <SelectInput
+              name='examDay'
+              value={formData.examDay}
+              onValueChange={onExamDayChange}
+              options={DAYS}
+              placeholder='Seleccioná el día'
+              error={errors.examDay}
+            />
+          </FormField>
+        )}
+      </div>
 
       {(formData.type === 'parcial' || formData.type === 'final') && (
         <FormField label='Tema'>
