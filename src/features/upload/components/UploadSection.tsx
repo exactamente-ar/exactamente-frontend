@@ -6,23 +6,13 @@ import { getCareers, getSubjects, getCareerPlans } from '@/shared/services/api';
 import { DEFAULT_PLAN_YEAR } from '@/features/home/constants/filter';
 import type { Subject } from '@/features/home/types/subjects';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
-import { AuthGuard } from '@/features/auth/components/AuthGuard';
-import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const tiposRecurso = [
   { value: 'resumen', label: 'Resumen' },
   { value: 'parcial', label: 'Parcial' },
   { value: 'final', label: 'Final' },
 ];
-
-function LoginGate() {
-  return (
-    <div className='max-w-md mx-auto pt-12 text-center space-y-4'>
-      <p className='text-zinc-400'>Iniciá sesión para subir recursos</p>
-      <GoogleLoginButton />
-    </div>
-  );
-}
 
 function parseInitialValues() {
   if (typeof window === 'undefined') return {};
@@ -40,6 +30,7 @@ function parseInitialValues() {
 }
 
 function UploadSectionInner() {
+  const { token, loading: authLoading } = useAuth();
   const {
     formData,
     errors,
@@ -120,37 +111,37 @@ function UploadSectionInner() {
   return (
     <>
       <SuccessModal showSuccess={showSuccess} closeSuccess={closeSuccess} />
-      <AuthGuard fallback={<LoginGate />}>
-        <div className='max-w-4xl mx-auto pt-12'>
-          <UploadForm
-            formData={formData}
-            errors={errors}
-            careers={careers}
-            plans={plans}
-            subjects={subjects}
-            tiposRecurso={tiposRecurso}
-            uploading={uploading}
-            uploadError={uploadError}
-            duplicateWarning={duplicateWarning}
-            onCareerChange={onCareerChange}
-            onPlanChange={onPlanChange}
-            onSubjectChange={onSubjectChange}
-            onTypeChange={onTypeChange}
-            onTitleChange={onTitleChange}
-            onSubtypeChange={onSubtypeChange}
-            onExamYearChange={onExamYearChange}
-            onExamMonthChange={onExamMonthChange}
-            onExamDayChange={onExamDayChange}
-            onTopicChange={onTopicChange}
-            onNotesChange={onNotesChange}
-            onFileChange={onFileChange}
-            onImagesChange={onImagesChange}
-            onFileModeChange={onFileModeChange}
-            onDuplicateConfirm={onDuplicateConfirm}
-            onSubmit={handleSubmit}
-          />
-        </div>
-      </AuthGuard>
+      <div className='max-w-4xl mx-auto pt-12'>
+        <UploadForm
+          formData={formData}
+          errors={errors}
+          careers={careers}
+          plans={plans}
+          subjects={subjects}
+          tiposRecurso={tiposRecurso}
+          uploading={uploading}
+          uploadError={uploadError}
+          duplicateWarning={duplicateWarning}
+          onCareerChange={onCareerChange}
+          onPlanChange={onPlanChange}
+          onSubjectChange={onSubjectChange}
+          onTypeChange={onTypeChange}
+          onTitleChange={onTitleChange}
+          onSubtypeChange={onSubtypeChange}
+          onExamYearChange={onExamYearChange}
+          onExamMonthChange={onExamMonthChange}
+          onExamDayChange={onExamDayChange}
+          onTopicChange={onTopicChange}
+          onNotesChange={onNotesChange}
+          onFileChange={onFileChange}
+          onImagesChange={onImagesChange}
+          onFileModeChange={onFileModeChange}
+          onDuplicateConfirm={onDuplicateConfirm}
+          onSubmit={handleSubmit}
+          isAuthenticated={!!token}
+          isAuthLoading={authLoading}
+        />
+      </div>
     </>
   );
 }
