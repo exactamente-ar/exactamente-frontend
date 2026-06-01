@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import IconDownload from '@/shared/components/icons/react/IconDownload';
+import IconLink from '@/shared/components/icons/react/IconLink';
 import IconVisibility from '@/shared/components/icons/react/IconVisibility';
 import IconVisibilityOff from '@/shared/components/icons/react/IconVisibilityOff';
 import HeaderCardResource from './HeaderCardResource';
-import ContainerLink from '../../../shared/components/ContainerLink';
 import { usePreview } from '@/features/resource/hooks/usePreview';
 
 interface Props {
@@ -25,6 +25,27 @@ const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear
     togglePreview,
     handleIframeLoad,
   } = usePreview(fileUrl);
+
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!fileUrl || downloading) return;
+    setDownloading(true);
+    try {
+      const res = await fetch(fileUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = title || 'recurso.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.open(fileUrl, '_blank');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div className='flex flex-col bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-xl hover:border-zinc-700/80 transition-all duration-300 group overflow-hidden'>
@@ -49,6 +70,15 @@ const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear
                   <span className='text-sm'>Cargando vista previa...</span>
                 </div>
               )}
+              <a
+                href={fileUrl}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='absolute top-2 right-2 z-20 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 text-zinc-300 hover:text-white rounded-lg transition-all duration-200'
+              >
+                <IconLink size={13} />
+                Ver completo
+              </a>
               <iframe
                 ref={iframeRef}
                 src={fileUrl}
@@ -67,15 +97,18 @@ const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear
       <div className='px-6 pb-6'>
         <div className='flex gap-2 justify-between items-end flex-col sm:flex-row'>
           <div className='flex gap-3 items-center flex-col sm:flex-row w-full sm:w-min'>
-            <ContainerLink
-              url={fileUrl}
-              className='group/download w-full sm:w-max  text-white font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 '
-              target='_blank'
-              rel='noopener noreferrer'
+            <button
+              onClick={handleDownload}
+              disabled={!fileUrl || downloading}
+              className='group/download cursor-pointer w-full sm:w-max text-white font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 gradient-border disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              <IconDownload size={20} className='fill-white' />
-              Descargar
-            </ContainerLink>
+              {downloading ? (
+                <div className='w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin' />
+              ) : (
+                <IconDownload size={20} className='fill-white' />
+              )}
+              {downloading ? 'Descargando...' : 'Descargar'}
+            </button>
 
             <button
               onClick={togglePreview}
