@@ -16,6 +16,12 @@ interface FileInputProps {
 const MAX_SIZE = 20 * 1024 * 1024;
 const MAX_IMAGES = 10;
 
+const isPdf = (f: File) =>
+  f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf');
+
+const isAllowedImage = (f: File) =>
+  f.type === 'image/jpeg' || f.type === 'image/png';
+
 const FileInput: React.FC<FileInputProps> = ({
   fileMode,
   onFileModeChange,
@@ -27,6 +33,8 @@ const FileInput: React.FC<FileInputProps> = ({
   disabled = false,
 }) => {
   const [thumbUrls, setThumbUrls] = useState<string[]>([]);
+  const [validationError, setValidationError] = useState<string | undefined>(undefined);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
   const imgInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -35,21 +43,47 @@ const FileInput: React.FC<FileInputProps> = ({
     return () => { urls.forEach((u) => URL.revokeObjectURL(u)); };
   }, [imageFiles]);
 
+  useEffect(() => {
+    setValidationError(undefined);
+  }, [fileMode]);
+
   const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] ?? null;
-    if (selected && selected.size > MAX_SIZE) {
+    if (pdfInputRef.current) pdfInputRef.current.value = '';
+    if (!selected) {
       onFileChange(null);
+      setValidationError(undefined);
       return;
     }
+    if (!isPdf(selected)) {
+      onFileChange(null);
+      setValidationError('Solo se permiten archivos PDF');
+      return;
+    }
+    if (selected.size > MAX_SIZE) {
+      onFileChange(null);
+      setValidationError('El archivo supera los 20 MB');
+      return;
+    }
+    setValidationError(undefined);
     onFileChange(selected);
   };
 
   const handleImagesAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []).filter(
-      (f) => f.type === 'image/jpeg' || f.type === 'image/png'
-    );
-    onImagesChange([...imageFiles, ...selected].slice(0, MAX_IMAGES));
+    const all = Array.from(e.target.files ?? []);
     if (imgInputRef.current) imgInputRef.current.value = '';
+    if (all.length === 0) return;
+    const valid = all.filter(isAllowedImage);
+    if (valid.length === 0) {
+      setValidationError('Solo se permiten imágenes (JPG o PNG)');
+      return;
+    }
+    if (valid.length < all.length) {
+      setValidationError('Algunos archivos fueron ignorados: solo se permiten imágenes (JPG o PNG)');
+    } else {
+      setValidationError(undefined);
+    }
+    onImagesChange([...imageFiles, ...valid].slice(0, MAX_IMAGES));
   };
 
   const removeImage = (index: number) => {
@@ -86,14 +120,15 @@ const FileInput: React.FC<FileInputProps> = ({
       {fileMode === 'pdf' && (
         <div
           className={`dashed-gradient-hover relative border border-dashed rounded-xl p-8 h-44 text-center transition-all duration-200 ${
-            error
+            error || validationError
               ? 'border-red-300 bg-red-900/10'
               : 'border-primary/30 bg-black/20'
           }`}
         >
           <input
+            ref={pdfInputRef}
             type='file'
-            accept='.pdf'
+            accept='application/pdf,.pdf'
             onChange={handlePdfChange}
             className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
           />
@@ -122,7 +157,7 @@ const FileInput: React.FC<FileInputProps> = ({
         <div className='space-y-3'>
           <div
             className={`dashed-gradient-hover relative border border-dashed rounded-xl p-6 h-44 flex flex-col items-center justify-center text-center transition-all duration-200 ${
-              error
+              error || validationError
                 ? 'border-red-300 bg-red-900/10'
                 : 'border-primary/30 bg-black/20'
             }`}
@@ -130,7 +165,7 @@ const FileInput: React.FC<FileInputProps> = ({
             <input
               ref={imgInputRef}
               type='file'
-              accept='.jpg,.jpeg,.png'
+              accept='image/jpeg,image/png,.jpg,.jpeg,.png'
               multiple
               onChange={handleImagesAdd}
               className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
@@ -188,7 +223,7 @@ const FileInput: React.FC<FileInputProps> = ({
         </div>
       )}
 
-      <ErrorMessage message={error} />
+      <ErrorMessage message={error ?? validationError} />
     </div>
   );
 };

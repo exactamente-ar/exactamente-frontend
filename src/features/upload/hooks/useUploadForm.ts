@@ -207,7 +207,10 @@ export function useUploadForm(initialValues?: InitialValues) {
     onNotesChange: (v: string) => updateField('notes', v),
     onFileChange: (f: File | null) => updateField('file', f),
     onImagesChange: (files: File[]) => updateField('imageFiles', files),
-    onFileModeChange: (mode: 'pdf' | 'images') => updateField('fileMode', mode),
+    onFileModeChange: (mode: 'pdf' | 'images') => {
+      setFormData((prev) => ({ ...prev, fileMode: mode, file: null, imageFiles: [] }));
+      setErrors((prev) => ({ ...prev, file: undefined }));
+    },
     onDuplicateConfirm: () => {
       setDuplicateWarning(null);
       setDuplicateConfirmed(true);
