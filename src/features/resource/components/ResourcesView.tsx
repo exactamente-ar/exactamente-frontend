@@ -16,6 +16,7 @@ function ResourcesView({ subject, type }: Props) {
       <HeaderResources
         loading={loading}
         subject={subject.title}
+        career={subject.careers[0]?.careerName ?? ''}
         cantResource={data ? data.length : 0}
         title={type}
         urlImg='/images/materia-2.webp'

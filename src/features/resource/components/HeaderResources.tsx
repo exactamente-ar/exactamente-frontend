@@ -5,6 +5,7 @@ interface Props {
   urlImg: string;
   title: string;
   subject: string;
+  career: string;
   cantResource: number;
   children?: React.ReactNode;
   loading: boolean;
@@ -14,6 +15,7 @@ const HeaderResources: React.FC<Props> = ({
   urlImg,
   title,
   subject,
+  career,
   cantResource,
   loading,
   children,
@@ -25,7 +27,7 @@ const HeaderResources: React.FC<Props> = ({
         <h2 className='text-3xl sm:text-4xl font-bold text-foreground'>{title}</h2>
       </div>
       <h5 className='text-foreground-secondary text-xl mt-2 font-semibold'>{subject}</h5>
-      <p className='text-foreground-muted mt-1'>Ingeniería en Sistemas</p>
+      {career && <p className='text-foreground-muted mt-1'>{career}</p>}
       {loading ? (
         <p className='w-max  mt-3 text-transparent font-semibold rounded-full px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 animate-pulse'>
           22 recursos disponibles
