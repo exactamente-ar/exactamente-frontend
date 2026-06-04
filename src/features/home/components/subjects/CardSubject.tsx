@@ -16,6 +16,7 @@ type Props = {
   careers: SubjectCareer[];
   activeCareerId: string;
   resourceCounts: ResourceCounts;
+  homeQuery: string;
 };
 
 type ResourceButtonProps = {
@@ -68,7 +69,7 @@ function abbreviateUniversity (name: string): string {
   return initials || name;
 }
 
-function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId, resourceCounts }: Props) {
+function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId, resourceCounts, homeQuery }: Props) {
   const primaryCareer = careers.find((c) => c.careerId === activeCareerId) ?? careers[0];
   const displayYear = primaryCareer?.year ?? year;
   const displayQuadmester = primaryCareer?.quadmester ?? quadmester;
@@ -78,6 +79,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
   const careerLabel = primaryCareer?.careerName;
   const planId = primaryCareer?.planId ?? '';
   const uploadBase = `/upload?careerId=${activeCareerId}&planId=${planId}&subjectId=${id}`;
+  const resourceSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
   return (
     <article className='group rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 flex flex-col '>
       {/* Header */}
@@ -120,7 +122,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
 
           <div className='flex flex-col space-y-3 w-full'>
             <ResourceButton
-              resourceUrl={`./${id}/resumenes`}
+              resourceUrl={`./${id}/resumenes${resourceSuffix}`}
               uploadUrl={`${uploadBase}&type=resumen`}
               count={resourceCounts.resumen}
               label='Resumenes'
@@ -129,7 +131,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
               activeIconClass='fill-emerald-200'
             />
             <ResourceButton
-              resourceUrl={`./${id}/parciales`}
+              resourceUrl={`./${id}/parciales${resourceSuffix}`}
               uploadUrl={`${uploadBase}&type=parcial`}
               count={resourceCounts.parcial}
               label='Parciales'
@@ -138,7 +140,7 @@ function Card ({ id, title, shortName, url, quadmester, year, careers, activeCar
               activeIconClass='fill-blue-200'
             />
             <ResourceButton
-              resourceUrl={`./${id}/finales`}
+              resourceUrl={`./${id}/finales${resourceSuffix}`}
               uploadUrl={`${uploadBase}&type=final`}
               count={resourceCounts.final}
               label='Finales'
