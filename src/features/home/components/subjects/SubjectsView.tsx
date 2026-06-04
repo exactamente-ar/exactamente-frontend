@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import FilterBar from './FilterBar';
 import ListOfSubjects from './ListOfSubjects';
-import { useFilterState } from '@/features/home/hooks/useFilterState';
+import { useFilterState, buildFilterSearchParams } from '@/features/home/hooks/useFilterState';
 import { useFilterOptions } from '@/features/home/hooks/useFilterOptions';
 import { useResolvedDefaultScope } from '@/features/home/hooks/useResolvedDefaultScope';
 import { useSubjects } from '@/features/home/hooks/useSubjects';
@@ -33,6 +33,8 @@ function SubjectsView() {
       if (defaultPlan) filterState.commitFilter('planId', defaultPlan.id);
     }
   }, [planOptions]);
+
+  const homeQuery = useMemo(() => buildFilterSearchParams(filterState.applied).toString(), [filterState.applied]);
 
   const options = useMemo<FilterOptions>(
     () => ({
@@ -66,6 +68,7 @@ function SubjectsView() {
         showMore={showMore}
         loading={loading}
         activeCareerId={filterState.applied.careerId}
+        homeQuery={homeQuery}
       />
     </>
   );

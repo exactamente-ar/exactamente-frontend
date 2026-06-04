@@ -50,4 +50,5 @@ export type PropsListOfSubjects = {
   hasMore: boolean;
   showMore: () => void;
   activeCareerId: string;
+  homeQuery: string;
 };

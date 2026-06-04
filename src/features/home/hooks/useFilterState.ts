@@ -33,6 +33,18 @@ function applyCascade<K extends keyof DraftFilters>(
   return next;
 }
 
+export function buildFilterSearchParams(applied: AppliedFilters): URLSearchParams {
+  const params = new URLSearchParams();
+  if (applied.search) params.set('q', applied.search);
+  if (applied.universityId) params.set('university', applied.universityId);
+  if (applied.facultyId) params.set('faculty', applied.facultyId);
+  if (applied.careerId) params.set('career', applied.careerId);
+  if (applied.planId) params.set('plan', applied.planId);
+  if (applied.year) params.set('year', String(applied.year));
+  if (applied.quadmester) params.set('quadmester', String(applied.quadmester));
+  return params;
+}
+
 function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
   applied: AppliedFilters;
   urlHadUniversity: boolean;
@@ -104,15 +116,7 @@ export const useFilterState = (defaultScope: ResolvedDefaultScope | null) => {
   // Sync URL when applied changes (debounced so rapid search keystrokes don't spam replaceState)
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = new URLSearchParams();
-      if (applied.search) params.set('q', applied.search);
-      if (applied.universityId) params.set('university', applied.universityId);
-      if (applied.facultyId) params.set('faculty', applied.facultyId);
-      if (applied.careerId) params.set('career', applied.careerId);
-      if (applied.planId) params.set('plan', applied.planId);
-      if (applied.year) params.set('year', String(applied.year));
-      if (applied.quadmester) params.set('quadmester', String(applied.quadmester));
-      const qs = params.toString();
+      const qs = buildFilterSearchParams(applied).toString();
       history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
     }, 300);
     return () => clearTimeout(timer);
