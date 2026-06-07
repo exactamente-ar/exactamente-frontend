@@ -98,6 +98,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
           value={formData.careerId}
           onChange={onCareerChange}
           placeholder='Seleccioná una carrera'
+          variant='form'
         />
         <ErrorMessage message={errors.careerId} />
       </FormField>
@@ -109,6 +110,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
           onChange={onPlanChange}
           placeholder={formData.careerId ? 'Seleccioná un plan' : 'Primero seleccioná una carrera'}
           disabled={!formData.careerId}
+          variant='form'
         />
         <ErrorMessage message={errors.planId} />
       </FormField>
@@ -120,6 +122,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
           onChange={onSubjectChange}
           placeholder={formData.planId ? 'Seleccioná una materia' : 'Primero seleccioná un plan'}
           disabled={!formData.planId}
+          variant='form'
         />
         <ErrorMessage message={errors.subjectId} />
       </FormField>

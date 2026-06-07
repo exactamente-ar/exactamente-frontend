@@ -24,7 +24,7 @@ interface FilterComboboxProps {
   placeholder: string;
   disabled?: boolean;
   isLoading?: boolean;
-  variant?: 'default' | 'pill';
+  variant?: 'default' | 'pill' | 'form';
 }
 
 const FilterCombobox: React.FC<FilterComboboxProps> = ({
@@ -42,6 +42,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
     [options, value]
   );
   const isPill = variant === 'pill';
+  const isForm = variant === 'form';
   const hasSelection = Boolean(selectedLabel);
 
   const triggerClassName = isPill
@@ -50,6 +51,11 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
         hasSelection
           ? 'bg-zinc-700 border-zinc-600 text-white hover:bg-zinc-600 hover:text-white'
           : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-700/40 hover:text-zinc-300'
+      )
+    : isForm
+    ? cn(
+        'search-gradient-border flex items-center justify-between gap-2 w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 text-sm h-auto font-bold text-foreground-secondary transition-all duration-200 cursor-pointer hover:bg-black/30 focus:ring-0 focus:ring-offset-0 focus:outline-none',
+        isOpen && 'gradient-active'
       )
     : 'flex items-center justify-between gap-2 px-3 py-1.5 text-sm bg-zinc-800 border border-zinc-700 rounded-lg h-auto hover:border-zinc-500 hover:bg-zinc-700 font-normal cursor-pointer';
 
@@ -87,8 +93,10 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
       </PopoverTrigger>
       <PopoverContent
         className={cn(
-          'p-0 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg',
-          isPill ? 'w-[min(100vw-2rem,20rem)]' : 'w-full'
+          'p-0 border border-zinc-700 shadow-lg',
+          isForm ? 'bg-zinc-900 rounded-xl w-[var(--radix-popover-trigger-width)]' : 'bg-zinc-800 rounded-lg',
+          isPill && 'w-[min(100vw-2rem,20rem)]',
+          !isPill && !isForm && 'w-full'
         )}
         align='start'
       >
