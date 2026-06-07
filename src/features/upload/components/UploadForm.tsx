@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ErrorMessage from './ErrorMessage';
 import TextInput from './TextInput';
 import TextAreaInput from './TextAreaInput';
@@ -7,8 +7,14 @@ import FileInput from './FileInput';
 import RadioGroupInput from './RadioGroupInput';
 import SelectInput from './SelectInput';
 import SubmitButton from './SubmitButton';
+import FilterCombobox from '@/shared/components/FilterCombobox';
 import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
+import type { FilterOption } from '@/shared/types/filter';
 import type { UploadFormProps } from '../types/form';
+
+const toFilterOptions = (
+  items: { value: string; label: string }[]
+): FilterOption[] => items.map(({ value, label }) => ({ id: value, label }));
 
 const YEARS = Array.from({ length: 2026 - 2000 + 1 }, (_, i) => {
   const y = 2026 - i;
@@ -78,42 +84,44 @@ const UploadForm: React.FC<UploadFormProps> = ({
   onSubmit,
   isAuthenticated,
   isAuthLoading,
-}) => (
+}) => {
+  const careerOptions = useMemo(() => toFilterOptions(careers), [careers]);
+  const planOptions = useMemo(() => toFilterOptions(plans), [plans]);
+  const subjectOptions = useMemo(() => toFilterOptions(subjects), [subjects]);
+
+  return (
   <div className='bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 rounded-xl shadow-sm border gradient-border p-6'>
     <form onSubmit={onSubmit} className='space-y-8'>
       <FormField label='Carrera' required>
-        <SelectInput
-          name='careerId'
+        <FilterCombobox
+          options={careerOptions}
           value={formData.careerId}
-          onValueChange={onCareerChange}
-          options={careers}
+          onChange={onCareerChange}
           placeholder='Seleccioná una carrera'
-          error={errors.careerId}
         />
+        <ErrorMessage message={errors.careerId} />
       </FormField>
 
       <FormField label='Plan' required>
-        <SelectInput
-          name='planId'
+        <FilterCombobox
+          options={planOptions}
           value={formData.planId}
-          onValueChange={onPlanChange}
-          options={plans}
+          onChange={onPlanChange}
           placeholder={formData.careerId ? 'Seleccioná un plan' : 'Primero seleccioná una carrera'}
-          error={errors.planId}
           disabled={!formData.careerId}
         />
+        <ErrorMessage message={errors.planId} />
       </FormField>
 
       <FormField label='Materia' required>
-        <SelectInput
-          name='subjectId'
+        <FilterCombobox
+          options={subjectOptions}
           value={formData.subjectId}
-          onValueChange={onSubjectChange}
-          options={subjects}
+          onChange={onSubjectChange}
           placeholder={formData.planId ? 'Seleccioná una materia' : 'Primero seleccioná un plan'}
-          error={errors.subjectId}
           disabled={!formData.planId}
         />
+        <ErrorMessage message={errors.subjectId} />
       </FormField>
 
       <FormField label='Tipo de Recurso' required>
@@ -263,6 +271,7 @@ const UploadForm: React.FC<UploadFormProps> = ({
       </div>
     </form>
   </div>
-);
+  );
+};
 
 export default UploadForm;

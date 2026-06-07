@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { RotateCcw } from 'lucide-react';
-import FilterCombobox from './FilterCombobox';
+import FilterCombobox from '@/shared/components/FilterCombobox';
 import type { PropsFilterBar } from '@/features/home/types/filter';
 import { YEARS_FILTER, QUADMESTERS_FILTER } from '@/features/home/constants/filter';
 

@@ -1,4 +1,7 @@
 import type { Subject } from './subjects';
+import type { FilterOption } from '@/shared/types/filter';
+
+export type { FilterOption };
 
 /** Default UNICEN + EXACTAS + C1 scope once resolved from the API. */
 export type ResolvedDefaultScope = {
@@ -19,8 +22,6 @@ export type DraftFilters = {
 export type AppliedFilters = DraftFilters & {
   search: string;
 };
-
-export type FilterOption = { id: string; label: string };
 
 export type FilterOptions = {
   universities: FilterOption[];

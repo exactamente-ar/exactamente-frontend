@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/shared/components/ui/popover';
-import type { FilterOption } from '@/features/home/types/filter';
+import type { FilterOption } from '@/shared/types/filter';
 
 interface FilterComboboxProps {
   options: FilterOption[];
