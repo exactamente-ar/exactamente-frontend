@@ -43,7 +43,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
           <SelectItem
             key={option.value}
             value={option.value}
-            className='text-white font-bold focus:bg-zinc-700 focus:text-white cursor-pointer'
+            className='text-white font-bold cursor-pointer focus:bg-zinc-700/60 focus:text-white data-[state=checked]:bg-zinc-700 data-[state=checked]:focus:bg-zinc-600'
           >
             {option.label}
           </SelectItem>
