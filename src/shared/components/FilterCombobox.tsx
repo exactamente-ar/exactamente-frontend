@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/shared/components/ui/popover';
-import type { FilterOption } from '@/features/home/types/filter';
+import type { FilterOption } from '@/shared/types/filter';
 
 interface FilterComboboxProps {
   options: FilterOption[];
@@ -24,7 +24,7 @@ interface FilterComboboxProps {
   placeholder: string;
   disabled?: boolean;
   isLoading?: boolean;
-  variant?: 'default' | 'pill';
+  variant?: 'default' | 'pill' | 'form';
 }
 
 const FilterCombobox: React.FC<FilterComboboxProps> = ({
@@ -42,6 +42,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
     [options, value]
   );
   const isPill = variant === 'pill';
+  const isForm = variant === 'form';
   const hasSelection = Boolean(selectedLabel);
 
   const triggerClassName = isPill
@@ -51,6 +52,8 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
           ? 'bg-zinc-700 border-zinc-600 text-white hover:bg-zinc-600 hover:text-white'
           : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-700/40 hover:text-zinc-300'
       )
+    : isForm
+    ? 'flex items-center justify-between gap-2 w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 text-sm h-auto font-bold text-foreground-secondary transition-all duration-200 cursor-pointer hover:bg-black/30 hover:text-foreground-secondary focus:ring-0 focus:ring-offset-0 focus:outline-none'
     : 'flex items-center justify-between gap-2 px-3 py-1.5 text-sm bg-zinc-800 border border-zinc-700 rounded-lg h-auto hover:border-zinc-500 hover:bg-zinc-700 font-normal cursor-pointer';
 
   const handleOpenChange = useCallback(
@@ -87,16 +90,27 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
       </PopoverTrigger>
       <PopoverContent
         className={cn(
-          'p-0 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg',
-          isPill ? 'w-[min(100vw-2rem,20rem)]' : 'w-full'
+          'p-0 border border-zinc-700 shadow-lg',
+          isForm ? 'bg-zinc-900 rounded-xl w-[var(--radix-popover-trigger-width)]' : 'bg-zinc-800 rounded-lg',
+          isPill && 'w-[min(100vw-2rem,20rem)]',
+          !isPill && !isForm && 'w-full'
         )}
         align='start'
       >
         <Command className='bg-transparent'>
-          <CommandInput
-            placeholder='Buscar...'
-            className='text-white placeholder:text-zinc-400 border-b border-zinc-700'
-          />
+          {isForm ? (
+            <div className='search-gradient-border m-2 rounded-xl border border-primary/30 bg-black/20 [&_[cmdk-input-wrapper]]:after:hidden'>
+              <CommandInput
+                placeholder='Buscar...'
+                className='text-white placeholder:text-zinc-400'
+              />
+            </div>
+          ) : (
+            <CommandInput
+              placeholder='Buscar...'
+              className='text-white placeholder:text-zinc-400 border-b border-zinc-700'
+            />
+          )}
           <CommandList>
             {isLoading && (
               <div className='flex items-center justify-center gap-2 py-6 text-sm text-zinc-400'>
