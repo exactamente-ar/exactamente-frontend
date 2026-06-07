@@ -125,23 +125,31 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
             )}
             {!isLoading && (
               <CommandGroup>
-                {options.map((option) => (
-                  <CommandItem
-                    key={option.id}
-                    value={option.label}
-                    onSelect={() => handleSelect(option.id)}
-                    className='text-zinc-200 cursor-pointer hover:bg-zinc-700 data-[selected=true]:bg-zinc-700 data-[selected=true]:text-zinc-100'
-                  >
-                    {option.label}
-                    <Check
+                {options.map((option) => {
+                  const isSelected = value === option.id;
+                  return (
+                    <CommandItem
+                      key={option.id}
+                      value={option.label}
+                      onSelect={() => handleSelect(option.id)}
                       className={cn(
-                        'ml-auto',
-                        value === option.id ? 'opacity-100 text-white' : 'opacity-0'
+                        'text-zinc-200 cursor-pointer',
+                        isSelected
+                          ? 'bg-zinc-700 text-white data-[selected=true]:bg-zinc-600 data-[selected=true]:text-white'
+                          : 'data-[selected=true]:bg-zinc-700/60 data-[selected=true]:text-zinc-100'
                       )}
-                      size={14}
-                    />
-                  </CommandItem>
-                ))}
+                    >
+                      {option.label}
+                      <Check
+                        className={cn(
+                          'ml-auto',
+                          isSelected ? 'opacity-100 text-white' : 'opacity-0'
+                        )}
+                        size={14}
+                      />
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
             )}
           </CommandList>
