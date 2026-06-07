@@ -99,7 +99,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
       >
         <Command className='bg-transparent'>
           {isForm ? (
-            <div className='search-gradient-border m-2 rounded-xl border border-primary/30 bg-black/20'>
+            <div className='search-gradient-border m-2 rounded-xl border border-primary/30 bg-black/20 [&_[cmdk-input-wrapper]]:after:hidden'>
               <CommandInput
                 placeholder='Buscar...'
                 className='text-white placeholder:text-zinc-400'
