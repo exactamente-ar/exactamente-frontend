@@ -53,7 +53,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
           : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500 hover:bg-zinc-700/40 hover:text-zinc-300'
       )
     : isForm
-    ? 'flex items-center justify-between gap-2 w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 text-sm h-auto font-bold text-foreground-secondary transition-all duration-200 cursor-pointer hover:bg-black/30 focus:ring-0 focus:ring-offset-0 focus:outline-none'
+    ? 'flex items-center justify-between gap-2 w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 text-sm h-auto font-bold text-foreground-secondary transition-all duration-200 cursor-pointer hover:bg-black/30 hover:text-foreground-secondary focus:ring-0 focus:ring-offset-0 focus:outline-none'
     : 'flex items-center justify-between gap-2 px-3 py-1.5 text-sm bg-zinc-800 border border-zinc-700 rounded-lg h-auto hover:border-zinc-500 hover:bg-zinc-700 font-normal cursor-pointer';
 
   const handleOpenChange = useCallback(
