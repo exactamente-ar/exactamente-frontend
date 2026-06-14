@@ -1,0 +1,23 @@
+---
+import { CAFECITO_URL } from '@/features/home/constants/donations';
+---
+
+<section class="relative w-full py-4">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-gradient-to-br from-zinc-900/50 to-zinc-950/95 border border-zinc-800 px-6 py-4">
+    <p class="text-sm text-zinc-400">
+      Exactamente tiene costos reales —
+      <span class="text-zinc-500">servidor, dominio, almacenamiento.</span>
+    </p>
+    <a
+      href={CAFECITO_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="shrink-0 inline-flex items-center gap-1.5 border border-zinc-700 rounded-lg px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-zinc-200 hover:border-zinc-500 transition-colors duration-200"
+    >
+      Cafecito
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M7 7h10v10"/>
+      </svg>
+    </a>
+  </div>
+</section>
