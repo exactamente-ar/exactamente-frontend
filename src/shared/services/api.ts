@@ -67,11 +67,17 @@ type BackendSubject = {
   prerequisites: string[];
   correlatives: string[];
   resourceCounts: { resumen: number; parcial: number; final: number };
+  group?: {
+    id: string;
+    name: string;
+    members: Array<{ id: string; title: string; slug: string; sortOrder: number }>;
+  };
 };
 
 type BackendResource = {
   id: string;
   subjectId: string;
+  subjectTitle?: string | null;
   title: string;
   type: 'resumen' | 'parcial' | 'final';
   subtype: 'parcial' | 'recuperatorio' | 'prefinal' | 'parcialito' | null;
@@ -162,12 +168,15 @@ function mapSubject(backend: BackendSubject): Subject {
     correlatives: backend.correlatives,
     careers: backend.careers,
     resourceCounts: backend.resourceCounts ?? { resumen: 0, parcial: 0, final: 0 },
+    ...(backend.group ? { group: backend.group } : {}),
   };
 }
 
 function mapResource(backend: BackendResource): ResourceFetch {
   return {
     id: backend.id,
+    subjectId: backend.subjectId,
+    subjectTitle: backend.subjectTitle ?? null,
     title: backend.title,
     fileUrl: backend.fileUrl,
     type: backend.type,

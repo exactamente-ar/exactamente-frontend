@@ -1,5 +1,7 @@
 export type ResourceFetch = {
   id: string;
+  subjectId: string;
+  subjectTitle: string | null;
   title: string;
   fileUrl: string;
   type: 'resumen' | 'parcial' | 'final';

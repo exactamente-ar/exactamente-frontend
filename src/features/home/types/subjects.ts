@@ -12,6 +12,19 @@ export type SubjectCareer = {
 
 export type ResourceCounts = { resumen: number; parcial: number; final: number };
 
+export type SubjectGroupMember = {
+  id: string;
+  title: string;
+  slug: string;
+  sortOrder: number;
+};
+
+export type SubjectGroup = {
+  id: string;
+  name: string;
+  members: SubjectGroupMember[];
+};
+
 export type Subject = {
   id: string;
   title: string;
@@ -26,6 +39,7 @@ export type Subject = {
   year: number;
   careers: SubjectCareer[];
   resourceCounts: ResourceCounts;
+  group?: SubjectGroup;
 };
 
 export type TipoMateria = (typeof TIPOS_MATERIA)[keyof typeof TIPOS_MATERIA];
