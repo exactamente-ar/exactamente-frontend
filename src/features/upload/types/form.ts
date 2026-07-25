@@ -15,7 +15,9 @@ export interface UploadFormState {
   fileMode: 'pdf' | 'images';
 }
 
-export interface UploadFormErrors {
+// `type` y no `interface`: las interfaces no tienen index signature implícita,
+// así que no serían asignables a Record<string, string | undefined> (SubmitButton).
+export type UploadFormErrors = {
   careerId?: string;
   planId?: string;
   subjectId?: string;

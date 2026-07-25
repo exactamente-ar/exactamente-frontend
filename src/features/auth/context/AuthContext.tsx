@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const parsed = JSON.parse(stored) as { user: PublicUser; token: string };
       getMe(parsed.token).then((result) => {
-        if (result.error) {
+        if (result.error !== null) {
           localStorage.removeItem(STORAGE_KEY);
         } else {
           setUser(result.data);

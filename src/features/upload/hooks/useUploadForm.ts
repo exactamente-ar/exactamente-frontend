@@ -169,7 +169,7 @@ export function useUploadForm(initialValues?: InitialValues) {
         token
       );
 
-      if (!dupResult.error && dupResult.data.hasSimilar) {
+      if (dupResult.error === null && dupResult.data.hasSimilar) {
         setDuplicateWarning(dupResult.data);
         return;
       }
