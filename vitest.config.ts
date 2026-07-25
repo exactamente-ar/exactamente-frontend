@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { getViteConfig } from 'astro/config';
 
 // getViteConfig envuelve la config de Vite que arma Astro, así que los tests
