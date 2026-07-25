@@ -2,11 +2,16 @@
   "extends": "astro/tsconfigs/strict",
   "include": [
     ".astro/types.d.ts",
-    "**/*",
-    "src"
+    "env.d.ts",
+    "src",
+    "*.config.ts",
+    "*.config.mjs"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "node_modules",
+    ".claude",
+    "_bmad"
   ],
   "compilerOptions": {
     "module": "esnext",
