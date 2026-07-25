@@ -70,7 +70,7 @@ type BackendSubject = {
   group?: {
     id: string;
     name: string;
-    members: Array<{ id: string; title: string; slug: string; sortOrder: number }>;
+    members: Array<{ id: string; title: string; slug: string; sortOrder: number; careerName: string | null; planYear: number | null }>;
   };
 };
 

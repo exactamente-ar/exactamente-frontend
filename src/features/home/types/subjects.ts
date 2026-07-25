@@ -17,6 +17,8 @@ export type SubjectGroupMember = {
   title: string;
   slug: string;
   sortOrder: number;
+  careerName: string | null;
+  planYear: number | null;
 };
 
 export type SubjectGroup = {
