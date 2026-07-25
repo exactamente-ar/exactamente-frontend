@@ -4,7 +4,6 @@ export const prerender = false;
 import ContainerSection from '@/shared/components/ContainerSection.astro';
 
 import Layout from '@/layouts/Layout.astro';
-import IconPaper from '@/shared/components/icons/IconPaper.astro';
 import Breadcrumb from '@/shared/components/Breadcrumb.astro';
 
 import IconOpenBook from '@/shared/components/icons/IconOpenBook.astro';
@@ -29,7 +28,7 @@ const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
 
 <Layout>
   <ContainerSection id='resumenes'>
-    <Breadcrumb url={homeHref} title={subject.title}>
+    <Breadcrumb url={homeHref}>
       <ContainerLink
         url={`./resumenes${tabSuffix}`}
         class='cursor-not-allowed pointer-events-none group/resource hover:scale-105 justify-between active:scale-95 grayscale-100 bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100 font-semibold flex items-center gap-3 transition-all duration-200'

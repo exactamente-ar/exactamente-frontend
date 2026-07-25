@@ -29,7 +29,15 @@ type ResourceButtonProps = {
   activeIconClass: string;
 };
 
-function ResourceButton({ resourceUrl, uploadUrl, count, label, Icon, activeClass, activeIconClass }: ResourceButtonProps) {
+function ResourceButton({
+  resourceUrl,
+  uploadUrl,
+  count,
+  label,
+  Icon,
+  activeClass,
+  activeIconClass,
+}: ResourceButtonProps) {
   const isEmpty = count === 0;
   return (
     <ContainerLink
@@ -52,14 +60,29 @@ function ResourceButton({ resourceUrl, uploadUrl, count, label, Icon, activeClas
   );
 }
 
-function formatPlanId (planId: string): string {
+function formatPlanId(planId: string): string {
   const year = planId.match(/\d+$/)?.[0];
   return year ? `Plan ${year}` : planId;
 }
 
-const STOPWORDS = new Set(['de', 'del', 'la', 'las', 'los', 'el', 'en', 'y', 'e', 'o', 'u', 'a', 'por', 'con']);
+const STOPWORDS = new Set([
+  'de',
+  'del',
+  'la',
+  'las',
+  'los',
+  'el',
+  'en',
+  'y',
+  'e',
+  'o',
+  'u',
+  'a',
+  'por',
+  'con',
+]);
 
-function abbreviateUniversity (name: string): string {
+function abbreviateUniversity(name: string): string {
   if (name.length <= 12) return name;
   const initials = name
     .split(/\s+/)
@@ -69,7 +92,17 @@ function abbreviateUniversity (name: string): string {
   return initials || name;
 }
 
-function Card ({ id, title, shortName, url, quadmester, year, careers, activeCareerId, resourceCounts, homeQuery }: Props) {
+function Card({
+  id,
+  title,
+  shortName,
+  quadmester,
+  year,
+  careers,
+  activeCareerId,
+  resourceCounts,
+  homeQuery,
+}: Props) {
   const primaryCareer = careers.find((c) => c.careerId === activeCareerId) ?? careers[0];
   const displayYear = primaryCareer?.year ?? year;
   const displayQuadmester = primaryCareer?.quadmester ?? quadmester;

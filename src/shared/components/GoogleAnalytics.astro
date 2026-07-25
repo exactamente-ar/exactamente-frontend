@@ -3,7 +3,9 @@
   const trackingId = 'G-R2RRF8DHZE';
 
   window.dataLayer = window.dataLayer || [];
+  // Snippet oficial de gtag.js: GA espera el objeto `arguments`, no un array.
   function gtag() {
+    // eslint-disable-next-line prefer-rest-params
     dataLayer.push(arguments);
   }
   gtag('js', new Date());

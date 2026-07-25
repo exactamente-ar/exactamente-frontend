@@ -12,16 +12,25 @@ function SubjectsView() {
   const { defaultScope, scopeError, scopeReady } = useResolvedDefaultScope();
   const filterState = useFilterState(defaultScope);
 
-  const { universityId, facultyId, careerId, planId, year, quadmester, search } = filterState.applied;
+  const { universityId, facultyId, careerId, planId, year, quadmester } = filterState.applied;
   const filtersForOptions = useMemo(
     () => ({ universityId, facultyId, careerId, planId, year, quadmester }),
-    [universityId, facultyId, careerId, planId, year, quadmester]
+    [universityId, facultyId, careerId, planId, year, quadmester],
   );
 
-  const { universityOptions, facultyOptions, careerOptions, loadingUniversities, loadingFaculties, loadingCareers } =
-    useFilterOptions(filtersForOptions);
+  const {
+    universityOptions,
+    facultyOptions,
+    careerOptions,
+    loadingUniversities,
+    loadingFaculties,
+    loadingCareers,
+  } = useFilterOptions(filtersForOptions);
 
-  const { filteredSubjects, loading, showMore, hasMore, planOptions } = useSubjects(filterState.applied, scopeReady);
+  const { filteredSubjects, loading, showMore, hasMore, planOptions } = useSubjects(
+    filterState.applied,
+    scopeReady,
+  );
 
   useEffect(() => {
     if (planOptions.length === 1 && filterState.applied.planId !== planOptions[0].id) {
@@ -29,12 +38,17 @@ function SubjectsView() {
       return;
     }
     if (planOptions.length > 1 && !filterState.applied.planId) {
-      const defaultPlan = planOptions.find((p) => p.id.match(/\d+$/)?.[0] === String(DEFAULT_PLAN_YEAR));
+      const defaultPlan = planOptions.find(
+        (p) => p.id.match(/\d+$/)?.[0] === String(DEFAULT_PLAN_YEAR),
+      );
       if (defaultPlan) filterState.commitFilter('planId', defaultPlan.id);
     }
   }, [planOptions]);
 
-  const homeQuery = useMemo(() => buildFilterSearchParams(filterState.applied).toString(), [filterState.applied]);
+  const homeQuery = useMemo(
+    () => buildFilterSearchParams(filterState.applied).toString(),
+    [filterState.applied],
+  );
 
   const options = useMemo<FilterOptions>(
     () => ({
@@ -47,7 +61,16 @@ function SubjectsView() {
       loadingCareers,
       loadingPlans: loading,
     }),
-    [universityOptions, facultyOptions, careerOptions, planOptions, loadingUniversities, loadingFaculties, loadingCareers, loading]
+    [
+      universityOptions,
+      facultyOptions,
+      careerOptions,
+      planOptions,
+      loadingUniversities,
+      loadingFaculties,
+      loadingCareers,
+      loading,
+    ],
   );
 
   return (
@@ -59,7 +82,6 @@ function SubjectsView() {
         clearAll={filterState.clearAll}
         options={options}
         scopeError={scopeError}
-        scopeReady={scopeReady}
       />
       <ListOfSubjects
         subjects={filteredSubjects}
