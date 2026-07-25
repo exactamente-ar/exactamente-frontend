@@ -121,7 +121,7 @@ type CacheEntry = { promise: Promise<unknown>; resolvedAt: number };
 const _cache = new Map<string, CacheEntry>();
 const CACHE_TTL = 60_000; // 60 seconds
 
-function withCache<T>(key: string, fetcher: () => Promise<ApiResult<T>>): Promise<ApiResult<T>> {
+export function withCache<T>(key: string, fetcher: () => Promise<ApiResult<T>>): Promise<ApiResult<T>> {
   const now = Date.now();
   const entry = _cache.get(key);
   if (entry && (entry.resolvedAt === 0 || now - entry.resolvedAt < CACHE_TTL)) {
@@ -141,13 +141,13 @@ function withCache<T>(key: string, fetcher: () => Promise<ApiResult<T>>): Promis
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-const RESOURCE_TYPE_MAP: Record<StringResource, BackendResource['type']> = {
+export const RESOURCE_TYPE_MAP: Record<StringResource, BackendResource['type']> = {
   Resumenes: 'resumen',
   Parciales: 'parcial',
   Finales: 'final',
 };
 
-function mapSubject(backend: BackendSubject): Subject {
+export function mapSubject(backend: BackendSubject): Subject {
   return {
     id: backend.id,
     title: backend.title,
@@ -165,7 +165,7 @@ function mapSubject(backend: BackendSubject): Subject {
   };
 }
 
-function mapResource(backend: BackendResource): ResourceFetch {
+export function mapResource(backend: BackendResource): ResourceFetch {
   return {
     id: backend.id,
     title: backend.title,
