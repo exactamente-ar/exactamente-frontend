@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Exactamente** es un hub educativo para estudiantes universitarios donde pueden encontrar y subir materiales de estudio (resúmenes, parciales y finales) por materia. Está desplegado en `https://exactamente.com.ar`.
 
 **Stack completo:**
+
 - **Framework**: Astro 5 (island architecture, SSR via Vercel adapter)
 - **UI interactiva**: React 19 (islands con `client:load` / `client:visible`)
 - **Componentes UI**: shadcn/ui (Radix UI primitives + `class-variance-authority` + `tailwind-merge`) en `src/shared/components/ui/`
@@ -129,13 +130,14 @@ Resumen relevante para el frontend:
 
 Todas las variables deben tener el prefijo `PUBLIC_` para ser accesibles en el cliente (Astro/Vite).
 
-| Variable | Descripción | Obligatoria |
-|---|---|---|
-| `PUBLIC_API_URL` | URL base del backend REST (ej: `https://api.exactamente.com.ar`). Default: `http://localhost:3000` | Prod: sí |
-| `PUBLIC_RECAPTCHA_SITE_KEY` | Site key de Google reCAPTCHA v2 para el formulario de upload | Sí |
-| `PUBLIC_GOOGLE_SCRIPT_URL` | URL del Google Apps Script que recibe el archivo y lo sube a Google Drive | Sí |
+| Variable                    | Descripción                                                                                        | Obligatoria |
+| --------------------------- | -------------------------------------------------------------------------------------------------- | ----------- |
+| `PUBLIC_API_URL`            | URL base del backend REST (ej: `https://api.exactamente.com.ar`). Default: `http://localhost:3000` | Prod: sí    |
+| `PUBLIC_RECAPTCHA_SITE_KEY` | Site key de Google reCAPTCHA v2 para el formulario de upload                                       | Sí          |
+| `PUBLIC_GOOGLE_SCRIPT_URL`  | URL del Google Apps Script que recibe el archivo y lo sube a Google Drive                          | Sí          |
 
 Crear un `.env` local:
+
 ```
 PUBLIC_API_URL=http://localhost:3000
 PUBLIC_RECAPTCHA_SITE_KEY=your_key_here
@@ -161,6 +163,7 @@ Cada feature (`home`, `resource`, `upload`) sigue la misma estructura interna: `
 ### Manejo de estado
 
 Sin librería global de estado. Estado local con hooks de React:
+
 - `useSubjects()` — materias + filtros + paginación (PAGE_SIZE = 9); orquesta los hooks de filtro
 - `useFilterState()` — estado mutable de los filtros activos
 - `useFilterOptions()` — opciones disponibles derivadas de las materias cargadas
@@ -175,7 +178,7 @@ Sin librería global de estado. Estado local con hooks de React:
 Todo el acceso HTTP está centralizado en `src/shared/services/api.ts`. El patrón de retorno es:
 
 ```ts
-type ApiResult<T> = { data: T; error: null } | { data: []; error: string }
+type ApiResult<T> = { data: T; error: null } | { data: []; error: string };
 ```
 
 Siempre verificar `result.error` antes de usar `result.data`. Los tipos del backend (`BackendSubject`, `BackendResource`) se mapean a tipos internos (`Subject`, `ResourceFetch`) dentro de `api.ts` — los componentes nunca reciben tipos de backend directamente.
@@ -206,14 +209,14 @@ Si se agrega testing en el futuro, la convención de Astro/Vite es usar Vitest c
 
 ### No modificar sin revisión
 
-| Archivo | Razón |
-|---|---|
-| `astro.config.mjs` | Configura el adapter de Vercel, integración de React, Tailwind como plugin de Vite y sitemap. Cambios aquí afectan el build completo y el deployment. |
-| `tsconfig.json` | Define strict mode, el alias `@/*` y la resolución de módulos. Cambiar `paths` rompe todos los imports. |
-| `src/core/global.css` | Define todas las variables CSS del tema (colores, fuentes). Cambios afectan toda la UI. |
-| `src/layouts/Layout.astro` | Layout base de todas las páginas. Cambios se propagan globalmente. |
-| `.astro/` (carpeta generada) | Generado automáticamente por Astro. No editar manualmente. |
-| `dist/` | Output del build. Nunca commitear. |
+| Archivo                      | Razón                                                                                                                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `astro.config.mjs`           | Configura el adapter de Vercel, integración de React, Tailwind como plugin de Vite y sitemap. Cambios aquí afectan el build completo y el deployment. |
+| `tsconfig.json`              | Define strict mode, el alias `@/*` y la resolución de módulos. Cambiar `paths` rompe todos los imports.                                               |
+| `src/core/global.css`        | Define todas las variables CSS del tema (colores, fuentes). Cambios afectan toda la UI.                                                               |
+| `src/layouts/Layout.astro`   | Layout base de todas las páginas. Cambios se propagan globalmente.                                                                                    |
+| `.astro/` (carpeta generada) | Generado automáticamente por Astro. No editar manualmente.                                                                                            |
+| `dist/`                      | Output del build. Nunca commitear.                                                                                                                    |
 
 ### Consideraciones de arquitectura
 

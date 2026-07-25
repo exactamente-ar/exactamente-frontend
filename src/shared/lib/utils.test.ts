@@ -11,6 +11,7 @@ describe('cn', () => {
   });
 
   it('descarta valores falsy de los condicionales', () => {
-    expect(cn('base', false && 'nope', undefined, null, 'extra')).toBe('base extra');
+    const activo = false;
+    expect(cn('base', activo && 'nope', undefined, null, 'extra')).toBe('base extra');
   });
 });

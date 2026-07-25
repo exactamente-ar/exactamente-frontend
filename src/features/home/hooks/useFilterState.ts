@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { DraftFilters, AppliedFilters, ResolvedDefaultScope } from '@/features/home/types/filter';
+import type {
+  DraftFilters,
+  AppliedFilters,
+  ResolvedDefaultScope,
+} from '@/features/home/types/filter';
 
 const EMPTY_DRAFT: DraftFilters = {
   universityId: '',
@@ -24,7 +28,7 @@ const CASCADE_CHILDREN: Record<keyof DraftFilters, Array<keyof DraftFilters>> = 
 function applyCascade<K extends keyof DraftFilters>(
   prev: AppliedFilters,
   key: K,
-  value: DraftFilters[K]
+  value: DraftFilters[K],
 ): AppliedFilters {
   const next = { ...prev, [key]: value } as AppliedFilters;
   for (const child of CASCADE_CHILDREN[key]) {
@@ -52,7 +56,13 @@ function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
   if (typeof window === 'undefined') {
     if (defaultScope) {
       return {
-        applied: { ...EMPTY_DRAFT, universityId: defaultScope.universityId, facultyId: defaultScope.facultyId, careerId: defaultScope.careerId, search: '' },
+        applied: {
+          ...EMPTY_DRAFT,
+          universityId: defaultScope.universityId,
+          facultyId: defaultScope.facultyId,
+          careerId: defaultScope.careerId,
+          search: '',
+        },
         urlHadUniversity: false,
       };
     }
@@ -80,7 +90,13 @@ function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
 
   if (defaultScope) {
     return {
-      applied: { ...EMPTY_DRAFT, universityId: defaultScope.universityId, facultyId: defaultScope.facultyId, careerId: defaultScope.careerId, search },
+      applied: {
+        ...EMPTY_DRAFT,
+        universityId: defaultScope.universityId,
+        facultyId: defaultScope.facultyId,
+        careerId: defaultScope.careerId,
+        search,
+      },
       urlHadUniversity: false,
     };
   }
@@ -126,7 +142,7 @@ export const useFilterState = (defaultScope: ResolvedDefaultScope | null) => {
     <K extends keyof DraftFilters>(key: K, value: DraftFilters[K]) => {
       setApplied((prev) => applyCascade(prev, key, value));
     },
-    []
+    [],
   );
 
   const setSearch = useCallback((search: string) => {

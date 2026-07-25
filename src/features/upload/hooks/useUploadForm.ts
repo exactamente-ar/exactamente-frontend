@@ -27,8 +27,14 @@ function loadImage(file: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const img = new Image();
-    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(`Error cargando ${file.name}`)); };
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error(`Error cargando ${file.name}`));
+    };
     img.src = url;
   });
 }
@@ -51,11 +57,15 @@ async function imagesToPdf(imageFiles: File[]): Promise<File> {
     const pageRatio = pageW / pageH;
     let drawW: number, drawH: number, x: number, y: number;
     if (imgRatio > pageRatio) {
-      drawW = pageW; drawH = pageW / imgRatio;
-      x = 0; y = (pageH - drawH) / 2;
+      drawW = pageW;
+      drawH = pageW / imgRatio;
+      x = 0;
+      y = (pageH - drawH) / 2;
     } else {
-      drawH = pageH; drawW = pageH * imgRatio;
-      x = (pageW - drawW) / 2; y = 0;
+      drawH = pageH;
+      drawW = pageH * imgRatio;
+      x = (pageW - drawW) / 2;
+      y = 0;
     }
     doc.addImage(dataUrl, 'JPEG', x, y, drawW, drawH);
   }
@@ -66,7 +76,10 @@ async function imagesToPdf(imageFiles: File[]): Promise<File> {
 
 type InitialValues = Partial<Omit<UploadFormState, 'file' | 'imageFiles'>>;
 
-type DuplicateWarning = { hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> };
+type DuplicateWarning = {
+  hasSimilar: boolean;
+  similar: Array<{ id: string; title: string; status: string }>;
+};
 
 export function useUploadForm(initialValues?: InitialValues) {
   const { token, logout } = useAuth();
@@ -87,13 +100,17 @@ export function useUploadForm(initialValues?: InitialValues) {
     const newErrors: UploadFormErrors = {};
     if (!formData.careerId) newErrors.careerId = 'Seleccioná una carrera';
     if (!formData.subjectId) newErrors.subjectId = 'Seleccioná una materia';
-    if (formData.type === 'resumen' && !formData.title) newErrors.title = 'Ingresá un título para el resumen';
-    if (formData.type === 'parcial' && !formData.subtype) newErrors.subtype = 'Seleccioná el subtipo';
+    if (formData.type === 'resumen' && !formData.title)
+      newErrors.title = 'Ingresá un título para el resumen';
+    if (formData.type === 'parcial' && !formData.subtype)
+      newErrors.subtype = 'Seleccioná el subtipo';
     if (!formData.examYear) newErrors.examYear = 'Seleccioná el año del examen';
     if (!formData.examMonth) newErrors.examMonth = 'Seleccioná el mes del examen';
-    if (formData.type === 'final' && !formData.examDay) newErrors.examDay = 'Ingresá el día del examen';
+    if (formData.type === 'final' && !formData.examDay)
+      newErrors.examDay = 'Ingresá el día del examen';
     if (formData.fileMode === 'pdf' && !formData.file) newErrors.file = 'Seleccioná un archivo PDF';
-    if (formData.fileMode === 'images' && formData.imageFiles.length === 0) newErrors.file = 'Agregá al menos una imagen';
+    if (formData.fileMode === 'images' && formData.imageFiles.length === 0)
+      newErrors.file = 'Agregá al menos una imagen';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -106,7 +123,10 @@ export function useUploadForm(initialValues?: InitialValues) {
       if (formData.fileMode === 'images') {
         finalFile = await imagesToPdf(formData.imageFiles);
         if (finalFile.size > MAX_FILE_SIZE) {
-          setErrors((prev) => ({ ...prev, file: 'El PDF generado supera los 20 MB. Reducí la cantidad de imágenes.' }));
+          setErrors((prev) => ({
+            ...prev,
+            file: 'El PDF generado supera los 20 MB. Reducí la cantidad de imágenes.',
+          }));
           setUploading(false);
           return;
         }
@@ -123,11 +143,12 @@ export function useUploadForm(initialValues?: InitialValues) {
           subtype: formData.subtype || undefined,
           examYear: formData.examYear ? Number(formData.examYear) : undefined,
           examMonth: formData.examMonth ? Number(formData.examMonth) : undefined,
-          examDay: formData.type === 'final' && formData.examDay ? Number(formData.examDay) : undefined,
+          examDay:
+            formData.type === 'final' && formData.examDay ? Number(formData.examDay) : undefined,
           topic: formData.topic && formData.topic !== 'none' ? Number(formData.topic) : undefined,
           notes: formData.notes || undefined,
         },
-        token!
+        token!,
       );
 
       if (result.error) {
@@ -156,7 +177,12 @@ export function useUploadForm(initialValues?: InitialValues) {
     setUploadError(undefined);
     if (!validate() || !token) return;
 
-    if (!duplicateConfirmed && formData.type !== 'resumen' && formData.examYear && formData.examMonth) {
+    if (
+      !duplicateConfirmed &&
+      formData.type !== 'resumen' &&
+      formData.examYear &&
+      formData.examMonth
+    ) {
       const dupResult = await checkDuplicate(
         {
           subjectId: formData.subjectId,
@@ -166,7 +192,7 @@ export function useUploadForm(initialValues?: InitialValues) {
           examMonth: Number(formData.examMonth),
           topic: formData.topic && formData.topic !== 'none' ? Number(formData.topic) : undefined,
         },
-        token
+        token,
       );
 
       if (dupResult.error === null && dupResult.data.hasSimilar) {
@@ -187,7 +213,12 @@ export function useUploadForm(initialValues?: InitialValues) {
     duplicateWarning,
     onCareerChange: (v: string) => {
       setFormData((prev) => ({ ...prev, careerId: v, planId: '', subjectId: '' }));
-      setErrors((prev) => ({ ...prev, careerId: undefined, planId: undefined, subjectId: undefined }));
+      setErrors((prev) => ({
+        ...prev,
+        careerId: undefined,
+        planId: undefined,
+        subjectId: undefined,
+      }));
     },
     onPlanChange: (v: string) => {
       setFormData((prev) => ({ ...prev, planId: v, subjectId: '' }));
@@ -195,8 +226,20 @@ export function useUploadForm(initialValues?: InitialValues) {
     },
     onSubjectChange: (v: string) => updateField('subjectId', v),
     onTypeChange: (v: string) => {
-      setFormData((prev) => ({ ...prev, type: v as UploadFormState['type'], title: '', subtype: '', examDay: '' }));
-      setErrors((prev) => ({ ...prev, type: undefined, title: undefined, subtype: undefined, examDay: undefined }));
+      setFormData((prev) => ({
+        ...prev,
+        type: v as UploadFormState['type'],
+        title: '',
+        subtype: '',
+        examDay: '',
+      }));
+      setErrors((prev) => ({
+        ...prev,
+        type: undefined,
+        title: undefined,
+        subtype: undefined,
+        examDay: undefined,
+      }));
     },
     onTitleChange: (v: string) => updateField('title', v),
     onSubtypeChange: (v: string) => updateField('subtype', v),

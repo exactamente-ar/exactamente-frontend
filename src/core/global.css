@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* 🎨 Colores base */
@@ -53,9 +53,9 @@
   --color-warning: #f59e0b; /* Amarillo para advertencias */
   --color-warning-foreground: #000000;
 
-  ---font-rubik: Rubik, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    sans-serif;
+  ---font-rubik:
+    Rubik, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
 }
 
 .aurora-container {
@@ -63,12 +63,11 @@
   height: 100%;
 }
 
-
 .bg-noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 200px 200px;
-  }
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
 
 @keyframes fadeInUp {
   from {
@@ -164,14 +163,7 @@ select option {
 }
 
 .gradient-text {
-  background-image: linear-gradient(
-    to right,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background-image: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   background-repeat: no-repeat;
   -webkit-background-clip: text;
@@ -184,14 +176,7 @@ select option {
 }
 
 .gradient-bg {
-  background-image: linear-gradient(
-    45deg,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background-image: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   background-repeat: no-repeat;
   animation: gradient-animation 8s linear infinite;
@@ -200,7 +185,6 @@ select option {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
-
 
 @keyframes gradient-border {
   0% {
@@ -225,19 +209,12 @@ select option {
 }
 
 .search-gradient-border::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(
-    45deg,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   -webkit-mask:
@@ -275,18 +252,11 @@ select option {
 }
 
 .dashed-gradient-hover::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    45deg,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='white' stroke-width='1.5' stroke-dasharray='6 4'/%3E%3C/svg%3E");
@@ -310,38 +280,24 @@ select option {
 }
 
 .gradient-separator::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   animation: gradient-animation 8s linear infinite;
 }
 
 .gradient-border::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px; /* grosor del borde */
-  background: linear-gradient(
-    45deg,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   transform: translateZ(0);
@@ -362,49 +318,36 @@ select option {
 }
 
 .gradient-border-top::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   opacity: 0.4;
 }
 
-.gradient-border-bottom {}
+.gradient-border-bottom {
+}
 
 .gradient-border-bottom::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    #6b46c1,
-    #b83280,
-    #f6e05e,
-    #38b2ac,
-    #6b46c1
-  );
+  background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   opacity: 0.1;
 }
 
 .gradient-border-all::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -422,7 +365,7 @@ select option {
 }
 
 .gradient-border-all-strong::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;

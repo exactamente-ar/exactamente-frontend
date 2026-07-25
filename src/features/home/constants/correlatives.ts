@@ -7,4 +7,3 @@ export const TIPOS_MATERIA = {
   REQUERIDA: 'requerida',
   OTRA: 'otra',
 } as const;
-

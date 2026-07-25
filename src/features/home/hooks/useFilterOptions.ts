@@ -24,7 +24,9 @@ export const useFilterOptions = (filters: DraftFilters) => {
       setUniversities(r.error ? [] : r.data);
       setLoadingUniversities(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -40,7 +42,9 @@ export const useFilterOptions = (filters: DraftFilters) => {
       setFaculties(r.error ? [] : r.data);
       setLoadingFaculties(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [filters.universityId]);
 
   useEffect(() => {
@@ -56,7 +60,9 @@ export const useFilterOptions = (filters: DraftFilters) => {
       setCareers(r.error ? [] : r.data);
       setLoadingCareers(false);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [filters.facultyId]);
 
   const universityOptions = useMemo(() => universities.map(toOption), [universities]);

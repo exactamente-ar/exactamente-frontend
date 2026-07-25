@@ -28,7 +28,7 @@ export type UploadFormErrors = {
   examMonth?: string;
   examDay?: string;
   file?: string;
-}
+};
 
 export interface UploadFormProps {
   formData: UploadFormState;
@@ -39,7 +39,10 @@ export interface UploadFormProps {
   tiposRecurso: { value: string; label: string }[];
   uploading: boolean;
   uploadError: string | undefined;
-  duplicateWarning: { hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> } | null;
+  duplicateWarning: {
+    hasSimilar: boolean;
+    similar: Array<{ id: string; title: string; status: string }>;
+  } | null;
   onCareerChange: (careerId: string) => void;
   onPlanChange: (planId: string) => void;
   onSubjectChange: (subjectId: string) => void;

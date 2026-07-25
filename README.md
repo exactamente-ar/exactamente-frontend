@@ -40,11 +40,11 @@ PUBLIC_GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/.../exec
 
 ## Comandos
 
-| Comando | Descripción |
-|---|---|
-| `pnpm dev` | Dev server en `http://localhost:4321` |
-| `pnpm build` | Build de producción → `dist/` |
-| `pnpm preview` | Preview del build local |
+| Comando        | Descripción                           |
+| -------------- | ------------------------------------- |
+| `pnpm dev`     | Dev server en `http://localhost:4321` |
+| `pnpm build`   | Build de producción → `dist/`         |
+| `pnpm preview` | Preview del build local               |
 
 ## Estructura del proyecto
 
@@ -104,9 +104,9 @@ pnpm build   # Tiene que terminar sin errores
 
 ### Qué no modificar sin revisión previa
 
-| Archivo | Razón |
-|---|---|
-| `astro.config.mjs` | Configura el adapter de Vercel y el build completo |
-| `tsconfig.json` | Define strict mode y el alias `@/*` |
-| `src/core/global.css` | Variables CSS del tema — afecta toda la UI |
-| `src/layouts/Layout.astro` | Layout base de todas las páginas |
+| Archivo                    | Razón                                              |
+| -------------------------- | -------------------------------------------------- |
+| `astro.config.mjs`         | Configura el adapter de Vercel y el build completo |
+| `tsconfig.json`            | Define strict mode y el alias `@/*`                |
+| `src/core/global.css`      | Variables CSS del tema — afecta toda la UI         |
+| `src/layouts/Layout.astro` | Layout base de todas las páginas                   |

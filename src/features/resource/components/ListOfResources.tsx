@@ -43,17 +43,15 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
         <div className='flex flex-col w-full px-6 py-10 rounded-xl bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border gradient-border  overflow-hidden hover:border-zinc-700/80 text-center shadow-md'>
           <h2 className='text-xl font-semibold text-zinc-100 mb-2'>Sin resultados</h2>
           <p className='text-zinc-400 mb-4'>No se encontraron {type} disponibles.</p>
-            <a
+          <a
             href='/upload'
-        className='mx-auto cursor-pointer flex items-center  duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
-
+            className='mx-auto cursor-pointer flex items-center  duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
           >
-            <div
-              className="bg-black/40 m-[1px] relative inset-0 z-0 rounded-2xl gap-2 flex items-center justify-center px-5 py-3">
+            <div className='bg-black/40 m-[1px] relative inset-0 z-0 rounded-2xl gap-2 flex items-center justify-center px-5 py-3'>
               <IconDocument size={17} className='fill-foreground' />
               <span> Subir {type} </span>
             </div>
-          </a >
+          </a>
         </div>
       ) : (
         <>
@@ -74,14 +72,12 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
           <a
             href='/upload'
             className='mx-auto cursor-pointer flex items-center mt-10 duration-200 hover:scale-105 rounded-xl  gradient-bg gradient-border  font-bold text-white shadow-sm '
-
           >
-            <div
-              className="bg-black/40 m-[1px] relative inset-0 z-0 rounded-2xl gap-2 flex items-center justify-center px-5 py-3">
+            <div className='bg-black/40 m-[1px] relative inset-0 z-0 rounded-2xl gap-2 flex items-center justify-center px-5 py-3'>
               <IconDocument size={17} className='fill-foreground' />
               <span> Subir {type} </span>
             </div>
-          </a >
+          </a>
         </>
       )}
     </div>

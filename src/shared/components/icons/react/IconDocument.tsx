@@ -4,7 +4,11 @@ interface Props {
   gradient?: boolean;
 }
 
-const IconDocument: React.FC<Props> = ({ size = 30, className = 'fill-foreground', gradient = false }) => {
+const IconDocument: React.FC<Props> = ({
+  size = 30,
+  className = 'fill-foreground',
+  gradient = false,
+}) => {
   return (
     <svg width={size} height={size} viewBox='0 0 24 24'>
       {gradient && (

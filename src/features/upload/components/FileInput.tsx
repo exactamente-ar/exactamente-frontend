@@ -16,11 +16,9 @@ interface FileInputProps {
 const MAX_SIZE = 20 * 1024 * 1024;
 const MAX_IMAGES = 10;
 
-const isPdf = (f: File) =>
-  f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf');
+const isPdf = (f: File) => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf');
 
-const isAllowedImage = (f: File) =>
-  f.type === 'image/jpeg' || f.type === 'image/png';
+const isAllowedImage = (f: File) => f.type === 'image/jpeg' || f.type === 'image/png';
 
 const FileInput: React.FC<FileInputProps> = ({
   fileMode,
@@ -40,7 +38,9 @@ const FileInput: React.FC<FileInputProps> = ({
   useEffect(() => {
     const urls = imageFiles.map((f) => URL.createObjectURL(f));
     setThumbUrls(urls);
-    return () => { urls.forEach((u) => URL.revokeObjectURL(u)); };
+    return () => {
+      urls.forEach((u) => URL.revokeObjectURL(u));
+    };
   }, [imageFiles]);
 
   useEffect(() => {
@@ -79,7 +79,9 @@ const FileInput: React.FC<FileInputProps> = ({
       return;
     }
     if (valid.length < all.length) {
-      setValidationError('Algunos archivos fueron ignorados: solo se permiten imágenes (JPG o PNG)');
+      setValidationError(
+        'Algunos archivos fueron ignorados: solo se permiten imágenes (JPG o PNG)',
+      );
     } else {
       setValidationError(undefined);
     }
@@ -133,7 +135,9 @@ const FileInput: React.FC<FileInputProps> = ({
             className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
           />
           <div className='flex flex-col items-center justify-center h-full pointer-events-none'>
-            <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${file ? 'search-gradient-border gradient-active bg-black/60' : 'bg-zinc-800 border border-zinc-600'}`}>
+            <div
+              className={`relative w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${file ? 'search-gradient-border gradient-active bg-black/60' : 'bg-zinc-800 border border-zinc-600'}`}
+            >
               <IconDocument size={24} className={file ? 'fill-white' : 'fill-zinc-400'} />
             </div>
             {file ? (

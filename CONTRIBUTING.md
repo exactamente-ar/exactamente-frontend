@@ -50,13 +50,13 @@ pnpm dev   # http://localhost:4321
 
 ### Naming
 
-| Elemento | Convención | Ejemplo |
-|---|---|---|
-| Componentes | PascalCase | `CardSubject.tsx` |
-| Hooks | camelCase + prefijo `use` | `useSubjects.ts` |
-| Tipos | PascalCase, en `types/` | `Subject`, `FilterT` |
-| Constantes | SCREAMING_SNAKE_CASE | `INITIAL_FILTERS` |
-| Servicios | camelCase | `getSubjects` |
+| Elemento    | Convención                | Ejemplo              |
+| ----------- | ------------------------- | -------------------- |
+| Componentes | PascalCase                | `CardSubject.tsx`    |
+| Hooks       | camelCase + prefijo `use` | `useSubjects.ts`     |
+| Tipos       | PascalCase, en `types/`   | `Subject`, `FilterT` |
+| Constantes  | SCREAMING_SNAKE_CASE      | `INITIAL_FILTERS`    |
+| Servicios   | camelCase                 | `getSubjects`        |
 
 ### Estructura por feature
 
@@ -88,12 +88,12 @@ Tailwind v4, sin `tailwind.config.js`. Customizaciones van en `src/core/global.c
 
 ## Archivos críticos — no modificar sin revisión
 
-| Archivo | Razón |
-|---|---|
-| `astro.config.mjs` | Configura el adapter de Vercel y el build completo |
-| `tsconfig.json` | Define strict mode y el alias `@/*` |
-| `src/core/global.css` | Variables CSS del tema — afecta toda la UI |
-| `src/layouts/Layout.astro` | Layout base de todas las páginas |
+| Archivo                    | Razón                                              |
+| -------------------------- | -------------------------------------------------- |
+| `astro.config.mjs`         | Configura el adapter de Vercel y el build completo |
+| `tsconfig.json`            | Define strict mode y el alias `@/*`                |
+| `src/core/global.css`      | Variables CSS del tema — afecta toda la UI         |
+| `src/layouts/Layout.astro` | Layout base de todas las páginas                   |
 
 Si necesitás tocar alguno de estos archivos, explicalo en el PR.
 

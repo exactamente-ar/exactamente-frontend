@@ -42,7 +42,12 @@ function UserMenuInner() {
           aria-label='Menú de usuario'
         >
           {user.photoUrl ? (
-            <img src={user.photoUrl} alt={user.displayName} className='w-full h-full object-cover' referrerPolicy='no-referrer' />
+            <img
+              src={user.photoUrl}
+              alt={user.displayName}
+              className='w-full h-full object-cover'
+              referrerPolicy='no-referrer'
+            />
           ) : (
             <span className='text-sm font-bold text-zinc-200'>{getInitials(user.displayName)}</span>
           )}

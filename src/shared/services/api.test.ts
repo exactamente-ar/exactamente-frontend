@@ -125,10 +125,7 @@ describe('withCache', () => {
     const withCache = await loadWithCache();
     const fetcher = vi.fn().mockResolvedValue({ data: ['ok'], error: null });
 
-    const [a, b] = await Promise.all([
-      withCache('k', fetcher),
-      withCache('k', fetcher),
-    ]);
+    const [a, b] = await Promise.all([withCache('k', fetcher), withCache('k', fetcher)]);
 
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(a).toBe(b);

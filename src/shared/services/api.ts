@@ -63,7 +63,15 @@ type BackendSubject = {
   urlPrograma: string;
   year: number;
   quadmester: number;
-  careers: Array<{ careerId: string; planId: string; year: number; quadmester: number; careerName: string; facultyName: string; universityName: string }>;
+  careers: Array<{
+    careerId: string;
+    planId: string;
+    year: number;
+    quadmester: number;
+    careerName: string;
+    facultyName: string;
+    universityName: string;
+  }>;
   prerequisites: string[];
   correlatives: string[];
   resourceCounts: { resumen: number; parcial: number; final: number };
@@ -107,7 +115,6 @@ type BackendPaginatedResponse<T> = {
   totalPages: number;
 };
 
-
 type ApiSuccess<T> = { data: T; error: null };
 type ApiError = { data: []; error: string };
 type ApiResult<T> = ApiSuccess<T> | ApiError;
@@ -121,7 +128,10 @@ type CacheEntry = { promise: Promise<unknown>; resolvedAt: number };
 const _cache = new Map<string, CacheEntry>();
 const CACHE_TTL = 60_000; // 60 seconds
 
-export function withCache<T>(key: string, fetcher: () => Promise<ApiResult<T>>): Promise<ApiResult<T>> {
+export function withCache<T>(
+  key: string,
+  fetcher: () => Promise<ApiResult<T>>,
+): Promise<ApiResult<T>> {
   const now = Date.now();
   const entry = _cache.get(key);
   if (entry && (entry.resolvedAt === 0 || now - entry.resolvedAt < CACHE_TTL)) {
@@ -187,9 +197,15 @@ export function getCareers(params?: { facultyId?: string }): Promise<ApiResult<C
       const response = await fetch(key);
       if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
       const json: { data: BackendCareer[] } = await response.json();
-      return { data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })), error: null };
+      return {
+        data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })),
+        error: null,
+      };
     } catch (err) {
-      return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching careers' };
+      return {
+        data: [],
+        error: err instanceof Error ? err.message : 'Unknown error fetching careers',
+      };
     }
   });
 }
@@ -201,9 +217,15 @@ export function getUniversities(): Promise<ApiResult<University[]>> {
       const response = await fetch(key);
       if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
       const json: { data: BackendUniversity[] } = await response.json();
-      return { data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })), error: null };
+      return {
+        data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })),
+        error: null,
+      };
     } catch (err) {
-      return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching universities' };
+      return {
+        data: [],
+        error: err instanceof Error ? err.message : 'Unknown error fetching universities',
+      };
     }
   });
 }
@@ -217,9 +239,15 @@ export function getFaculties(params: { universityId: string }): Promise<ApiResul
       const response = await fetch(key);
       if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
       const json: { data: BackendFaculty[] } = await response.json();
-      return { data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })), error: null };
+      return {
+        data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })),
+        error: null,
+      };
     } catch (err) {
-      return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching faculties' };
+      return {
+        data: [],
+        error: err instanceof Error ? err.message : 'Unknown error fetching faculties',
+      };
     }
   });
 }
@@ -232,10 +260,24 @@ export function getCareerPlans(careerId: string): Promise<ApiResult<CareerPlan[]
     try {
       const response = await fetch(key);
       if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
-      const json: { data: Array<{ id: string; careerId: string; name: string; year: number; createdAt: string }> } = await response.json();
-      return { data: json.data.map(({ id, careerId, name, year }) => ({ id, careerId, name, year })), error: null };
+      const json: {
+        data: Array<{
+          id: string;
+          careerId: string;
+          name: string;
+          year: number;
+          createdAt: string;
+        }>;
+      } = await response.json();
+      return {
+        data: json.data.map(({ id, careerId, name, year }) => ({ id, careerId, name, year })),
+        error: null,
+      };
     } catch (err) {
-      return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching career plans' };
+      return {
+        data: [],
+        error: err instanceof Error ? err.message : 'Unknown error fetching career plans',
+      };
     }
   });
 }
@@ -254,7 +296,10 @@ export function getSubjects(params?: Record<string, string>): Promise<ApiResult<
       const json: BackendPaginatedResponse<BackendSubject> = await response.json();
       return { data: json.data.map(mapSubject), error: null };
     } catch (err) {
-      return { data: [], error: err instanceof Error ? err.message : 'Unknown error fetching subjects' };
+      return {
+        data: [],
+        error: err instanceof Error ? err.message : 'Unknown error fetching subjects',
+      };
     }
   });
 }
@@ -281,7 +326,7 @@ export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
 
 export async function getResources(
   subjectId: string,
-  type: StringResource
+  type: StringResource,
 ): Promise<ApiResult<ResourceFetch[]>> {
   try {
     const url = new URL(`${BASE_URL}/api/v1/resources`);
@@ -328,7 +373,7 @@ export async function uploadResource(
     topic?: number;
     notes?: string;
   },
-  token: string
+  token: string,
 ): Promise<ApiResult<Resource>> {
   try {
     const form = new FormData();
@@ -352,7 +397,10 @@ export async function uploadResource(
     const json: Resource = await response.json();
     return { data: json, error: null };
   } catch (err) {
-    return { data: [], error: err instanceof Error ? err.message : 'Unknown error uploading resource' };
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Unknown error uploading resource',
+    };
   }
 }
 
@@ -365,8 +413,10 @@ export async function checkDuplicate(
     examMonth?: number;
     topic?: number;
   },
-  token: string
-): Promise<ApiResult<{ hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> }>> {
+  token: string,
+): Promise<
+  ApiResult<{ hasSimilar: boolean; similar: Array<{ id: string; title: string; status: string }> }>
+> {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/resources/check-duplicate`, {
       method: 'POST',
@@ -380,6 +430,9 @@ export async function checkDuplicate(
     const json = await response.json();
     return { data: json, error: null };
   } catch (err) {
-    return { data: [], error: err instanceof Error ? err.message : 'Unknown error checking duplicate' };
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Unknown error checking duplicate',
+    };
   }
 }
