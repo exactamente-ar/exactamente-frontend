@@ -79,23 +79,20 @@ Los commits siguen conventional commits (`feat:`, `fix:`, `chore:`, `refactor:`,
 
 ## 2. Metodología BMad
 
-Los skills de BMad están versionados en `.claude/skills/` y son parte del flujo, no un extra.
+**BMad vive en el workspace, no en este repo.**
 
-| Cuando necesitás...                     | Usá el skill                    |
-| --------------------------------------- | ------------------------------- |
-| Arrancar cualquier feature nueva        | `bmad-brainstorming`            |
-| Crear o revisar requerimientos          | `bmad-prd`                      |
-| Partir requerimientos en épicas/stories | `bmad-create-epics-and-stories` |
-| Implementar una story                   | `bmad-dev-story`                |
-| Cambio chico sin ceremonia completa     | `bmad-quick-dev`                |
-| Code review                             | `bmad-code-review`              |
-| Definir arquitectura                    | `bmad-architecture`             |
-| Escribir tests de aceptación (ATDD)     | `bmad-testarch-atdd`            |
-| Ampliar cobertura de tests              | `bmad-testarch-automate`        |
-| Revisar la calidad de los tests         | `bmad-testarch-test-review`     |
-| No sabés qué sigue                      | `bmad-help`                     |
+Una feature de Exactamente suele cruzar varios repos (este, el backend, el admin), así que la planificación no puede vivir dentro de uno solo. BMad está instalado una sola vez en [`exactamente-workspace`](https://github.com/exactamente-ar/exactamente-workspace), junto con los PRDs, épicas, stories y artefactos de test.
 
-Reglas: PRD antes que código, aunque sea liviano. TDD funciona dentro de BMad, no lo reemplaza. Los artefactos van a `_bmad-output/`.
+Consecuencia práctica: **abrí Claude en el workspace, no acá.** Los skills de proyecto se cargan solo desde el directorio donde arrancás — parado en este repo no tenés ninguno de los `bmad-*`. Sí seguís teniendo este `AGENTS.md`, que se carga solo al tocar archivos del repo.
+
+```bash
+git clone https://github.com/exactamente-ar/exactamente-workspace.git
+cd exactamente-workspace && ./setup.sh
+```
+
+El flujo completo está en el `METODOLOGIA.md` del workspace. Lo que aplica acá dentro: PRD antes que código aunque sea liviano, y TDD dentro de BMad (no lo reemplaza).
+
+Si sos un colaborador externo y solo te interesa este repo, no necesitás BMad — alcanza con las reglas de este archivo y `CONTRIBUTING.md`.
 
 ---
 
