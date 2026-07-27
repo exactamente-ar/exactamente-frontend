@@ -50,13 +50,17 @@ Thumbs.db
 # ───────────────
 # Claude Code / BMad
 # ───────────────
-# La metodología (skills, config de BMad) se versiona a propósito:
-# quien clona el repo tiene el mismo setup sin instalar nada aparte.
-# Solo se ignora lo personal de cada dev.
+# BMad y sus skills viven en exactamente-workspace, no acá: una feature
+# cruza varios repos, así que la metodología no puede vivir dentro de uno.
+# Ver la sección 2 de AGENTS.md.
+_bmad/
+_bmad-output/
+.claude/skills/
+
+# Personal de cada dev
 docs/superpowers/
 .claude/settings.local.json
 .claude/worktrees/
-_bmad/config.user.toml
 
 # Índice generado por codegraph (incluye db y socket del daemon)
 .codegraph/
