@@ -28,6 +28,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Los tipos de la API se generan del OpenAPI del backend. Si el contrato
+      # cambió y acá no se regeneró, el sitio compila contra una API que ya no
+      # existe.
+      - run: pnpm check:api
+
       - run: pnpm typecheck
 
       - run: pnpm lint
