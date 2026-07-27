@@ -6,7 +6,13 @@
  *
  * Fuentes, en orden:
  *   1. ../exactamente-backend/openapi.json — el caso normal en el workspace
- *   2. $EXACTAMENTE_OPENAPI_URL o la API de producción — para un clon suelto
+ *   2. $EXACTAMENTE_OPENAPI_URL — override manual
+ *   3. El openapi.json de `main` en GitHub — lo que usa el CI
+ *
+ * El fallback apunta al repo y NO a la API desplegada a propósito: `main` es el
+ * contrato mergeado, y está disponible al instante sin esperar un deploy. De
+ * paso obliga al orden correcto — un cliente no puede mergear contra un
+ * contrato que el backend todavía no mergeó.
  *
  * El archivo generado se versiona: así el repo compila sin el backend al lado
  * y sin red, y cualquier cambio del contrato aparece como diff en el PR.
@@ -20,7 +26,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(root, 'src/shared/types/api.d.ts');
 const LOCAL_SPEC = resolve(root, '../exactamente-backend/openapi.json');
 const REMOTE_SPEC =
-  process.env.EXACTAMENTE_OPENAPI_URL ?? 'https://api.exactamente.com.ar/openapi.json';
+  process.env.EXACTAMENTE_OPENAPI_URL ??
+  'https://raw.githubusercontent.com/exactamente-ar/exactamente-backend/main/openapi.json';
 
 const source = existsSync(LOCAL_SPEC) ? LOCAL_SPEC : REMOTE_SPEC;
 console.log(`· spec: ${source === LOCAL_SPEC ? 'backend local' : REMOTE_SPEC}`);
@@ -35,8 +42,9 @@ try {
 } catch {
   console.error('\n✗ No se pudo generar desde', source);
   if (source !== LOCAL_SPEC) {
-    console.error('  Cloná exactamente-backend al lado de este repo, o definí');
-    console.error('  EXACTAMENTE_OPENAPI_URL apuntando a un /openapi.json accesible.');
+    console.error('  Si el contrato todavía no está en `main` del backend, ese PR va primero.');
+    console.error('  También podés clonar exactamente-backend al lado, o definir');
+    console.error('  EXACTAMENTE_OPENAPI_URL apuntando a un openapi.json accesible.');
   }
   process.exit(1);
 }
