@@ -41,7 +41,6 @@ export type PropsFilterBar = {
   clearAll: () => void;
   options: FilterOptions;
   scopeError: string | null;
-  scopeReady: boolean;
 };
 
 export type PropsListOfSubjects = {

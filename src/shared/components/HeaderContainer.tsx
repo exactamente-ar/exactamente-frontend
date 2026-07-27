@@ -14,7 +14,9 @@ const Header: React.FC<Props> = ({ urlImg, children }) => {
         backgroundPosition: 'right',
       }}
     >
-      <div className='z-40 bg-primary-foreground/70 w-full h-full p-6 m-[1px] rounded-2xl'>{children}</div>
+      <div className='z-40 bg-primary-foreground/70 w-full h-full p-6 m-[1px] rounded-2xl'>
+        {children}
+      </div>
     </header>
   );
 };

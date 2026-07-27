@@ -129,7 +129,7 @@ export default function Aurora(props: AuroraProps) {
     const renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: true,
-      antialias: true
+      antialias: true,
     });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
@@ -137,6 +137,8 @@ export default function Aurora(props: AuroraProps) {
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.canvas.style.backgroundColor = 'transparent';
 
+    // resize() la lee desde un closure definido antes de la asignación, así que no puede ser const.
+    // eslint-disable-next-line prefer-const
     let program: Program | undefined;
 
     function resize() {
@@ -155,7 +157,7 @@ export default function Aurora(props: AuroraProps) {
       delete geometry.attributes.uv;
     }
 
-    const colorStopsArray = colorStops.map(hex => {
+    const colorStopsArray = colorStops.map((hex) => {
       const c = new Color(hex);
       return [c.r, c.g, c.b];
     });
@@ -168,8 +170,8 @@ export default function Aurora(props: AuroraProps) {
         uAmplitude: { value: amplitude },
         uColorStops: { value: colorStopsArray },
         uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uBlend: { value: blend }
-      }
+        uBlend: { value: blend },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
@@ -205,5 +207,5 @@ export default function Aurora(props: AuroraProps) {
     };
   }, [amplitude]);
 
-  return <div ref={ctnDom} className="w-full h-full abolute" />;
+  return <div ref={ctnDom} className='w-full h-full abolute' />;
 }

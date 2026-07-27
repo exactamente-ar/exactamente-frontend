@@ -18,14 +18,18 @@ interface Props {
   mostRecent: boolean;
 }
 
-const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear, examMonth, topic, mostRecent }) => {
-  const {
-    previewOpen,
-    iframeLoaded,
-    iframeRef,
-    togglePreview,
-    handleIframeLoad,
-  } = usePreview(fileUrl);
+const CardResource: React.FC<Props> = ({
+  title,
+  fileUrl,
+  type,
+  subtype,
+  examYear,
+  examMonth,
+  topic,
+  mostRecent,
+}) => {
+  const { previewOpen, iframeLoaded, iframeRef, togglePreview, handleIframeLoad } =
+    usePreview(fileUrl);
 
   const [downloading, setDownloading] = useState(false);
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
@@ -97,7 +101,9 @@ const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear
         <div className='mx-6 mb-4 preview-container transition-all'>
           <div className='bg-zinc-800/50 rounded-xl border border-zinc-700/50 overflow-hidden'>
             <div className='flex items-center justify-between gap-3 px-4 py-2 border-b border-zinc-700/50 bg-zinc-900/40'>
-              <span className='text-xs font-medium text-zinc-400 uppercase tracking-wide'>Vista previa</span>
+              <span className='text-xs font-medium text-zinc-400 uppercase tracking-wide'>
+                Vista previa
+              </span>
               <button
                 onClick={() => setFullscreenOpen(true)}
                 aria-label='Ver completo'
@@ -116,6 +122,7 @@ const CardResource: React.FC<Props> = ({ title, fileUrl, type, subtype, examYear
               )}
               <iframe
                 ref={iframeRef}
+                title={`Vista previa de ${title}`}
                 src={fileUrl}
                 className={`preview-iframe w-full h-96 transition-opacity duration-500 ${
                   iframeLoaded ? 'opacity-100' : 'opacity-0'

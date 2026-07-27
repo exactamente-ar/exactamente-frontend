@@ -20,7 +20,11 @@ function parseInitialValues() {
   const draftRaw = localStorage.getItem('exactamente_upload_draft');
   if (draftRaw) {
     localStorage.removeItem('exactamente_upload_draft');
-    try { return JSON.parse(draftRaw); } catch {}
+    try {
+      return JSON.parse(draftRaw);
+    } catch {
+      // Draft corrupto en localStorage: se ignora y se sigue con los query params.
+    }
   }
 
   const params = new URLSearchParams(window.location.search);

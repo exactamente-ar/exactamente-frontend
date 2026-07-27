@@ -52,7 +52,7 @@ export const useSubjects = (appliedFilters: AppliedFilters, scopeReady: boolean)
         if (
           appliedFilters.planId &&
           !s.careers.some(
-            (c) => c.careerId === appliedFilters.careerId && c.planId === appliedFilters.planId
+            (c) => c.careerId === appliedFilters.careerId && c.planId === appliedFilters.planId,
           )
         )
           return false;
@@ -66,7 +66,7 @@ export const useSubjects = (appliedFilters: AppliedFilters, scopeReady: boolean)
 
   const visibleSubjects = useMemo(
     () => filteredSubjects.slice(0, visibleCount),
-    [filteredSubjects, visibleCount]
+    [filteredSubjects, visibleCount],
   );
   const showMore = useCallback(() => setVisibleCount((prev) => prev + PAGE_SIZE), []);
   const hasMore = visibleCount < filteredSubjects.length;

@@ -21,7 +21,15 @@ export default function CardSubjectCorrelative({
           ? 'transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer'
           : 'pointer-events-none'
       } border-2 rounded-xl p-4 `}
+      role='button'
+      tabIndex={clickeable ? 0 : -1}
       onClick={() => handleSubjectClick(subject.id)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleSubjectClick(subject.id);
+        }
+      }}
     >
       <div className='flex items-start justify-between mb-3'>
         <h5 className={`font-semibold ${styles.text} leading-tight`}>{subject.title}</h5>

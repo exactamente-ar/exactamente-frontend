@@ -23,7 +23,7 @@ export function useCorrelatives(initialSelectedId: string) {
 
   const subjectCurrent = useMemo(
     () => subjects.find((m) => m.id === selectedMateriaId),
-    [subjects, selectedMateriaId]
+    [subjects, selectedMateriaId],
   );
 
   const correlatives = useMemo(() => {

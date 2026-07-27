@@ -1,0 +1,8 @@
+dist
+.astro
+.vercel
+node_modules
+pnpm-lock.yaml
+.claude
+_bmad
+_bmad-output

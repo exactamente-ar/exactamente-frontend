@@ -16,13 +16,14 @@ cd exactamente-frontend
 pnpm install
 ```
 
-Crear `.env` en la raíz:
+Copiar `.env.example` a `.env` en la raíz:
 
-```env
-PUBLIC_API_URL=http://localhost:3000
-PUBLIC_RECAPTCHA_SITE_KEY=tu_site_key
-PUBLIC_GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/.../exec
+```bash
+cp .env.example .env
 ```
+
+`pnpm install` además engancha los git hooks (lefthook), así que los checks
+corren solos a partir de ahí.
 
 Levantar el dev server:
 
@@ -38,25 +39,48 @@ pnpm dev   # http://localhost:4321
    git checkout -b feat/descripcion-corta
    git checkout -b fix/descripcion-del-bug
    ```
-3. Hacer los cambios
-4. Verificar que el build no rompa:
+3. Escribir el test que falle, después el código que lo haga pasar (TDD)
+4. Verificar localmente:
    ```bash
+   pnpm typecheck
+   pnpm lint
+   pnpm test
    pnpm build
    ```
-5. Commitear y pushear
+5. Commitear y pushear — los hooks corren estos checks solos
 6. Abrir un Pull Request contra `master`
+
+### Checks automáticos
+
+| Cuándo         | Qué corre                                             |
+| -------------- | ----------------------------------------------------- |
+| `git commit`   | prettier, eslint y `vitest --changed` sobre lo staged |
+| mensaje commit | commitlint (conventional commits)                     |
+| `git push`     | `typecheck` y la suite completa                       |
+| Pull Request   | typecheck, lint, format:check, test y build           |
+
+Los mensajes de commit tienen que seguir [conventional commits](https://www.conventionalcommits.org/)
+(`feat:`, `fix:`, `chore:`, `refactor:`, `test:`, `style:`, `ci:`). El hook los rechaza si no.
+
+### Tests
+
+Vitest + Testing Library. Los archivos van junto al que testean (`api.ts` → `api.test.ts`).
+
+Para testear un componente `.astro` hay que agregar `// @vitest-environment node`
+como primera línea del archivo — se renderizan a string con el Container API y
+jsdom rompe el compilador de Astro.
 
 ## Convenciones de código
 
 ### Naming
 
-| Elemento | Convención | Ejemplo |
-|---|---|---|
-| Componentes | PascalCase | `CardSubject.tsx` |
-| Hooks | camelCase + prefijo `use` | `useSubjects.ts` |
-| Tipos | PascalCase, en `types/` | `Subject`, `FilterT` |
-| Constantes | SCREAMING_SNAKE_CASE | `INITIAL_FILTERS` |
-| Servicios | camelCase | `getSubjects` |
+| Elemento    | Convención                | Ejemplo              |
+| ----------- | ------------------------- | -------------------- |
+| Componentes | PascalCase                | `CardSubject.tsx`    |
+| Hooks       | camelCase + prefijo `use` | `useSubjects.ts`     |
+| Tipos       | PascalCase, en `types/`   | `Subject`, `FilterT` |
+| Constantes  | SCREAMING_SNAKE_CASE      | `INITIAL_FILTERS`    |
+| Servicios   | camelCase                 | `getSubjects`        |
 
 ### Estructura por feature
 
@@ -88,12 +112,12 @@ Tailwind v4, sin `tailwind.config.js`. Customizaciones van en `src/core/global.c
 
 ## Archivos críticos — no modificar sin revisión
 
-| Archivo | Razón |
-|---|---|
-| `astro.config.mjs` | Configura el adapter de Vercel y el build completo |
-| `tsconfig.json` | Define strict mode y el alias `@/*` |
-| `src/core/global.css` | Variables CSS del tema — afecta toda la UI |
-| `src/layouts/Layout.astro` | Layout base de todas las páginas |
+| Archivo                    | Razón                                              |
+| -------------------------- | -------------------------------------------------- |
+| `astro.config.mjs`         | Configura el adapter de Vercel y el build completo |
+| `tsconfig.json`            | Define strict mode y el alias `@/*`                |
+| `src/core/global.css`      | Variables CSS del tema — afecta toda la UI         |
+| `src/layouts/Layout.astro` | Layout base de todas las páginas                   |
 
 Si necesitás tocar alguno de estos archivos, explicalo en el PR.
 
@@ -102,7 +126,7 @@ Si necesitás tocar alguno de estos archivos, explicalo en el PR.
 - Título claro: `feat: agregar filtro por año`, `fix: corregir paginación en móvil`
 - Describí qué cambia y por qué
 - Si es un cambio visual, incluí capturas de pantalla
-- El build (`pnpm build`) tiene que pasar sin errores antes de pedir review
+- El CI tiene que estar en verde antes de pedir review
 
 ## Reportar un bug
 

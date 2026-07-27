@@ -1,4 +1,17 @@
-const MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+const MONTHS_SHORT = [
+  'Ene',
+  'Feb',
+  'Mar',
+  'Abr',
+  'May',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dic',
+];
 
 const SUBTYPE_LABELS: Record<string, string> = {
   parcial: 'Parcial',
@@ -17,11 +30,16 @@ interface Props {
   mostRecent: boolean;
 }
 
-const ResourceHeader: React.FC<Props> = ({ title, type, subtype, examYear, examMonth, topic, mostRecent }) => {
-  const dateLabel =
-    examYear && examMonth
-      ? `${MONTHS_SHORT[examMonth - 1]} ${examYear}`
-      : null;
+const ResourceHeader: React.FC<Props> = ({
+  title,
+  type,
+  subtype,
+  examYear,
+  examMonth,
+  topic,
+  mostRecent,
+}) => {
+  const dateLabel = examYear && examMonth ? `${MONTHS_SHORT[examMonth - 1]} ${examYear}` : null;
 
   return (
     <div className='p-6 pb-4'>

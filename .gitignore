@@ -7,7 +7,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 yarn.lock
-pnpm-lock.yaml
+package-lock.json
 
 # ───────────────
 # Build / Output
@@ -31,6 +31,7 @@ coverage
 .env
 .env.local
 .env.*.local
+.env*.bak
 
 # ───────────────
 # Editors / IDE
@@ -47,7 +48,21 @@ coverage
 Thumbs.db
 
 # ───────────────
-# Claude Code
+# Claude Code / BMad
 # ───────────────
+# La metodología (skills, config de BMad) se versiona a propósito:
+# quien clona el repo tiene el mismo setup sin instalar nada aparte.
+# Solo se ignora lo personal de cada dev.
 docs/superpowers/
-.claude/
+.claude/settings.local.json
+.claude/worktrees/
+_bmad/config.user.toml
+
+# Índice generado por codegraph (incluye db y socket del daemon)
+.codegraph/
+
+# Config personal de otros agentes — cada dev usa las suyas
+.cursor/
+.gemini/
+.kiro/
+opencode.jsonc

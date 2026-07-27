@@ -4,7 +4,7 @@ import FilterCombobox from '@/shared/components/FilterCombobox';
 import type { PropsFilterBar } from '@/features/home/types/filter';
 import { YEARS_FILTER, QUADMESTERS_FILTER } from '@/features/home/constants/filter';
 
-function FilterGroup ({ label, children }: { label: string; children: React.ReactNode }) {
+function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className='flex items-center gap-3 shrink-0 min-w-0'>
       <span className='text-sm text-zinc-400 whitespace-nowrap'>{label}</span>
@@ -13,7 +13,7 @@ function FilterGroup ({ label, children }: { label: string; children: React.Reac
   );
 }
 
-const PillToggleGroup = React.memo(function PillToggleGroup ({
+const PillToggleGroup = React.memo(function PillToggleGroup({
   label,
   options,
   value,
@@ -37,10 +37,11 @@ const PillToggleGroup = React.memo(function PillToggleGroup ({
               type='button'
               disabled={disabled || undefined}
               onClick={() => onChange(opt.value)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors whitespace-nowrap disabled:opacity-40 disabled:pointer-events-none ${active
-                ? 'bg-zinc-700 border-zinc-600 text-white'
-                : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500'
-                }`}
+              className={`px-3 py-1.5 text-sm font-medium rounded-full border transition-colors whitespace-nowrap disabled:opacity-40 disabled:pointer-events-none ${
+                active
+                  ? 'bg-zinc-700 border-zinc-600 text-white'
+                  : 'bg-transparent border-zinc-600 text-zinc-400 hover:border-zinc-500'
+              }`}
             >
               {opt.label}
             </button>
@@ -58,7 +59,6 @@ const FilterBar: React.FC<PropsFilterBar> = ({
   clearAll,
   options,
   scopeError,
-  scopeReady,
 }) => {
   const canReset = useMemo(
     () =>
@@ -67,33 +67,27 @@ const FilterBar: React.FC<PropsFilterBar> = ({
         applied.planId ||
         applied.year !== 0 ||
         applied.quadmester !== 0 ||
-        applied.search
+        applied.search,
       ),
-    [applied.careerId, applied.planId, applied.year, applied.quadmester, applied.search]
+    [applied.careerId, applied.planId, applied.year, applied.quadmester, applied.search],
   );
 
   const filtersDisabled = Boolean(scopeError) || !applied.facultyId;
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value),
-    [setSearch]
+    [setSearch],
   );
 
   const handleCareerChange = useCallback(
     (id: string) => commitFilter('careerId', id),
-    [commitFilter]
+    [commitFilter],
   );
-  const handlePlanChange = useCallback(
-    (id: string) => commitFilter('planId', id),
-    [commitFilter]
-  );
-  const handleYearChange = useCallback(
-    (v: number) => commitFilter('year', v),
-    [commitFilter]
-  );
+  const handlePlanChange = useCallback((id: string) => commitFilter('planId', id), [commitFilter]);
+  const handleYearChange = useCallback((v: number) => commitFilter('year', v), [commitFilter]);
   const handleQuadmesterChange = useCallback(
     (v: number) => commitFilter('quadmester', v),
-    [commitFilter]
+    [commitFilter],
   );
 
   return (
@@ -115,7 +109,7 @@ const FilterBar: React.FC<PropsFilterBar> = ({
             placeholder='Buscar una materia'
             value={applied.search}
             onChange={handleSearchChange}
-className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
+            className='w-full text-sm font-medium text-foreground placeholder-foreground-muted focus:outline-none bg-transparent'
           />
         </div>
 
@@ -160,7 +154,6 @@ className='w-full text-sm font-medium text-foreground placeholder-foreground-mut
             onChange={handleQuadmesterChange}
           />
         </div>
-
       </div>
 
       {scopeError && (

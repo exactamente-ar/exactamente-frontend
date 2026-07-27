@@ -27,7 +27,6 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
 
   return (
     <div className=' text-white'>
-
       <div className='max-w-7xl mx-auto'>
         <div className='rounded-xl mt-10 lg:mt-20'>
           <HeaderCorrelative subjectCurrent={subjectCurrent} title={title} />
@@ -45,8 +44,11 @@ const CorrelativesComponent = ({ clickeable, title }: Props) => {
             />
           )}
 
-          <InfoSubjectSelect correlatives={correlatives} subjectCurrent={subjectCurrent} subjects={subjects} />
-
+          <InfoSubjectSelect
+            correlatives={correlatives}
+            subjectCurrent={subjectCurrent}
+            subjects={subjects}
+          />
         </div>
       </div>
     </div>

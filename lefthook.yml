@@ -1,0 +1,45 @@
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: '*.{ts,tsx,astro,js,mjs,json,md,css}'
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
+    lint:
+      glob: '*.{ts,tsx,astro}'
+      run: pnpm exec eslint {staged_files}
+      skip:
+        - merge
+        - rebase
+    test:
+      glob: '*.{ts,tsx}'
+      run: pnpm exec vitest run --changed
+      skip:
+        - merge
+        - rebase
+
+# `astro check` tarda bastante para dejarlo en cada commit, así que el
+# typecheck completo corre acá junto con toda la suite.
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm typecheck
+      skip:
+        - merge
+        - rebase
+    test:
+      run: pnpm test
+      skip:
+        - merge
+        - rebase
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
+      skip:
+        - merge
+        - rebase

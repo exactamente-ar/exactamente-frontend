@@ -5,7 +5,6 @@ import GoogleAnalytics from '@/shared/components/GoogleAnalytics.astro';
 import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
-import Aurora from '@/shared/components/Aurora';
 
 interface Props {
   hideFooterSponsor?: boolean;
@@ -22,12 +21,12 @@ const { hideFooterSponsor = false } = Astro.props;
     <meta name='generator' content={Astro.generator} />
     <meta name='google-site-verification' content='W4j-waCOcYtizIRcI-3fHGekR9CnUWYutunME4biXhc' />
     <GoogleAnalytics />
- 
+
     <title>Exactamente</title>
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
-    <div class="fixed inset-0 bg-noise opacity-10 -z-0"></div>
-    <div class="fixed inset-0 bg-black/70 -z-20"></div>
+    <div class='fixed inset-0 bg-noise opacity-10 -z-0'></div>
+    <div class='fixed inset-0 bg-black/70 -z-20'></div>
     <!-- <div class='absolute w-full h-screen top-0 -z-30'>
       <Aurora
         client:visible

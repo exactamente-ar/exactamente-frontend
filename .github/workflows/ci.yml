@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+# Un push nuevo al mismo PR cancela la corrida anterior.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      # Node 22 y no 24: es el runtime que usa Vercel para las funciones,
+      # así que el CI compila contra la misma versión que producción.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+
+      - run: pnpm lint
+
+      - run: pnpm format:check
+
+      - run: pnpm test
+
+      - run: pnpm build
+        env:
+          PUBLIC_API_URL: https://api.exactamente.com.ar

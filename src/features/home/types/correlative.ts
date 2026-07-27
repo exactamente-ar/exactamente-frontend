@@ -1,4 +1,4 @@
-import type { Subject, TipoMateria } from "./subjects";
+import type { Subject, TipoMateria } from './subjects';
 
 export interface SubjectMapped extends Subject {
   type: TipoMateria;

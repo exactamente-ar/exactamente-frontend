@@ -33,7 +33,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
       <SelectTrigger
         className={cn(
           'search-gradient-border w-full rounded-xl border border-primary/30 bg-black/20 px-4 py-3 h-auto font-bold text-foreground-secondary transition-all duration-200 cursor-pointer focus:ring-0 focus:ring-offset-0 focus:outline-none',
-          error && 'border-red-300 bg-red-900/10'
+          error && 'border-red-300 bg-red-900/10',
         )}
       >
         <SelectValue placeholder={placeholder} />
