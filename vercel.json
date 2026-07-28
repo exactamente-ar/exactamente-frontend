@@ -26,7 +26,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.exactamente.com.ar https://www.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://pub-111e72448f8d47019eb492c1626d1a88.r2.dev https://files.exactamente.ar; frame-src 'self' https://pub-111e72448f8d47019eb492c1626d1a88.r2.dev https://files.exactamente.ar; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.exactamente.com.ar https://cloudflareinsights.com https://www.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://pub-111e72448f8d47019eb492c1626d1a88.r2.dev https://files.exactamente.com.ar; frame-src 'self' https://pub-111e72448f8d47019eb492c1626d1a88.r2.dev https://files.exactamente.com.ar; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
         }
       ]
     }
