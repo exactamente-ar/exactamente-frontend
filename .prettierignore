@@ -6,3 +6,6 @@ pnpm-lock.yaml
 .claude
 _bmad
 _bmad-output
+
+# Generado por `pnpm gen:api` desde el OpenAPI del backend.
+src/shared/types/api.d.ts

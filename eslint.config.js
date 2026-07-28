@@ -12,6 +12,8 @@ export default tseslint.config(
       '.astro/**',
       '.vercel/**',
       'node_modules/**',
+      // Generado por `pnpm gen:api`.
+      'src/shared/types/api.d.ts',
       '.claude/**',
       '_bmad/**',
       '_bmad-output/**',
@@ -20,6 +22,12 @@ export default tseslint.config(
 
   js.configs.recommended,
   ...tseslint.configs.recommended,
+
+  {
+    // Scripts de tooling: corren en Node, no en el navegador.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
 
   // Islands de React
   {

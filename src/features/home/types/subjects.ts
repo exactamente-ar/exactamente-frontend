@@ -1,16 +1,17 @@
 import type { TIPOS_MATERIA } from '@/features/home/constants/correlatives';
 
-export type SubjectCareer = {
-  careerId: string;
-  planId: string;
-  year: number;
-  quadmester: number;
-  careerName: string;
-  facultyName: string;
-  universityName: string;
-};
+import type { ApiSubjectCareer, ApiResourceCounts } from '@/shared/types/contract';
 
-export type ResourceCounts = { resumen: number; parcial: number; final: number };
+/**
+ * Vienen del contrato. `ApiSubjectCareer` trae además `facultyId` y
+ * `universityId`, que la UI no usa pero llegan igual.
+ */
+export type SubjectCareer = Pick<
+  ApiSubjectCareer,
+  'careerId' | 'planId' | 'year' | 'quadmester' | 'careerName' | 'facultyName' | 'universityName'
+>;
+
+export type ResourceCounts = ApiResourceCounts;
 
 export type Subject = {
   id: string;
