@@ -188,6 +188,20 @@ export function mapResource(backend: BackendResource): ResourceFetch {
   };
 }
 
+/**
+ * URL para **bajar** un recurso. Distinta de `fileUrl`, que es para **verlo**.
+ *
+ * `fileUrl` apunta directo a R2 y no pasa por la API, así que bajar desde ahí
+ * no incrementa `downloadCount`. Este endpoint cuenta la descarga y después
+ * redirige (302) al archivo, con el nombre del recurso en vez del uuid.
+ *
+ * Vive acá y no en el componente porque `BASE_URL` es privado del módulo y la
+ * regla del repo es que ninguna URL de la API se arme afuera de este archivo.
+ */
+export function getResourceDownloadUrl(id: string): string {
+  return `${BASE_URL}/api/v1/resources/${id}/download`;
+}
+
 export function getCareers(params?: { facultyId?: string }): Promise<ApiResult<Career[]>> {
   const url = new URL(`${BASE_URL}/api/v1/careers`);
   if (params?.facultyId) url.searchParams.set('facultyId', params.facultyId);
