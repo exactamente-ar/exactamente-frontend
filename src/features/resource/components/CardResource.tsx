@@ -6,8 +6,10 @@ import IconVisibility from '@/shared/components/icons/react/IconVisibility';
 import IconVisibilityOff from '@/shared/components/icons/react/IconVisibilityOff';
 import HeaderCardResource from './HeaderCardResource';
 import { usePreview } from '@/features/resource/hooks/usePreview';
+import { getResourceDownloadUrl } from '@/shared/services/api';
 
 interface Props {
+  id: string;
   title: string;
   fileUrl: string;
   type: string;
@@ -19,6 +21,7 @@ interface Props {
 }
 
 const CardResource: React.FC<Props> = ({
+  id,
   title,
   fileUrl,
   type,
@@ -31,7 +34,6 @@ const CardResource: React.FC<Props> = ({
   const { previewOpen, iframeLoaded, iframeRef, togglePreview, handleIframeLoad } =
     usePreview(fileUrl);
 
-  const [downloading, setDownloading] = useState(false);
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -50,39 +52,23 @@ const CardResource: React.FC<Props> = ({
     };
   }, [fullscreenOpen]);
 
-  const getDownloadName = useCallback(() => {
-    const base = title?.trim() || 'recurso';
-    return /\.pdf$/i.test(base) ? base : `${base}.pdf`;
-  }, [title]);
-
-  const handleDownload = useCallback(async () => {
-    if (!fileUrl || downloading) return;
-    setDownloading(true);
-    try {
-      const res = await fetch(fileUrl);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = getDownloadName();
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 0);
-    } catch {
-      const a = document.createElement('a');
-      a.href = fileUrl;
-      a.download = getDownloadName();
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } finally {
-      setDownloading(false);
-    }
-  }, [fileUrl, downloading, getDownloadName]);
+  /**
+   * Navegación directa al endpoint del backend, que cuenta la descarga y
+   * redirige al archivo.
+   *
+   * Deliberadamente NO es un `fetch`. El backend responde un 302 hacia R2, y un
+   * fetch redirigido cross-origin manda `Origin: null`, así que queda sujeto a
+   * la política CORS del bucket. Peor: con el patrón anterior de fetch + catch
+   * que navegaba de fallback, un redirect bloqueado contaba la descarga DOS
+   * veces — una en el fetch y otra en el fallback.
+   *
+   * El costo es que se pierde el spinner de "Descargando…", porque la
+   * navegación se la lleva el navegador. El nombre del archivo no se pierde: lo
+   * pone el backend con Content-Disposition.
+   */
+  const handleDownload = useCallback(() => {
+    window.location.assign(getResourceDownloadUrl(id));
+  }, [id]);
 
   return (
     <div className='flex flex-col bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-xl hover:border-zinc-700/80 transition-all duration-300 group overflow-hidden'>
@@ -141,15 +127,13 @@ const CardResource: React.FC<Props> = ({
           <div className='flex gap-3 items-center flex-col sm:flex-row w-full sm:w-min'>
             <button
               onClick={handleDownload}
-              disabled={!fileUrl || downloading}
+              disabled={!fileUrl}
               className='group/download cursor-pointer w-full sm:w-max text-white font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 gradient-border disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100'
             >
-              {downloading ? (
-                <div className='w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin' />
-              ) : (
-                <IconDownload size={20} className='fill-white' />
-              )}
-              {downloading ? 'Descargando...' : 'Descargar'}
+              {/* Sin spinner: la descarga es una navegación, así que el
+                  navegador se lleva la página y el estado no llega a verse. */}
+              <IconDownload size={20} className='fill-white' />
+              Descargar
             </button>
 
             <button

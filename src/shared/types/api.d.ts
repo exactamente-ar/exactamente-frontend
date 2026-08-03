@@ -264,6 +264,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/resources/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Descargar un recurso
+         * @description Incrementa `downloadCount` y redirige (302) al archivo. **Es la única vía que cuenta descargas**: linkear directo a `fileUrl` no cuenta nada. `fileUrl` es para *ver* el PDF (preview, iframe); esta ruta es para *bajarlo*.
+         */
+        get: operations["getApiV1ResourcesByIdDownload"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/resources/check-duplicate": {
         parameters: {
             query?: never;
@@ -641,6 +661,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/stats/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Actividad en el tiempo
+         * @description Recursos creados y publicados por bucket. La serie no tiene huecos: los buckets sin actividad vienen en 0. Los buckets se agrupan en hora argentina.
+         */
+        get: operations["getApiV1AdminStatsActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/stats/rankings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Rankings de colaboradores y recursos
+         * @description `topUploaders` respeta la ventana `days`. `topResources` NO: `download_count` es un escalar sin fecha, así que el ranking de descargas es siempre histórico.
+         */
+        get: operations["getApiV1AdminStatsRankings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/stats/moderation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Salud de la cola de moderación
+         * @description Lead time (horas entre subida y publicación) sobre la ventana `days`, más la antigüedad de la cola actual de pendientes — que es estado presente y no depende de `days`.
+         */
+        get: operations["getApiV1AdminStatsModeration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -913,6 +993,71 @@ export interface components {
                 faculties: number;
                 universities: number;
             };
+        };
+        /** @enum {string} */
+        StatsGranularity: "day" | "week";
+        ActivityPoint: {
+            /** @description Inicio del bucket, YYYY-MM-DD, en America/Argentina/Buenos_Aires */
+            date: string;
+            /** @description Recursos creados en el bucket (created_at) */
+            uploads: number;
+            /** @description Recursos publicados en el bucket (published_at) */
+            publications: number;
+        };
+        AdminActivity: {
+            granularity: components["schemas"]["StatsGranularity"];
+            /** @description Primer bucket, YYYY-MM-DD */
+            from: string;
+            /** @description Último bucket, YYYY-MM-DD */
+            to: string;
+            /** @description Serie sin huecos: los buckets sin actividad vienen en 0, no ausentes */
+            points: components["schemas"]["ActivityPoint"][];
+        };
+        TopUploader: {
+            userId: string;
+            displayName: string;
+            /** @description Recursos subidos en la ventana, en cualquier estado */
+            total: number;
+            /** @description De esos, cuántos terminaron publicados */
+            published: number;
+        };
+        TopResource: {
+            id: string;
+            title: string;
+            subjectTitle: string | null;
+            type: components["schemas"]["ResourceType"];
+            downloadCount: number;
+        };
+        AdminRankings: {
+            days: number;
+            topUploaders: components["schemas"]["TopUploader"][];
+            /** @description Histórico completo. `download_count` es un escalar sin fecha, así que `days` NO aplica acá */
+            topResources: components["schemas"]["TopResource"][];
+        };
+        /** @description Horas entre que un recurso se sube y se publica. Con `sample: 0` los tres percentiles son null y no 0: "no hubo datos" y "tardó cero" no son lo mismo */
+        ModerationLeadTime: {
+            /** @description Recursos publicados en la ventana */
+            sample: number;
+            avgHours: number | null;
+            p50Hours: number | null;
+            p90Hours: number | null;
+        };
+        /** @description Antigüedad de la cola de moderación. No depende de `days`: es el estado actual */
+        PendingQueueAge: {
+            total: number;
+            under24h: number;
+            /** @description Entre 1 y 3 días */
+            d1to3: number;
+            /** @description Entre 3 y 7 días */
+            d3to7: number;
+            /** @description Más de 7 días */
+            over7d: number;
+            oldestCreatedAt: string | null;
+        };
+        AdminModeration: {
+            days: number;
+            leadTime: components["schemas"]["ModerationLeadTime"];
+            queue: components["schemas"]["PendingQueueAge"];
         };
         ErrorResponse: {
             /** @description Mensaje descriptivo, apto para mostrar al usuario */
@@ -1442,6 +1587,50 @@ export interface operations {
                         error: string;
                     };
                 };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rate limit excedido */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1ResourcesByIdDownload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Redirección temporal al archivo */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Recurso no encontrado */
             404: {
@@ -4020,6 +4209,191 @@ export interface operations {
                             faculties: number;
                             universities: number;
                         };
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1AdminStatsActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Serie temporal */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        granularity: components["schemas"]["StatsGranularity"];
+                        /** @description Primer bucket, YYYY-MM-DD */
+                        from: string;
+                        /** @description Último bucket, YYYY-MM-DD */
+                        to: string;
+                        /** @description Serie sin huecos: los buckets sin actividad vienen en 0, no ausentes */
+                        points: components["schemas"]["ActivityPoint"][];
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1AdminStatsRankings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rankings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        days: number;
+                        topUploaders: components["schemas"]["TopUploader"][];
+                        /** @description Histórico completo. `download_count` es un escalar sin fecha, así que `days` NO aplica acá */
+                        topResources: components["schemas"]["TopResource"][];
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1AdminStatsModeration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Moderación */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        days: number;
+                        leadTime: components["schemas"]["ModerationLeadTime"];
+                        queue: components["schemas"]["PendingQueueAge"];
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
                     };
                 };
             };

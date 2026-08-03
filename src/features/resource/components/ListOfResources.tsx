@@ -58,6 +58,7 @@ const ListOfResources: React.FC<Props> = ({ resources, type, error, loading = tr
           {sorted.map((resource, i) => (
             <CardResource
               key={resource.id}
+              id={resource.id}
               title={resource.title}
               fileUrl={resource.fileUrl}
               type={type}
