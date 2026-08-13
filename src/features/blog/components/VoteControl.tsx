@@ -12,7 +12,10 @@ export default function VoteControl({ netScore, myVote, canVote, onVote }: Props
         <button
           type='button'
           aria-label='Votar a favor'
-          onClick={() => onVote(1)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onVote(1);
+          }}
           className={`rounded px-2 py-1 text-sm transition-colors ${
             myVote === 1 ? 'text-yellow-300' : 'text-zinc-500 hover:text-zinc-300'
           }`}
@@ -25,7 +28,10 @@ export default function VoteControl({ netScore, myVote, canVote, onVote }: Props
         <button
           type='button'
           aria-label='Votar en contra'
-          onClick={() => onVote(-1)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onVote(-1);
+          }}
           className={`rounded px-2 py-1 text-sm transition-colors ${
             myVote === -1 ? 'text-yellow-300' : 'text-zinc-500 hover:text-zinc-300'
           }`}

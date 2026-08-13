@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { voteComment, deleteComment } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
-import { THREAD_LINE_ML } from '../constants/comments';
+import { THREAD_LINE_ML, HOVER_DURATION_MS, ENABLE_LINE_GLOW } from '../constants/comments';
 import { formatDateTime } from '../utils/format';
 import VoteControl from './VoteControl';
 import type { BlogComment } from '../types/blog';
@@ -38,6 +38,15 @@ function buildParentMap(comments: BlogComment[]): Map<string, string | null> {
 
 function lineColor(active: boolean): string {
   return active ? 'border-zinc-300' : 'border-zinc-600';
+}
+
+function lineStyle(active: boolean): React.CSSProperties {
+  return {
+    transitionDuration: `${HOVER_DURATION_MS}ms`,
+    ...(active && ENABLE_LINE_GLOW
+      ? { filter: 'drop-shadow(0 0 3px rgba(228, 228, 231, 0.6))' }
+      : {}),
+  };
 }
 
 interface ItemProps {
@@ -109,7 +118,22 @@ function CommentItem({
         isRoot={!comment.parentId}
       />
 
-      <div className='flex gap-3 relative z-10'>
+      <div
+        className='flex gap-3 relative z-10 p-2 -m-2 rounded-xl transition-colors hover:bg-white/5 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-zinc-400'
+        role='button'
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (token) setReplyTarget({ postId, parentId: comment.id, snippet: comment.body });
+          }
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (token) setReplyTarget({ postId, parentId: comment.id, snippet: comment.body });
+        }}
+      >
         <div className='flex w-7 shrink-0 flex-col items-center pt-1'>
           <VoteControl
             netScore={netScore}
@@ -119,7 +143,8 @@ function CommentItem({
           />
           {hasChildren && (
             <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isChildActive)} transition-colors`}
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isChildActive)} transition-all`}
+              style={lineStyle(isChildActive)}
             />
           )}
         </div>
@@ -137,16 +162,24 @@ function CommentItem({
             {token && (
               <button
                 type='button'
-                onClick={() =>
-                  setReplyTarget({ postId, parentId: comment.id, snippet: comment.body })
-                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setReplyTarget({ postId, parentId: comment.id, snippet: comment.body });
+                }}
                 className='font-semibold text-zinc-400 hover:text-zinc-200'
               >
                 Responder
               </button>
             )}
             {comment.mine && (
-              <button type='button' onClick={remove} className='text-red-400 hover:text-red-300'>
+              <button
+                type='button'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  remove();
+                }}
+                className='text-red-400 hover:text-red-300'
+              >
                 Borrar
               </button>
             )}
@@ -208,7 +241,8 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
     <div className={`${THREAD_LINE_ML} relative`}>
       {/* Pequeño segmento superior para conectar con el primer root, compensando el pt-2 (8px) */}
       <div
-        className={`absolute left-0 top-0 h-2 border-l-2 pointer-events-none transition-colors ${lineColor(hoveredId !== null)}`}
+        className={`absolute left-0 top-0 h-2 border-l-2 pointer-events-none transition-all ${lineColor(hoveredId !== null)}`}
+        style={lineStyle(hoveredId !== null)}
       />
       <div className='flex flex-col gap-1 pl-[29px] pt-2'>
         {roots.map((root, index) => (

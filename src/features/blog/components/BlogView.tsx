@@ -57,7 +57,7 @@ function BlogViewInner({ subject, blog }: Props) {
             {subject.shortName || subject.title}
           </h2>
 
-          <div className='shrink-0'>
+          <div className='shrink-0 md:mt-4'>
             <SubtopicChips subtopics={subtopics} selected={selected} onChange={setSelected} />
           </div>
         </header>
