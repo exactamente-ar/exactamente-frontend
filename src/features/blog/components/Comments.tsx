@@ -87,7 +87,17 @@ function CommentItem({
   }
 
   return (
-    <div className='flex flex-col relative' onMouseEnter={() => onHover(comment.id)}>
+    <div
+      className='flex flex-col relative'
+      onMouseOver={(e) => {
+        e.stopPropagation();
+        onHover(comment.id);
+      }}
+      onFocus={(e) => {
+        e.stopPropagation();
+        onHover(comment.id);
+      }}
+    >
       <CommentLines isActive={isActive} isLast={isLast} isRoot={!comment.parentId} />
 
       <div className='flex gap-3 relative z-10'>

@@ -43,9 +43,11 @@ export default function PostCard({ subjectId, post }: Props) {
   return (
     <li
       className='flex flex-col rounded-2xl p-4 group/post'
+      onMouseOver={() => setHoveredId(null)}
       onMouseLeave={() => setHoveredId(null)}
+      onFocus={() => setHoveredId(null)}
     >
-      <div className='flex gap-2' onMouseEnter={() => setHoveredId(null)}>
+      <div className='flex gap-2'>
         <div className='flex w-8 shrink-0 flex-col items-center'>
           <VoteControl
             netScore={netScore}
