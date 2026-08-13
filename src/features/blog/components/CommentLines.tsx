@@ -17,8 +17,7 @@ export default function CommentLines({
 }: Props) {
   // La curva debe apuntar hacia el centro del avatar o el puntaje.
   // Ajustamos la altura de la curva desde arriba (top-0) hasta donde sea necesario.
-  // top-0 asegura que siempre conecte con el elemento anterior.
-  const curveHeight = 'h-[46px]'; // equivalente a top-7 (28px) + h-[18px]
+  const curveHeight = 'h-[46px]';
 
   return (
     <>
@@ -33,7 +32,7 @@ export default function CommentLines({
             onClick(e as unknown as React.MouseEvent);
           }
         }}
-        className={`absolute -left-[29px] top-0 w-[29px] ${curveHeight} border-b-2 border-l-2 rounded-bl-2xl cursor-pointer transition-all ${getLineColor(isActive)}`}
+        className={`absolute -left-[29px] top-0 w-[29px] ${curveHeight} border-b-[1.5px] border-l-[1.5px] rounded-bl-3xl cursor-pointer transition-all ${getLineColor(isActive)}`}
         style={getLineStyle(isActive)}
       />
 
@@ -49,7 +48,7 @@ export default function CommentLines({
               onClick(e as unknown as React.MouseEvent);
             }
           }}
-          className={`absolute -left-[29px] top-0 border-l-2 cursor-pointer transition-all ${getLineColor(isDownwardLineActive)} ${isRoot ? '-bottom-1' : '-bottom-3'}`}
+          className={`absolute -left-[29px] top-0 border-l-[1.5px] cursor-pointer transition-all ${getLineColor(isDownwardLineActive)} ${isRoot ? '-bottom-1' : '-bottom-3'}`}
           style={getLineStyle(isDownwardLineActive)}
         />
       )}

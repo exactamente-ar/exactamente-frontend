@@ -30,12 +30,6 @@ function buildTree(comments: BlogComment[]): CommentTree {
   return map;
 }
 
-function buildParentMap(comments: BlogComment[]): Map<string, string | null> {
-  const map = new Map<string, string | null>();
-  for (const c of comments) map.set(c.id, c.parentId);
-  return map;
-}
-
 interface ItemProps {
   subjectId: string;
   postId: string;
@@ -43,10 +37,9 @@ interface ItemProps {
   tree: CommentTree;
   onSubmitted: () => void;
   hoveredId: string | null;
-  ancestorIds: Set<string>;
-  descendantIds: Set<string>;
   onHover: (id: string | null) => void;
   isLast: boolean;
+  isThreadActive: boolean;
   isDownwardLineActive: boolean;
 }
 
@@ -57,32 +50,18 @@ function CommentItem({
   tree,
   onSubmitted,
   hoveredId,
-  ancestorIds,
-  descendantIds,
   onHover,
   isLast,
+  isThreadActive,
   isDownwardLineActive,
 }: ItemProps) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
   const [netScore, setNetScore] = useState(comment.netScore);
   const [myVote, setMyVote] = useState(0);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const children = tree.get(comment.id) ?? [];
   const hasChildren = children.length > 0;
-  const isActive =
-    comment.id === hoveredId || ancestorIds.has(comment.id) || descendantIds.has(comment.id);
-
-  let lastActiveChildIndex = -1;
-  for (let i = children.length - 1; i >= 0; i--) {
-    if (
-      children[i].id === hoveredId ||
-      ancestorIds.has(children[i].id) ||
-      descendantIds.has(children[i].id)
-    ) {
-      lastActiveChildIndex = i;
-      break;
-    }
-  }
 
   async function vote(value: 1 | -1) {
     if (!token) return;
@@ -112,13 +91,13 @@ function CommentItem({
       }}
     >
       <CommentLines
-        isActive={isActive}
+        isActive={isThreadActive}
         isDownwardLineActive={isDownwardLineActive}
         isLast={isLast}
         isRoot={!comment.parentId}
         onClick={(e) => {
           e.stopPropagation();
-          if (token) setReplyTarget({ postId, parentId: comment.id, snippet: comment.body });
+          setIsCollapsed((prev) => !prev);
         }}
       />
 
@@ -145,10 +124,10 @@ function CommentItem({
             canVote={!!token && !comment.mine}
             onVote={vote}
           />
-          {hasChildren && (
+          {hasChildren && !isCollapsed && (
             <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${getLineColor(isActive)} transition-all`}
-              style={getLineStyle(isActive)}
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-[1.5px] ${getLineColor(isThreadActive)} transition-all`}
+              style={getLineStyle(isThreadActive)}
             />
           )}
         </div>
@@ -191,7 +170,7 @@ function CommentItem({
         </div>
       </div>
 
-      {hasChildren && (
+      {hasChildren && !isCollapsed && (
         <div className={`${THREAD_LINE_ML}`}>
           <div className='flex flex-col gap-3 pl-[29px]'>
             {children.map((child, index) => (
@@ -203,11 +182,10 @@ function CommentItem({
                 tree={tree}
                 onSubmitted={onSubmitted}
                 hoveredId={hoveredId}
-                ancestorIds={ancestorIds}
-                descendantIds={descendantIds}
                 onHover={onHover}
                 isLast={index === children.length - 1}
-                isDownwardLineActive={lastActiveChildIndex > index}
+                isThreadActive={isThreadActive}
+                isDownwardLineActive={isThreadActive}
               />
             ))}
           </div>
@@ -220,45 +198,28 @@ function CommentItem({
 export default function Comments({ subjectId, postId, comments, hoveredId, onHover }: Props) {
   const tree = useMemo(() => buildTree(comments), [comments]);
   const roots = tree.get(null) ?? [];
-  const parentById = useMemo(() => buildParentMap(comments), [comments]);
-
-  const ancestorIds = useMemo(() => {
-    const set = new Set<string>();
-    let cur = hoveredId;
-    while (cur) {
-      const parent = parentById.get(cur);
-      if (!parent) break;
-      set.add(parent);
-      cur = parent;
-    }
-    return set;
-  }, [hoveredId, parentById]);
-
-  const descendantIds = useMemo(() => {
-    const set = new Set<string>();
-    if (!hoveredId) return set;
-    const queue = [hoveredId];
-    while (queue.length > 0) {
-      const cur = queue.shift()!;
-      const children = tree.get(cur) ?? [];
-      for (const child of children) {
-        set.add(child.id);
-        queue.push(child.id);
+  const rootIdByCommentId = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const root of roots) {
+      map.set(root.id, root.id);
+      const queue = [root.id];
+      while (queue.length > 0) {
+        const cur = queue.shift()!;
+        const children = tree.get(cur) ?? [];
+        for (const child of children) {
+          map.set(child.id, root.id);
+          queue.push(child.id);
+        }
       }
     }
-    return set;
-  }, [hoveredId, tree]);
+    return map;
+  }, [roots, tree]);
+
+  const activeRootId = hoveredId ? rootIdByCommentId.get(hoveredId) : null;
 
   let lastActiveRootIndex = -1;
-  for (let i = roots.length - 1; i >= 0; i--) {
-    if (
-      roots[i].id === hoveredId ||
-      ancestorIds.has(roots[i].id) ||
-      descendantIds.has(roots[i].id)
-    ) {
-      lastActiveRootIndex = i;
-      break;
-    }
+  if (activeRootId) {
+    lastActiveRootIndex = roots.findIndex((r) => r.id === activeRootId);
   }
 
   function refresh() {
@@ -271,7 +232,7 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
     <div className={`${THREAD_LINE_ML} relative`}>
       {/* Pequeño segmento superior para conectar con el primer root, compensando el pt-2 (8px) */}
       <div
-        className={`absolute left-0 top-0 h-2 border-l-2 pointer-events-none transition-all ${getLineColor(hoveredId !== null)}`}
+        className={`absolute left-0 top-0 h-2 border-l-[1.5px] pointer-events-none transition-all ${getLineColor(hoveredId !== null)}`}
         style={getLineStyle(hoveredId !== null)}
       />
       <div className='flex flex-col gap-1 pl-[29px] pt-2'>
@@ -284,10 +245,9 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
             tree={tree}
             onSubmitted={refresh}
             hoveredId={hoveredId}
-            ancestorIds={ancestorIds}
-            descendantIds={descendantIds}
             onHover={onHover}
             isLast={index === roots.length - 1}
+            isThreadActive={root.id === activeRootId}
             isDownwardLineActive={lastActiveRootIndex > index}
           />
         ))}

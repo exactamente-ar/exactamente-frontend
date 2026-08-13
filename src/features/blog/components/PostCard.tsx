@@ -57,7 +57,7 @@ export default function PostCard({ subjectId, post }: Props) {
           />
           {post.comments.length > 0 && (
             <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${getLineColor(hoveredId !== null)} transition-all`}
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-[1.5px] ${getLineColor(hoveredId !== null)} transition-all`}
               style={getLineStyle(hoveredId !== null)}
             />
           )}
