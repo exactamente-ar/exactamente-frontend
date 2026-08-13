@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { voteComment, deleteComment } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
-import { THREAD_LINE_ML, HOVER_DURATION_MS, ENABLE_LINE_GLOW } from '../constants/comments';
+import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comments';
 import { formatDateTime } from '../utils/format';
 import VoteControl from './VoteControl';
 import type { BlogComment } from '../types/blog';
@@ -36,19 +36,6 @@ function buildParentMap(comments: BlogComment[]): Map<string, string | null> {
   return map;
 }
 
-function lineColor(active: boolean): string {
-  return active ? 'border-zinc-300' : 'border-zinc-600';
-}
-
-function lineStyle(active: boolean): React.CSSProperties {
-  return {
-    transitionDuration: `${HOVER_DURATION_MS}ms`,
-    ...(active && ENABLE_LINE_GLOW
-      ? { filter: 'drop-shadow(0 0 3px rgba(228, 228, 231, 0.6))' }
-      : {}),
-  };
-}
-
 interface ItemProps {
   subjectId: string;
   postId: string;
@@ -57,6 +44,7 @@ interface ItemProps {
   onSubmitted: () => void;
   hoveredId: string | null;
   ancestorIds: Set<string>;
+  descendantIds: Set<string>;
   onHover: (id: string | null) => void;
   isLast: boolean;
   isDownwardLineActive: boolean;
@@ -70,6 +58,7 @@ function CommentItem({
   onSubmitted,
   hoveredId,
   ancestorIds,
+  descendantIds,
   onHover,
   isLast,
   isDownwardLineActive,
@@ -80,9 +69,20 @@ function CommentItem({
   const [myVote, setMyVote] = useState(0);
   const children = tree.get(comment.id) ?? [];
   const hasChildren = children.length > 0;
-  const isActive = comment.id === hoveredId || ancestorIds.has(comment.id);
-  const isChildActive = ancestorIds.has(comment.id);
-  const activeChildIndex = children.findIndex((c) => c.id === hoveredId || ancestorIds.has(c.id));
+  const isActive =
+    comment.id === hoveredId || ancestorIds.has(comment.id) || descendantIds.has(comment.id);
+
+  let lastActiveChildIndex = -1;
+  for (let i = children.length - 1; i >= 0; i--) {
+    if (
+      children[i].id === hoveredId ||
+      ancestorIds.has(children[i].id) ||
+      descendantIds.has(children[i].id)
+    ) {
+      lastActiveChildIndex = i;
+      break;
+    }
+  }
 
   async function vote(value: 1 | -1) {
     if (!token) return;
@@ -147,8 +147,8 @@ function CommentItem({
           />
           {hasChildren && (
             <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isChildActive)} transition-all`}
-              style={lineStyle(isChildActive)}
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${getLineColor(isActive)} transition-all`}
+              style={getLineStyle(isActive)}
             />
           )}
         </div>
@@ -204,9 +204,10 @@ function CommentItem({
                 onSubmitted={onSubmitted}
                 hoveredId={hoveredId}
                 ancestorIds={ancestorIds}
+                descendantIds={descendantIds}
                 onHover={onHover}
                 isLast={index === children.length - 1}
-                isDownwardLineActive={activeChildIndex > index}
+                isDownwardLineActive={lastActiveChildIndex > index}
               />
             ))}
           </div>
@@ -233,7 +234,32 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
     return set;
   }, [hoveredId, parentById]);
 
-  const activeRootIndex = roots.findIndex((r) => r.id === hoveredId || ancestorIds.has(r.id));
+  const descendantIds = useMemo(() => {
+    const set = new Set<string>();
+    if (!hoveredId) return set;
+    const queue = [hoveredId];
+    while (queue.length > 0) {
+      const cur = queue.shift()!;
+      const children = tree.get(cur) ?? [];
+      for (const child of children) {
+        set.add(child.id);
+        queue.push(child.id);
+      }
+    }
+    return set;
+  }, [hoveredId, tree]);
+
+  let lastActiveRootIndex = -1;
+  for (let i = roots.length - 1; i >= 0; i--) {
+    if (
+      roots[i].id === hoveredId ||
+      ancestorIds.has(roots[i].id) ||
+      descendantIds.has(roots[i].id)
+    ) {
+      lastActiveRootIndex = i;
+      break;
+    }
+  }
 
   function refresh() {
     window.location.reload();
@@ -245,8 +271,8 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
     <div className={`${THREAD_LINE_ML} relative`}>
       {/* Pequeño segmento superior para conectar con el primer root, compensando el pt-2 (8px) */}
       <div
-        className={`absolute left-0 top-0 h-2 border-l-2 pointer-events-none transition-all ${lineColor(hoveredId !== null)}`}
-        style={lineStyle(hoveredId !== null)}
+        className={`absolute left-0 top-0 h-2 border-l-2 pointer-events-none transition-all ${getLineColor(hoveredId !== null)}`}
+        style={getLineStyle(hoveredId !== null)}
       />
       <div className='flex flex-col gap-1 pl-[29px] pt-2'>
         {roots.map((root, index) => (
@@ -259,9 +285,10 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
             onSubmitted={refresh}
             hoveredId={hoveredId}
             ancestorIds={ancestorIds}
+            descendantIds={descendantIds}
             onHover={onHover}
             isLast={index === roots.length - 1}
-            isDownwardLineActive={activeRootIndex > index}
+            isDownwardLineActive={lastActiveRootIndex > index}
           />
         ))}
       </div>
