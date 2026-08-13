@@ -1,4 +1,4 @@
-import { HOVER_DURATION_MS, ENABLE_LINE_GLOW } from '../constants/comments';
+import { getLineColor, getLineStyle } from '../constants/comments';
 
 interface Props {
   isActive: boolean;
@@ -6,19 +6,6 @@ interface Props {
   isLast: boolean;
   isRoot: boolean;
   onClick: (e: React.MouseEvent) => void;
-}
-
-function lineColor(active: boolean): string {
-  return active ? 'border-zinc-300 z-10' : 'border-zinc-600 z-0';
-}
-
-function lineStyle(active: boolean): React.CSSProperties {
-  return {
-    transitionDuration: `${HOVER_DURATION_MS}ms`,
-    ...(active && ENABLE_LINE_GLOW
-      ? { filter: 'drop-shadow(0 0 3px rgba(228, 228, 231, 0.6))' }
-      : {}),
-  };
 }
 
 export default function CommentLines({
@@ -46,8 +33,8 @@ export default function CommentLines({
             onClick(e as unknown as React.MouseEvent);
           }
         }}
-        className={`absolute -left-[29px] top-0 w-[29px] ${curveHeight} border-b-2 border-l-2 rounded-bl-2xl cursor-pointer transition-all ${lineColor(isActive)}`}
-        style={lineStyle(isActive)}
+        className={`absolute -left-[29px] top-0 w-[29px] ${curveHeight} border-b-2 border-l-2 rounded-bl-2xl cursor-pointer transition-all ${getLineColor(isActive)}`}
+        style={getLineStyle(isActive)}
       />
 
       {/* Línea recta que sigue hacia abajo para conectar con el SIGUIENTE hermano */}
@@ -62,8 +49,8 @@ export default function CommentLines({
               onClick(e as unknown as React.MouseEvent);
             }
           }}
-          className={`absolute -left-[29px] top-0 border-l-2 cursor-pointer transition-all ${lineColor(isDownwardLineActive)} ${isRoot ? '-bottom-1' : '-bottom-3'}`}
-          style={lineStyle(isDownwardLineActive)}
+          className={`absolute -left-[29px] top-0 border-l-2 cursor-pointer transition-all ${getLineColor(isDownwardLineActive)} ${isRoot ? '-bottom-1' : '-bottom-3'}`}
+          style={getLineStyle(isDownwardLineActive)}
         />
       )}
     </>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { votePost, deletePost } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
-import { THREAD_LINE_ML } from '../constants/comments';
+import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comments';
 import VoteControl from './VoteControl';
 import Comments from './Comments';
 import { formatDateTime } from '../utils/format';
@@ -57,9 +57,8 @@ export default function PostCard({ subjectId, post }: Props) {
           />
           {post.comments.length > 0 && (
             <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${
-                hoveredId !== null ? 'border-zinc-300' : 'border-zinc-600'
-              } transition-colors`}
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${getLineColor(hoveredId !== null)} transition-all`}
+              style={getLineStyle(hoveredId !== null)}
             />
           )}
         </div>
