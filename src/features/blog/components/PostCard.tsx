@@ -5,6 +5,7 @@ import { useReplyContext } from '../context/ReplyContext';
 import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comments';
 import VoteControl from './VoteControl';
 import Comments from './Comments';
+import ImageGallery from './ImageGallery';
 import { formatDateTime } from '../utils/format';
 import type { BlogPost } from '../types/blog';
 
@@ -71,21 +72,9 @@ export default function PostCard({ subjectId, post }: Props) {
           </div>
 
           <p className='text-zinc-200'>{post.body}</p>
-          {post.images.length > 0 && (
-            <div className='flex flex-wrap gap-2 pt-1'>
-              {post.images.map((img) => (
-                <img
-                  key={img.id}
-                  src={img.url}
-                  alt=''
-                  loading='lazy'
-                  className='h-32 w-32 rounded-lg object-cover'
-                />
-              ))}
-            </div>
-          )}
+          <ImageGallery images={post.images} />
 
-          <div className='flex items-center text-xs text-zinc-500'>
+          <div className='flex items-center text-xs text-zinc-500 gap-2'>
             {token && (
               <button
                 type='button'
@@ -102,7 +91,7 @@ export default function PostCard({ subjectId, post }: Props) {
                 type='button'
                 onClick={remove}
                 disabled={deleting}
-                className='text-red-400 hover:text-red-300'
+                className='text-red-400/80 hover:text-red-300'
               >
                 Borrar
               </button>

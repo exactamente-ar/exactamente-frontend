@@ -5,6 +5,7 @@ import { useReplyContext } from '../context/ReplyContext';
 import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comments';
 import { formatDateTime } from '../utils/format';
 import VoteControl from './VoteControl';
+import ImageGallery from './ImageGallery';
 import type { BlogComment } from '../types/blog';
 
 import CommentLines from './CommentLines';
@@ -152,6 +153,7 @@ function CommentItem({
             </time>
           </div>
           <p className='text-sm text-zinc-200 mt-1'>{comment.body}</p>
+          {comment.images && <ImageGallery images={comment.images} />}
           <div className='flex items-center gap-3 text-xs text-zinc-500 mt-1'>
             {token && (
               <button
@@ -172,7 +174,7 @@ function CommentItem({
                   e.stopPropagation();
                   remove();
                 }}
-                className='text-red-400 hover:text-red-300'
+                className='text-red-400/80 hover:text-red-300'
               >
                 Borrar
               </button>

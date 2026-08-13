@@ -1182,6 +1182,10 @@ export interface components {
             id: string;
             url: string;
         };
+        BlogCommentImage: {
+            id: string;
+            url: string;
+        };
         BlogResponse: {
             subjectId: string;
             subtopics: components["schemas"]["BlogSubtopic"][];
@@ -1205,6 +1209,7 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
             author: components["schemas"]["BlogAuthor"] | null;
+            images: components["schemas"]["BlogCommentImage"][];
             /** @description true si el token actual es el autor */
             mine: boolean;
             /** @description voto del token actual: 1, -1 o 0 */
@@ -2204,6 +2209,7 @@ export interface operations {
                         /** Format: date-time */
                         createdAt: string;
                         author: components["schemas"]["BlogAuthor"] | null;
+                        images: components["schemas"]["BlogCommentImage"][];
                         /** @description true si el token actual es el autor */
                         mine: boolean;
                         /** @description voto del token actual: 1, -1 o 0 */

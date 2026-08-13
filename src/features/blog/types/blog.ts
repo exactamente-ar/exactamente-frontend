@@ -27,6 +27,7 @@ export type BlogComment = {
   author: BlogAuthor | null;
   mine: boolean;
   myVote: number;
+  images?: BlogPostImage[];
 };
 
 export type BlogPost = {

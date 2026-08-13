@@ -100,9 +100,20 @@ describe('NewPostForm', () => {
 
     const file = new File(['img'], 'foto.png', { type: 'image/png' });
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+    // We need to mock URL.createObjectURL since it's not implemented in jsdom
+    const originalCreateObjectURL = URL.createObjectURL;
+    const originalRevokeObjectURL = URL.revokeObjectURL;
+    URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+    URL.revokeObjectURL = vi.fn();
+
     fireEvent.change(input, { target: { files: [file] } });
 
-    expect(screen.getByText('foto.png')).toBeTruthy();
+    const imgPreview = document.querySelector('img[src="blob:mock-url"]');
+    expect(imgPreview).not.toBeNull();
+
+    URL.createObjectURL = originalCreateObjectURL;
+    URL.revokeObjectURL = originalRevokeObjectURL;
   });
 
   it('recarga la página al publicar con éxito', async () => {
@@ -141,7 +152,7 @@ describe('NewPostForm', () => {
     expect(createCommentMock).toHaveBeenCalledWith(
       'subj-1',
       'p1',
-      { parentId: 'c1', body: 'gracias', authority: 'visible' },
+      { parentId: 'c1', body: 'gracias', authority: 'visible', images: [] },
       'token-123',
     );
     expect(createPostMock).not.toHaveBeenCalled();

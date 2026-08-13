@@ -450,14 +450,25 @@ export function voteComment(
 export async function createComment(
   subjectId: string,
   postId: string,
-  data: { parentId?: string | null; body: string; authority: 'visible' | 'anonymous' },
+  data: {
+    parentId?: string | null;
+    body: string;
+    authority: 'visible' | 'anonymous';
+    images?: File[];
+  },
   token: string,
 ): Promise<ApiResult<BlogComment>> {
   try {
+    const form = new FormData();
+    if (data.parentId) form.append('parentId', data.parentId);
+    form.append('body', data.body);
+    form.append('authority', data.authority);
+    for (const image of data.images ?? []) form.append('images', image);
+
     const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}/posts/${postId}/comments`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify(data),
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
     });
     if (!response.ok) {
       const json: { error?: string } = await response.json().catch(() => ({}));
