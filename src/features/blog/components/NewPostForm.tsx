@@ -8,11 +8,12 @@ import { snippetOf } from '../utils/format';
 interface Props {
   subjectId: string;
   subtopicId: string;
+  onSuccess?: () => void;
 }
 
 const MAX_IMAGES = 6;
 
-export default function NewPostForm({ subjectId, subtopicId }: Props) {
+export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props) {
   const { token } = useAuth();
   const { replyTarget, setReplyTarget } = useReplyContext();
   const [body, setBody] = useState('');
@@ -72,7 +73,10 @@ export default function NewPostForm({ subjectId, subtopicId }: Props) {
       setError(result.error);
       return;
     }
-    window.location.reload();
+    setBody('');
+    setImages([]);
+    setReplyTarget(null);
+    if (onSuccess) onSuccess();
   }
 
   const canSend = Boolean(token && body.trim() && (replyTarget || subtopicId)) && !submitting;

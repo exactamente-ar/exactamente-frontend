@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getBlog } from '@/shared/services/api';
 import type { Blog } from '../types/blog';
 
@@ -8,9 +8,14 @@ export function useBlog(
   subjectId: string,
   token: string | null,
   authLoading: boolean,
-): { blog: Blog | null; loading: boolean } {
+): { blog: Blog | null; loading: boolean; refresh: () => Promise<void> } {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchBlog = useCallback(async () => {
+    const result = await getBlog(subjectId, token);
+    setBlog(result);
+  }, [subjectId, token]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -33,5 +38,5 @@ export function useBlog(
     };
   }, [subjectId, token, authLoading]);
 
-  return { blog, loading };
+  return { blog, loading, refresh: fetchBlog };
 }

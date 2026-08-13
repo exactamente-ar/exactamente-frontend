@@ -18,7 +18,7 @@ interface Props {
 
 function BlogViewInner({ subject }: Props) {
   const { token, loading } = useAuth();
-  const { blog, loading: blogLoading } = useBlog(subject.id, token, loading);
+  const { blog, loading: blogLoading, refresh } = useBlog(subject.id, token, loading);
   const [selected, setSelected] = useState(ALL_SUBTOPICS_ID);
 
   if (blogLoading) return <BlogViewSkeleton />;
@@ -75,7 +75,13 @@ function BlogViewInner({ subject }: Props) {
               {posts.length > 0 ? (
                 <ul className='flex flex-col gap-4'>
                   {posts.map((post) => (
-                    <PostCard key={post.id} subjectId={subject.id} post={post} />
+                    <PostCard
+                      key={post.id}
+                      subjectId={subject.id}
+                      post={post}
+                      onDeleted={refresh}
+                      onCommentAdded={refresh}
+                    />
                   ))}
                 </ul>
               ) : (
@@ -94,7 +100,11 @@ function BlogViewInner({ subject }: Props) {
             </div>
 
             <div className='shrink-0 border-t border-zinc-800 pt-3 mx-3'>
-              <NewPostForm subjectId={subject.id} subtopicId={composerSubtopicId} />
+              <NewPostForm
+                subjectId={subject.id}
+                subtopicId={composerSubtopicId}
+                onSuccess={refresh}
+              />
             </div>
           </div>
 

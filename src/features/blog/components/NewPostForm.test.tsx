@@ -116,18 +116,19 @@ describe('NewPostForm', () => {
     URL.revokeObjectURL = originalRevokeObjectURL;
   });
 
-  it('recarga la página al publicar con éxito', async () => {
+  it('llama onSuccess al publicar con éxito', async () => {
+    const onSuccess = vi.fn();
     const user = userEvent.setup();
     render(
       <ReplyProvider>
-        <NewPostForm subjectId='subj-1' subtopicId='sub-a' />
+        <NewPostForm subjectId='subj-1' subtopicId='sub-a' onSuccess={onSuccess} />
       </ReplyProvider>,
     );
 
     await user.type(screen.getByPlaceholderText('¿Qué querés preguntar o compartir?'), 'hola');
     await user.click(screen.getByRole('button', { name: 'Enviar' }));
 
-    expect(reload).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 
   it('muestra "Respondiendo a" y crea un comentario al responder', async () => {

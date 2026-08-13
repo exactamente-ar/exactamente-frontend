@@ -16,6 +16,7 @@ interface Props {
   comments: BlogComment[];
   hoveredId: string | null;
   onHover: (id: string | null) => void;
+  onDeleted?: () => void;
 }
 
 type CommentTree = Map<string | null, BlogComment[]>;
@@ -225,7 +226,14 @@ function CommentItem({
   );
 }
 
-export default function Comments({ subjectId, postId, comments, hoveredId, onHover }: Props) {
+export default function Comments({
+  subjectId,
+  postId,
+  comments,
+  hoveredId,
+  onHover,
+  onDeleted,
+}: Props) {
   const tree = useMemo(() => buildTree(comments), [comments]);
   const roots = tree.get(null) ?? [];
 
@@ -247,7 +255,7 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
   const activeRootIndex = roots.findIndex((r) => activePath.has(r.id));
 
   function refresh() {
-    window.location.reload();
+    if (onDeleted) onDeleted();
   }
 
   if (roots.length === 0) return null;

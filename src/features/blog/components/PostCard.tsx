@@ -12,9 +12,11 @@ import type { BlogPost } from '../types/blog';
 interface Props {
   subjectId: string;
   post: BlogPost;
+  onDeleted?: () => void;
+  onCommentAdded?: () => void;
 }
 
-export default function PostCard({ subjectId, post }: Props) {
+export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }: Props) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
   const [netScore, setNetScore] = useState(post.netScore);
@@ -40,7 +42,7 @@ export default function PostCard({ subjectId, post }: Props) {
       setDeleting(false);
       return;
     }
-    window.location.reload();
+    if (onDeleted) onDeleted();
   }
 
   return (
@@ -107,6 +109,7 @@ export default function PostCard({ subjectId, post }: Props) {
           comments={post.comments}
           hoveredId={hoveredId}
           onHover={setHoveredId}
+          onDeleted={onCommentAdded}
         />
       )}
     </li>
