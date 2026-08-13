@@ -47,6 +47,7 @@ interface ItemProps {
   hoveredId: string | null;
   ancestorIds: Set<string>;
   onHover: (id: string | null) => void;
+  isLast: boolean;
 }
 
 function CommentItem({
@@ -58,6 +59,7 @@ function CommentItem({
   hoveredId,
   ancestorIds,
   onHover,
+  isLast,
 }: ItemProps) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
@@ -83,8 +85,20 @@ function CommentItem({
   }
 
   return (
-    <div className='flex flex-col' onMouseEnter={() => onHover(comment.id)}>
-      <div className='flex gap-3'>
+    <div className='flex flex-col relative' onMouseEnter={() => onHover(comment.id)}>
+      {/* Curva conectora al comentario (siempre visible, usa el espaciado base -29px exacto) */}
+      <div
+        className={`absolute -left-[29px] top-0 w-[29px] h-[18px] border-b-2 border-l-2 rounded-bl-xl pointer-events-none transition-colors ${lineColor(isActive)}`}
+      />
+
+      {/* Línea recta que sigue hacia abajo, solo si NO es el último hermano */}
+      {!isLast && (
+        <div
+          className={`absolute -left-[29px] top-[18px] border-l-2 pointer-events-none transition-colors ${lineColor(isActive)} ${!comment.parentId ? '-bottom-1' : '-bottom-3'}`}
+        />
+      )}
+
+      <div className='flex gap-3 relative z-10'>
         <div className='flex w-7 shrink-0 flex-col items-center pt-1'>
           <VoteControl
             netScore={netScore}
@@ -92,11 +106,6 @@ function CommentItem({
             canVote={!!token && !comment.mine}
             onVote={vote}
           />
-          {hasChildren && (
-            <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isActive)} transition-colors`}
-            />
-          )}
         </div>
         <div className='flex min-w-0 mt-2 flex-1 flex-col gap-1 pb-1 pr-1'>
           <div className='flex items-baseline justify-between gap-3'>
@@ -130,9 +139,9 @@ function CommentItem({
       </div>
 
       {hasChildren && (
-        <div className={`${THREAD_LINE_ML} border-l-2 ${lineColor(isActive)} transition-colors`}>
+        <div className={`${THREAD_LINE_ML}`}>
           <div className='flex flex-col gap-3 pl-[29px]'>
-            {children.map((child) => (
+            {children.map((child, index) => (
               <CommentItem
                 key={child.id}
                 subjectId={subjectId}
@@ -143,6 +152,7 @@ function CommentItem({
                 hoveredId={hoveredId}
                 ancestorIds={ancestorIds}
                 onHover={onHover}
+                isLast={index === children.length - 1}
               />
             ))}
           </div>
@@ -176,11 +186,13 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
   if (roots.length === 0) return null;
 
   return (
-    <div
-      className={`${THREAD_LINE_ML} border-l-2 ${lineColor(hoveredId !== null)} transition-colors`}
-    >
+    <div className={`${THREAD_LINE_ML} relative`}>
+      {/* Pequeño segmento superior para conectar con el primer root, compensando el pt-2 (8px) */}
+      <div
+        className={`absolute -left-[29px] top-0 h-2 border-l-2 pointer-events-none transition-colors ${lineColor(hoveredId !== null)}`}
+      />
       <div className='flex flex-col gap-1 pl-[29px] pt-2'>
-        {roots.map((root) => (
+        {roots.map((root, index) => (
           <CommentItem
             key={root.id}
             subjectId={subjectId}
@@ -191,6 +203,7 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
             hoveredId={hoveredId}
             ancestorIds={ancestorIds}
             onHover={onHover}
+            isLast={index === roots.length - 1}
           />
         ))}
       </div>
