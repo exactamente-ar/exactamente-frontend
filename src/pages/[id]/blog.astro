@@ -1,0 +1,80 @@
+---
+export const prerender = false;
+
+import Layout from '@/layouts/Layout.astro';
+import Breadcrumb from '@/shared/components/Breadcrumb.astro';
+
+import IconOpenBook from '@/shared/components/icons/IconOpenBook.astro';
+import ContainerLink from '@/shared/components/ContainerLink.astro';
+
+import IconDocument from '@/shared/components/icons/IconDocument.astro';
+import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
+import IconBlog from '@/shared/components/icons/IconBlog.astro';
+import BlogView from '@/features/blog/components/BlogView';
+import { getSubjectById, getBlog } from '@/shared/services/api';
+
+const { id } = Astro.params;
+const subject = await getSubjectById(id as string);
+
+if (!subject) {
+  return Astro.redirect('/');
+}
+
+const blog = await getBlog(id as string);
+
+const homeQuery = Astro.url.searchParams.get('home') ?? '';
+const homeHref = homeQuery ? `../?${homeQuery}#subjects` : `../#subjects`;
+const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
+---
+
+<Layout>
+  <section
+    class='relative flex h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden pt-20 md:pt-28 pb-4 md:pb-6'
+  >
+    <div class='shrink-0 mb-6'>
+      <Breadcrumb url={homeHref}>
+        <ContainerLink
+          url={`./resumenes${tabSuffix}`}
+          class='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100 font-semibold flex items-center gap-3 transition-all duration-200'
+        >
+          <div class='flex items-center gap-2'>
+            <IconOpenBook size={20} class='fill-emerald-200' />
+            <span> Resumenes </span>
+          </div>
+        </ContainerLink>
+
+        <ContainerLink
+          url={`./parciales${tabSuffix}`}
+          class='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-blue-500/50 to-blue-600/10 border-2 border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100 font-semibold flex items-center gap-3 transition-all duration-200'
+        >
+          <div class='flex items-center gap-2'>
+            <IconDocument size={20} class='fill-blue-200' />
+            <span> Parciales </span>
+          </div>
+        </ContainerLink>
+
+        <ContainerLink
+          url={`./finales${tabSuffix}`}
+          class='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-purple-500/50 to-purple-600/10 border-2 border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100 font-semibold flex items-center gap-3 transition-all duration-200'
+        >
+          <div class='flex items-center gap-2'>
+            <IconUniversity size={20} class='fill-purple-200' />
+            <span> Finales </span>
+          </div>
+        </ContainerLink>
+
+        <ContainerLink
+          url={`./blog${tabSuffix}`}
+          class='grayscale-100 pointer-events-none cursor-not-allowed group/resource hover:scale-105 justify-between active:scale-95 bg-gradient-to-br from-yellow-500/50 to-yellow-600/10 border-2 border-yellow-500/40 hover:border-yellow-400/60 text-yellow-200 hover:text-yellow-100 font-semibold flex items-center gap-3 transition-all duration-200'
+        >
+          <div class='flex items-center gap-2'>
+            <IconBlog size={20} class='fill-yellow-200' />
+            <span> Blog </span>
+          </div>
+        </ContainerLink>
+      </Breadcrumb>
+    </div>
+
+    <BlogView client:only='react' subject={subject} blog={blog} />
+  </section>
+</Layout>

@@ -11,6 +11,7 @@ import ContainerLink from '@/shared/components/ContainerLink.astro';
 
 import IconDocument from '@/shared/components/icons/IconDocument.astro';
 import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
+import IconBlog from '@/shared/components/icons/IconBlog.astro';
 import ResourcesView from '@/features/resource/components/ResourcesView';
 import { getSubjectById } from '@/shared/services/api';
 
@@ -56,6 +57,16 @@ const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
         <div class='flex items-center gap-2'>
           <IconUniversity size={20} class='fill-purple-200' />
           <span> Finales </span>
+        </div>
+      </ContainerLink>
+
+      <ContainerLink
+        url={`./blog${tabSuffix}`}
+        class='group/resource hover:scale-105 justify-between active:scale-95 grayscale-50 bg-gradient-to-br from-yellow-500/50 to-yellow-600/10 border-2 border-yellow-500/40 hover:border-yellow-400/60 text-yellow-200 hover:text-yellow-100 font-semibold flex items-center gap-3 transition-all duration-200'
+      >
+        <div class='flex items-center gap-2'>
+          <IconBlog size={20} class='fill-yellow-200' />
+          <span> Blog </span>
         </div>
       </ContainerLink>
     </Breadcrumb>

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RESOURCE_TYPE_MAP, mapResource, mapSubject } from './api';
+import { RESOURCE_TYPE_MAP, mapBlog, mapResource, mapSubject } from './api';
 
 // Mínimo viable de un BackendSubject; cada test pisa solo lo que le importa.
 function backendSubject(overrides: Record<string, unknown> = {}) {
@@ -101,6 +101,35 @@ describe('mapResource', () => {
     expect(mapped.examYear).toBeNull();
     expect(mapped.examMonth).toBeNull();
     expect(mapped.topic).toBeNull();
+  });
+});
+
+function backendBlog(overrides: Record<string, unknown> = {}) {
+  return {
+    subjectId: 's1',
+    subtopics: [{ id: 'st1', name: 'General', slug: 'general', isDefault: true }],
+    posts: [
+      {
+        id: 'p1',
+        subtopicId: 'st1',
+        body: '¿Alguien tiene el parcial 2024?',
+        authority: 'anonymous',
+        status: 'published',
+        netScore: 0,
+        createdAt: '2026-08-12T10:00:00.000Z',
+        author: null,
+        images: [],
+        comments: [],
+      },
+    ],
+    ...overrides,
+  };
+}
+
+describe('mapBlog', () => {
+  it('conserva la estructura del blog sin transformar los campos', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(mapBlog(backendBlog() as any)).toEqual(backendBlog());
   });
 });
 

@@ -95,7 +95,7 @@ export interface paths {
         };
         /**
          * Callback de Google
-         * @description Canjea el code por un JWT propio y redirige al frontend con un código de un solo uso. Ante error redirige a `/upload?error=...`.
+         * @description Canjea el code por un JWT propio y redirige al frontend con un código de un solo uso. Ante error redirige al inicio con `?error=...`.
          */
         get: operations["getApiV1AuthGoogleCallback"];
         put?: never;
@@ -299,6 +299,146 @@ export interface paths {
          */
         post: operations["postApiV1ResourcesCheckDuplicate"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Blog de una materia
+         * @description Devuelve los subtemas (con el "general" por defecto) y los posts del blog. Lectura pública. Posts ordenados por votos (`net_score`), con una ventana 30 días para que la paginación sea estable. Los comentarios se ordenan por votos dentro de sus hermanos.
+         */
+        get: operations["getApiV1BlogsBySubjectId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Crear un post en el blog
+         * @description Requiere autenticación. Crea un post en el subtema elegido con autoría visible o anónima. Multipart: `subtopicId`, `authority`, `body` (texto) y hasta 6 imágenes (jpeg/png/webp). El texto pasa por la blacklist y las imágenes se re-encodifican sin metadata EXIF.
+         */
+        post: operations["postApiV1BlogsBySubjectIdPosts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}/posts/{postId}/vote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Votar un post
+         * @description Requiere autenticación. Upvote (`value: 1`) o downvote (`value: -1`). Votar de nuevo con el mismo valor quita el voto; con el opuesto lo cambia. El autor no puede votar su propio post.
+         */
+        post: operations["postApiV1BlogsBySubjectIdPostsByPostIdVote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}/posts/{postId}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Comentar un post o responder a un comentario
+         * @description Requiere autenticación. Crea un comentario anidado (hasta 20 niveles). `parentId` opcional para responder a otro comentario. Notifica por email al autor del contenido respondido, sin bloquear la respuesta.
+         */
+        post: operations["postApiV1BlogsBySubjectIdPostsByPostIdComments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}/posts/{postId}/comments/{commentId}/vote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Votar un comentario
+         * @description Requiere autenticación. Misma semántica de toggle que votar un post.
+         */
+        post: operations["postApiV1BlogsBySubjectIdPostsByPostIdCommentsByCommentIdVote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}/posts/{postId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Borrar un post
+         * @description Requiere autenticación. El autor o un admin pueden borrarlo. Soft delete: borra físicamente las imágenes de R2, marca `status: deleted` y conserva el árbol de comentarios.
+         */
+        delete: operations["deleteApiV1BlogsBySubjectIdPostsByPostId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blogs/{subjectId}/posts/{postId}/comments/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Borrar un comentario
+         * @description Requiere autenticación. El autor o un admin pueden borrarlo. Soft delete: marca `status: deleted` y conserva las respuestas (hijos) en el árbol.
+         */
+        delete: operations["deleteApiV1BlogsBySubjectIdPostsByPostIdCommentsByCommentId"];
         options?: never;
         head?: never;
         patch?: never;
@@ -721,6 +861,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/blogs/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Actividad reciente de blogs
+         * @description Posts y comentarios recientes de toda la plataforma, mezclados y ordenados por fecha. Es el barrido de moderación del MVP (sin búsqueda ni reportes).
+         */
+        get: operations["getApiV1AdminBlogsActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/blogs/{subjectId}/subtopics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar subtemas de un blog */
+        get: operations["getApiV1AdminBlogsBySubjectIdSubtopics"];
+        put?: never;
+        /** Crear un subtema */
+        post: operations["postApiV1AdminBlogsBySubjectIdSubtopics"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/blogs/subtopics/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Borrar un subtema
+         * @description Reasigna sus posts al "Subtema general". El subtema general no se puede borrar (400).
+         */
+        delete: operations["deleteApiV1AdminBlogsSubtopicsById"];
+        options?: never;
+        head?: never;
+        /** Renombrar un subtema */
+        patch: operations["patchApiV1AdminBlogsSubtopicsById"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -950,6 +1149,84 @@ export interface components {
             id: string;
             title: string;
             status: components["schemas"]["ResourceStatus"];
+        };
+        BlogSubtopic: {
+            id: string;
+            name: string;
+            slug: string;
+            isDefault: boolean;
+        };
+        BlogPost: {
+            id: string;
+            subtopicId: string;
+            body: string;
+            /** @enum {string} */
+            authority: "visible" | "anonymous";
+            /** @enum {string} */
+            status: "published" | "deleted";
+            netScore: number;
+            /** Format: date-time */
+            createdAt: string;
+            author: components["schemas"]["BlogAuthor"] | null;
+            images: components["schemas"]["BlogPostImage"][];
+            comments: components["schemas"]["BlogComment"][];
+            /** @description true si el token actual es el autor */
+            mine: boolean;
+        };
+        BlogAuthor: {
+            name: string;
+        };
+        BlogPostImage: {
+            id: string;
+            url: string;
+        };
+        BlogResponse: {
+            subjectId: string;
+            subtopics: components["schemas"]["BlogSubtopic"][];
+            posts: components["schemas"]["BlogPost"][];
+        };
+        BlogVoteResponse: {
+            netScore: number;
+            myVote: number;
+        };
+        BlogComment: {
+            id: string;
+            postId: string;
+            parentId: string | null;
+            body: string;
+            /** @enum {string} */
+            authority: "visible" | "anonymous";
+            /** @enum {string} */
+            status: "published" | "deleted";
+            netScore: number;
+            depth: number;
+            /** Format: date-time */
+            createdAt: string;
+            author: components["schemas"]["BlogAuthor"] | null;
+            /** @description true si el token actual es el autor */
+            mine: boolean;
+        };
+        BlogActivityItem: {
+            id: string;
+            /** @enum {string} */
+            type: "post" | "comment";
+            subjectId: string;
+            subjectTitle: string;
+            postId: string | null;
+            body: string;
+            /** @enum {string} */
+            authority: "visible" | "anonymous";
+            /** @enum {string} */
+            status: "published" | "deleted";
+            /** Format: date-time */
+            createdAt: string;
+            author: components["schemas"]["BlogAuthor"] | null;
+        };
+        BlogActivityResponse: {
+            data: components["schemas"]["BlogActivityItem"][];
+        };
+        BlogSubtopicList: {
+            subtopics: components["schemas"]["BlogSubtopic"][];
         };
         /** @enum {string} */
         UserRole: "superadmin" | "admin" | "user";
@@ -1693,6 +1970,455 @@ export interface operations {
             };
             /** @description Sin token o token inválido */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1BlogsBySubjectId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Blog con sus subtemas y posts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        subjectId: string;
+                        subtopics: components["schemas"]["BlogSubtopic"][];
+                        posts: components["schemas"]["BlogPost"][];
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiV1BlogsBySubjectIdPosts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Post creado */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        subtopicId: string;
+                        body: string;
+                        /** @enum {string} */
+                        authority: "visible" | "anonymous";
+                        /** @enum {string} */
+                        status: "published" | "deleted";
+                        netScore: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        author: components["schemas"]["BlogAuthor"] | null;
+                        images: components["schemas"]["BlogPostImage"][];
+                        comments: components["schemas"]["BlogComment"][];
+                        /** @description true si el token actual es el autor */
+                        mine: boolean;
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiV1BlogsBySubjectIdPostsByPostIdVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description netScore y voto resultante */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        netScore: number;
+                        myVote: number;
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiV1BlogsBySubjectIdPostsByPostIdComments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Comentario creado */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        postId: string;
+                        parentId: string | null;
+                        body: string;
+                        /** @enum {string} */
+                        authority: "visible" | "anonymous";
+                        /** @enum {string} */
+                        status: "published" | "deleted";
+                        netScore: number;
+                        depth: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        author: components["schemas"]["BlogAuthor"] | null;
+                        /** @description true si el token actual es el autor */
+                        mine: boolean;
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiV1BlogsBySubjectIdPostsByPostIdCommentsByCommentIdVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+                postId: string;
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description netScore y voto resultante */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        netScore: number;
+                        myVote: number;
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    deleteApiV1BlogsBySubjectIdPostsByPostId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Post eliminado */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    deleteApiV1BlogsBySubjectIdPostsByPostIdCommentsByCommentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+                postId: string;
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Comentario eliminado */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4411,6 +5137,328 @@ export interface operations {
             };
             /** @description Rol insuficiente */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1AdminBlogsActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Actividad */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["BlogActivityItem"][];
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getApiV1AdminBlogsBySubjectIdSubtopics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Subtemas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        subtopics: components["schemas"]["BlogSubtopic"][];
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postApiV1AdminBlogsBySubjectIdSubtopics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subjectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Subtema creado */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        name: string;
+                        slug: string;
+                        isDefault: boolean;
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    deleteApiV1AdminBlogsSubtopicsById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Subtema eliminado */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    patchApiV1AdminBlogsSubtopicsById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Subtema actualizado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        name: string;
+                        slug: string;
+                        isDefault: boolean;
+                    };
+                };
+            };
+            /** @description Validación fallida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Sin token o token inválido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Rol insuficiente */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Recurso no encontrado */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

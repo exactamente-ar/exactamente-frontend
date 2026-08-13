@@ -1,0 +1,127 @@
+import { useState } from 'react';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { votePost, deletePost } from '@/shared/services/api';
+import { useReplyContext } from '../context/ReplyContext';
+import { THREAD_LINE_ML } from '../constants/comments';
+import VoteControl from './VoteControl';
+import Comments from './Comments';
+import { formatDateTime } from '../utils/format';
+import type { BlogPost } from '../types/blog';
+
+interface Props {
+  subjectId: string;
+  post: BlogPost;
+}
+
+export default function PostCard({ subjectId, post }: Props) {
+  const { token } = useAuth();
+  const { setReplyTarget } = useReplyContext();
+  const [netScore, setNetScore] = useState(post.netScore);
+  const [myVote, setMyVote] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  async function vote(value: 1 | -1) {
+    if (!token) return;
+    const result = await votePost(subjectId, post.id, value, token);
+    if (result.error !== null) return;
+    setNetScore(result.data.netScore);
+    setMyVote(result.data.myVote);
+  }
+
+  async function remove() {
+    if (!token || deleting) return;
+    setDeleting(true);
+    const result = await deletePost(subjectId, post.id, token);
+    if (result.error !== null) {
+      setDeleting(false);
+      return;
+    }
+    window.location.reload();
+  }
+
+  return (
+    <li
+      className='flex flex-col rounded-xl border border-zinc-700/40 bg-zinc-900/30 p-4 group/post'
+      onMouseLeave={() => setHoveredId(null)}
+    >
+      <div className='flex gap-2' onMouseEnter={() => setHoveredId(null)}>
+        <div className='flex w-8 shrink-0 flex-col items-center'>
+          <VoteControl
+            netScore={netScore}
+            myVote={myVote}
+            canVote={!!token && !post.mine}
+            onVote={vote}
+          />
+          {post.comments.length > 0 && (
+            <div
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${
+                hoveredId !== null ? 'border-zinc-300' : 'border-zinc-600'
+              } transition-colors`}
+            />
+          )}
+        </div>
+
+        <div className='flex min-w-0 flex-1 flex-col gap-2 mt-1.5'>
+          <div className='flex items-baseline justify-between gap-2'>
+            <span className='text-xs font-semibold text-zinc-300'>
+              {post.author?.name ?? 'Anónimo'}
+            </span>
+            <time className='shrink-0 text-xs text-zinc-500' dateTime={post.createdAt}>
+              {formatDateTime(post.createdAt)}
+            </time>
+          </div>
+
+          <p className='text-zinc-200'>{post.body}</p>
+          {post.images.length > 0 && (
+            <div className='flex flex-wrap gap-2 pt-1'>
+              {post.images.map((img) => (
+                <img
+                  key={img.id}
+                  src={img.url}
+                  alt=''
+                  loading='lazy'
+                  className='h-32 w-32 rounded-lg object-cover'
+                />
+              ))}
+            </div>
+          )}
+
+          <div className='flex items-center text-xs text-zinc-500'>
+            {token && (
+              <button
+                type='button'
+                onClick={() =>
+                  setReplyTarget({ postId: post.id, parentId: null, snippet: post.body })
+                }
+                className='font-semibold text-zinc-400 hover:text-zinc-200'
+              >
+                Responder
+              </button>
+            )}
+            {post.mine && (
+              <button
+                type='button'
+                onClick={remove}
+                disabled={deleting}
+                className='text-red-400 hover:text-red-300'
+              >
+                Borrar
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {post.comments.length > 0 && (
+        <Comments
+          subjectId={subjectId}
+          postId={post.id}
+          comments={post.comments}
+          hoveredId={hoveredId}
+          onHover={setHoveredId}
+        />
+      )}
+    </li>
+  );
+}
