@@ -106,4 +106,10 @@ describe('BlogView', () => {
     expect(screen.getByRole('button', { name: 'Subtema general' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Parciales y finales' })).toBeTruthy();
   });
+
+  it('aplica el scrollbar custom al feed', () => {
+    authMock.token = 'token-123';
+    const { container } = render(<BlogView subject={subject} blog={blog} />);
+    expect(container.querySelector('.custom-scrollbar')).not.toBeNull();
+  });
 });

@@ -381,3 +381,27 @@ select option {
   pointer-events: none;
   opacity: 0.5;
 }
+
+/* Custom scrollball */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #fff rgba(255, 255, 255, 0);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6b46c1, #b83280, #38b2ac);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7c3aed, #db2777, #4fd1c5);
+}

@@ -51,7 +51,7 @@ function BlogViewInner({ subject, blog }: Props) {
       </div>
 
       <div className='relative z-10 flex min-h-0 flex-1 flex-col md:pb-3'>
-        <header className='md:px-4 md:py-6 w-full bg-black/10 rounded-2xl'>
+        <header className='md:px-4 md:py-6 w-full bg-black/10 rounded-2xl border-b-1 border-b-gray-700 shadow-2xl'>
           {/* todo hacer efecto cool en este titulo idk */}
           <h2 className='shrink-0 text-4xl font-bold text-white md:m-1'>
             {subject.shortName || subject.title}
@@ -67,7 +67,7 @@ function BlogViewInner({ subject, blog }: Props) {
               gated ? 'pointer-events-none select-none blur-sm' : ''
             }`}
           >
-            <div className='min-h-0 flex-1 overflow-y-auto pb-18'>
+            <div className='custom-scrollbar min-h-0 flex-1 overflow-y-auto pb-18'>
               {posts.length > 0 ? (
                 <ul className='flex flex-col gap-4'>
                   {posts.map((post) => (
