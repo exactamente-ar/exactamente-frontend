@@ -1,14 +1,15 @@
 interface Props {
   isActive: boolean;
+  isDownwardLineActive: boolean;
   isLast: boolean;
   isRoot: boolean;
 }
 
 function lineColor(active: boolean): string {
-  return active ? 'border-zinc-300' : 'border-zinc-600';
+  return active ? 'border-zinc-300 z-10' : 'border-zinc-600 z-0';
 }
 
-export default function CommentLines({ isActive, isLast, isRoot }: Props) {
+export default function CommentLines({ isActive, isDownwardLineActive, isLast, isRoot }: Props) {
   // La curva debe apuntar hacia el centro del avatar o el puntaje.
   // Ajustamos la altura de la curva desde arriba (top-0) hasta donde sea necesario.
   // top-0 asegura que siempre conecte con el elemento anterior.
@@ -24,7 +25,7 @@ export default function CommentLines({ isActive, isLast, isRoot }: Props) {
       {/* Línea recta que sigue hacia abajo para conectar con el SIGUIENTE hermano */}
       {!isLast && (
         <div
-          className={`absolute -left-[29px] top-0 border-l-2 pointer-events-none transition-colors ${lineColor(isActive)} ${isRoot ? '-bottom-1' : '-bottom-3'}`}
+          className={`absolute -left-[29px] top-0 border-l-2 pointer-events-none transition-colors ${lineColor(isDownwardLineActive)} ${isRoot ? '-bottom-1' : '-bottom-3'}`}
         />
       )}
     </>

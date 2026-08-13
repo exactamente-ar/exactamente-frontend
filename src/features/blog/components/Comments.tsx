@@ -50,6 +50,7 @@ interface ItemProps {
   ancestorIds: Set<string>;
   onHover: (id: string | null) => void;
   isLast: boolean;
+  isDownwardLineActive: boolean;
 }
 
 function CommentItem({
@@ -62,6 +63,7 @@ function CommentItem({
   ancestorIds,
   onHover,
   isLast,
+  isDownwardLineActive,
 }: ItemProps) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
@@ -70,6 +72,8 @@ function CommentItem({
   const children = tree.get(comment.id) ?? [];
   const hasChildren = children.length > 0;
   const isActive = comment.id === hoveredId || ancestorIds.has(comment.id);
+  const isChildActive = ancestorIds.has(comment.id);
+  const activeChildIndex = children.findIndex((c) => c.id === hoveredId || ancestorIds.has(c.id));
 
   async function vote(value: 1 | -1) {
     if (!token) return;
@@ -98,7 +102,12 @@ function CommentItem({
         onHover(comment.id);
       }}
     >
-      <CommentLines isActive={isActive} isLast={isLast} isRoot={!comment.parentId} />
+      <CommentLines
+        isActive={isActive}
+        isDownwardLineActive={isDownwardLineActive}
+        isLast={isLast}
+        isRoot={!comment.parentId}
+      />
 
       <div className='flex gap-3 relative z-10'>
         <div className='flex w-7 shrink-0 flex-col items-center pt-1'>
@@ -110,7 +119,7 @@ function CommentItem({
           />
           {hasChildren && (
             <div
-              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isActive)} transition-colors`}
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isChildActive)} transition-colors`}
             />
           )}
         </div>
@@ -160,6 +169,7 @@ function CommentItem({
                 ancestorIds={ancestorIds}
                 onHover={onHover}
                 isLast={index === children.length - 1}
+                isDownwardLineActive={activeChildIndex > index}
               />
             ))}
           </div>
@@ -186,6 +196,8 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
     return set;
   }, [hoveredId, parentById]);
 
+  const activeRootIndex = roots.findIndex((r) => r.id === hoveredId || ancestorIds.has(r.id));
+
   function refresh() {
     window.location.reload();
   }
@@ -211,6 +223,7 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
             ancestorIds={ancestorIds}
             onHover={onHover}
             isLast={index === roots.length - 1}
+            isDownwardLineActive={activeRootIndex > index}
           />
         ))}
       </div>
