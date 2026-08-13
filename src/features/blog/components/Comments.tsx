@@ -40,9 +40,11 @@ function lineColor(active: boolean): string {
   return active ? 'border-zinc-300' : 'border-zinc-600';
 }
 
-function lineStyle(active: boolean): React.CSSProperties {
+function lineStyle(active: boolean, depth: number = 0): React.CSSProperties {
+  const delay = active ? depth * 40 : 0;
   return {
     transitionDuration: `${HOVER_DURATION_MS}ms`,
+    transitionDelay: `${delay}ms`,
     ...(active && ENABLE_LINE_GLOW
       ? { filter: 'drop-shadow(0 0 3px rgba(228, 228, 231, 0.6))' }
       : {}),
@@ -60,6 +62,7 @@ interface ItemProps {
   onHover: (id: string | null) => void;
   isLast: boolean;
   isDownwardLineActive: boolean;
+  depth: number;
 }
 
 function CommentItem({
@@ -73,6 +76,7 @@ function CommentItem({
   onHover,
   isLast,
   isDownwardLineActive,
+  depth,
 }: ItemProps) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
@@ -116,6 +120,11 @@ function CommentItem({
         isDownwardLineActive={isDownwardLineActive}
         isLast={isLast}
         isRoot={!comment.parentId}
+        depth={depth}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (token) setReplyTarget({ postId, parentId: comment.id, snippet: comment.body });
+        }}
       />
 
       <div
@@ -144,7 +153,7 @@ function CommentItem({
           {hasChildren && (
             <div
               className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isChildActive)} transition-all`}
-              style={lineStyle(isChildActive)}
+              style={lineStyle(isChildActive, depth)}
             />
           )}
         </div>
@@ -203,6 +212,7 @@ function CommentItem({
                 onHover={onHover}
                 isLast={index === children.length - 1}
                 isDownwardLineActive={activeChildIndex > index}
+                depth={depth + 1}
               />
             ))}
           </div>
@@ -258,6 +268,7 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
             onHover={onHover}
             isLast={index === roots.length - 1}
             isDownwardLineActive={activeRootIndex > index}
+            depth={0}
           />
         ))}
       </div>
