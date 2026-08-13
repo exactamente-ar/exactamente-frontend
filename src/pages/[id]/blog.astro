@@ -11,7 +11,7 @@ import IconDocument from '@/shared/components/icons/IconDocument.astro';
 import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
 import IconBlog from '@/shared/components/icons/IconBlog.astro';
 import BlogView from '@/features/blog/components/BlogView';
-import { getSubjectById, getBlog } from '@/shared/services/api';
+import { getSubjectById } from '@/shared/services/api';
 
 const { id } = Astro.params;
 const subject = await getSubjectById(id as string);
@@ -19,8 +19,6 @@ const subject = await getSubjectById(id as string);
 if (!subject) {
   return Astro.redirect('/');
 }
-
-const blog = await getBlog(id as string);
 
 const homeQuery = Astro.url.searchParams.get('home') ?? '';
 const homeHref = homeQuery ? `../?${homeQuery}#subjects` : `../#subjects`;
@@ -75,6 +73,6 @@ const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
       </Breadcrumb>
     </div>
 
-    <BlogView client:only='react' subject={subject} blog={blog} />
+    <BlogView client:only='react' subject={subject} />
   </section>
 </Layout>

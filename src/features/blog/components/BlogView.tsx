@@ -2,24 +2,28 @@ import { useState } from 'react';
 import NewPostForm from './NewPostForm';
 import PostCard from './PostCard';
 import SubtopicChips from './SubtopicChips';
+import BlogViewSkeleton from './BlogViewSkeleton';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useBlog } from '../hooks/useBlog';
 import { ReplyProvider } from '../context/ReplyContext';
 import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 import EmptyState from '@/shared/components/EmptyState';
 import { ALL_SUBTOPICS_ID, filterPostsBySubtopic, resolveComposerSubtopic } from '../utils/feed';
-import type { Blog } from '@/features/blog/types/blog';
 import type { Subject } from '@/features/home/types/subjects';
 
 interface Props {
   subject: Subject;
-  blog: Blog | null;
 }
 
-function BlogViewInner({ subject, blog }: Props) {
+function BlogViewInner({ subject }: Props) {
   const { token, loading } = useAuth();
-  const subtopics = blog?.subtopics ?? [];
+  const { blog, loading: blogLoading } = useBlog(subject.id);
   const [selected, setSelected] = useState(ALL_SUBTOPICS_ID);
+
+  if (blogLoading) return <BlogViewSkeleton />;
+
+  const subtopics = blog?.subtopics ?? [];
 
   const posts = filterPostsBySubtopic(blog?.posts ?? [], selected);
   const composerSubtopicId = resolveComposerSubtopic(selected, subtopics);

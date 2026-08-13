@@ -6,9 +6,14 @@ import type { Blog, BlogPost, BlogSubtopic } from '../types/blog';
 import type { Subject } from '@/features/home/types/subjects';
 
 const authMock = vi.hoisted(() => ({ token: null as string | null, loading: false }));
+const blogMock = vi.hoisted(() => ({ blog: null as Blog | null, loading: false }));
 
 vi.mock('@/features/auth/hooks/useAuth', () => ({
   useAuth: () => authMock,
+}));
+
+vi.mock('@/features/blog/hooks/useBlog', () => ({
+  useBlog: () => blogMock,
 }));
 
 const subject: Subject = {
@@ -60,6 +65,8 @@ const blog: Blog = {
 beforeEach(() => {
   authMock.token = null;
   authMock.loading = false;
+  blogMock.blog = blog;
+  blogMock.loading = false;
   vi.stubGlobal('localStorage', {
     getItem: vi.fn(() => null),
     setItem: vi.fn(),
@@ -72,15 +79,22 @@ afterEach(() => {
 });
 
 describe('BlogView', () => {
+  it('muestra el skeleton mientras carga el blog', () => {
+    blogMock.loading = true;
+    blogMock.blog = null;
+    render(<BlogView subject={subject} />);
+    expect(screen.getByRole('status', { name: 'Cargando publicaciones' })).toBeTruthy();
+  });
+
   it('muestra el login cuando no hay sesión', () => {
-    render(<BlogView subject={subject} blog={blog} />);
+    render(<BlogView subject={subject} />);
     expect(screen.getByText('Iniciá sesión para leer y participar en el blog.')).toBeTruthy();
     expect(screen.getByText('Continuar con Google')).toBeTruthy();
   });
 
   it('no muestra el login cuando hay sesión', () => {
     authMock.token = 'token-123';
-    render(<BlogView subject={subject} blog={blog} />);
+    render(<BlogView subject={subject} />);
     expect(screen.queryByText('Iniciá sesión para leer y participar en el blog.')).toBeNull();
     expect(screen.getByRole('button', { name: 'Enviar' })).toBeTruthy();
   });
@@ -88,7 +102,7 @@ describe('BlogView', () => {
   it('filtra el feed según el chip de subtema', async () => {
     authMock.token = 'token-123';
     const user = userEvent.setup();
-    render(<BlogView subject={subject} blog={blog} />);
+    render(<BlogView subject={subject} />);
 
     expect(screen.getByText('Duda del tema 1')).toBeTruthy();
     expect(screen.getByText('¿Alguien tiene el parcial?')).toBeTruthy();
@@ -101,7 +115,7 @@ describe('BlogView', () => {
 
   it('muestra el chip "General" además de cada subtema', () => {
     authMock.token = 'token-123';
-    render(<BlogView subject={subject} blog={blog} />);
+    render(<BlogView subject={subject} />);
     expect(screen.getByRole('button', { name: 'General' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Subtema general' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Parciales y finales' })).toBeTruthy();
@@ -109,7 +123,7 @@ describe('BlogView', () => {
 
   it('aplica el scrollbar custom al feed', () => {
     authMock.token = 'token-123';
-    const { container } = render(<BlogView subject={subject} blog={blog} />);
+    const { container } = render(<BlogView subject={subject} />);
     expect(container.querySelector('.custom-scrollbar')).not.toBeNull();
   });
 });
