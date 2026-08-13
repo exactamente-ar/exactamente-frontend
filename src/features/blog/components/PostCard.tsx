@@ -17,7 +17,7 @@ export default function PostCard({ subjectId, post }: Props) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
   const [netScore, setNetScore] = useState(post.netScore);
-  const [myVote, setMyVote] = useState(0);
+  const [myVote, setMyVote] = useState(post.myVote);
   const [deleting, setDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 

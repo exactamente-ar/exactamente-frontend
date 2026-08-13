@@ -20,6 +20,7 @@ function post(id: string, subtopicId: string): BlogPost {
     images: [],
     comments: [],
     mine: false,
+    myVote: 0,
   };
 }
 

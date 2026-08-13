@@ -26,6 +26,7 @@ export type BlogComment = {
   createdAt: string;
   author: BlogAuthor | null;
   mine: boolean;
+  myVote: number;
 };
 
 export type BlogPost = {
@@ -40,6 +41,7 @@ export type BlogPost = {
   images: BlogPostImage[];
   comments: BlogComment[];
   mine: boolean;
+  myVote: number;
 };
 
 export type Blog = {

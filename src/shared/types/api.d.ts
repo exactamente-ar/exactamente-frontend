@@ -375,7 +375,7 @@ export interface paths {
         put?: never;
         /**
          * Comentar un post o responder a un comentario
-         * @description Requiere autenticación. Crea un comentario anidado (hasta 20 niveles). `parentId` opcional para responder a otro comentario. Notifica por email al autor del contenido respondido, sin bloquear la respuesta.
+         * @description Requiere autenticación. Crea un comentario anidado (hasta 20 niveles). `parentId` opcional para responder a otro comentario.
          */
         post: operations["postApiV1BlogsBySubjectIdPostsByPostIdComments"];
         delete?: never;
@@ -1172,6 +1172,8 @@ export interface components {
             comments: components["schemas"]["BlogComment"][];
             /** @description true si el token actual es el autor */
             mine: boolean;
+            /** @description voto del token actual: 1, -1 o 0 */
+            myVote: number;
         };
         BlogAuthor: {
             name: string;
@@ -1205,6 +1207,8 @@ export interface components {
             author: components["schemas"]["BlogAuthor"] | null;
             /** @description true si el token actual es el autor */
             mine: boolean;
+            /** @description voto del token actual: 1, -1 o 0 */
+            myVote: number;
         };
         BlogActivityItem: {
             id: string;
@@ -2052,6 +2056,8 @@ export interface operations {
                         comments: components["schemas"]["BlogComment"][];
                         /** @description true si el token actual es el autor */
                         mine: boolean;
+                        /** @description voto del token actual: 1, -1 o 0 */
+                        myVote: number;
                     };
                 };
             };
@@ -2200,6 +2206,8 @@ export interface operations {
                         author: components["schemas"]["BlogAuthor"] | null;
                         /** @description true si el token actual es el autor */
                         mine: boolean;
+                        /** @description voto del token actual: 1, -1 o 0 */
+                        myVote: number;
                     };
                 };
             };

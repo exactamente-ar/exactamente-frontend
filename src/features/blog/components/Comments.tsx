@@ -58,7 +58,7 @@ function CommentItem({
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
   const [netScore, setNetScore] = useState(comment.netScore);
-  const [myVote, setMyVote] = useState(0);
+  const [myVote, setMyVote] = useState(comment.myVote);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const children = tree.get(comment.id) ?? [];
   const hasChildren = children.length > 0;

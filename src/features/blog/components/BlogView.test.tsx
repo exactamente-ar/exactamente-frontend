@@ -50,6 +50,7 @@ function post(id: string, subtopicId: string, body: string): BlogPost {
     images: [],
     comments: [],
     mine: false,
+    myVote: 0,
   };
 }
 
@@ -125,5 +126,15 @@ describe('BlogView', () => {
     authMock.token = 'token-123';
     const { container } = render(<BlogView subject={subject} />);
     expect(container.querySelector('.custom-scrollbar')).not.toBeNull();
+  });
+
+  it('hidrata el voto del usuario en el post', () => {
+    authMock.token = 'token-123';
+    blogMock.blog = {
+      ...blog,
+      posts: [{ ...post('p1', 'sub-general', 'Duda del tema 1'), myVote: 1 }],
+    };
+    render(<BlogView subject={subject} />);
+    expect(screen.getByRole('button', { name: 'Votar a favor' })).toHaveClass('text-yellow-300');
   });
 });
