@@ -348,9 +348,11 @@ export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
   return result.data.find((s) => s.url === '/' + slug) ?? null;
 }
 
-export async function getBlog(subjectId: string): Promise<Blog | null> {
+export async function getBlog(subjectId: string, token?: string | null): Promise<Blog | null> {
   try {
-    const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}`);
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}`, { headers });
     if (!response.ok) return null;
     const json: Blog = await response.json();
     return mapBlog(json);

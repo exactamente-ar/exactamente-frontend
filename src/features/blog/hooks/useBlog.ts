@@ -4,16 +4,21 @@ import type { Blog } from '../types/blog';
 
 const MIN_LOADING_MS = 400;
 
-export function useBlog(subjectId: string): { blog: Blog | null; loading: boolean } {
+export function useBlog(
+  subjectId: string,
+  token: string | null,
+  authLoading: boolean,
+): { blog: Blog | null; loading: boolean } {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
     let cancelled = false;
     setLoading(true);
     const startedAt = Date.now();
 
-    getBlog(subjectId).then((result) => {
+    getBlog(subjectId, token).then((result) => {
       if (cancelled) return;
       const remaining = Math.max(0, MIN_LOADING_MS - (Date.now() - startedAt));
       setTimeout(() => {
@@ -26,7 +31,7 @@ export function useBlog(subjectId: string): { blog: Blog | null; loading: boolea
     return () => {
       cancelled = true;
     };
-  }, [subjectId]);
+  }, [subjectId, token, authLoading]);
 
   return { blog, loading };
 }

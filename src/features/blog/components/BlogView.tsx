@@ -18,7 +18,7 @@ interface Props {
 
 function BlogViewInner({ subject }: Props) {
   const { token, loading } = useAuth();
-  const { blog, loading: blogLoading } = useBlog(subject.id);
+  const { blog, loading: blogLoading } = useBlog(subject.id, token, loading);
   const [selected, setSelected] = useState(ALL_SUBTOPICS_ID);
 
   if (blogLoading) return <BlogViewSkeleton />;

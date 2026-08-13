@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RESOURCE_TYPE_MAP, mapBlog, mapResource, mapSubject } from './api';
+import { RESOURCE_TYPE_MAP, mapBlog, mapResource, mapSubject, getBlog } from './api';
 
 // Mínimo viable de un BackendSubject; cada test pisa solo lo que le importa.
 function backendSubject(overrides: Record<string, unknown> = {}) {
@@ -130,6 +130,41 @@ describe('mapBlog', () => {
   it('conserva la estructura del blog sin transformar los campos', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(mapBlog(backendBlog() as any)).toEqual(backendBlog());
+  });
+});
+
+describe('getBlog', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('envía el token de autorización cuando se lo pasan', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ subjectId: 's1', subtopics: [], posts: [] }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await getBlog('s1', 'token-123');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/api/v1/blogs/s1'),
+      expect.objectContaining({ headers: { Authorization: 'Bearer token-123' } }),
+    );
+  });
+
+  it('no envía Authorization sin token', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ subjectId: 's1', subtopics: [], posts: [] }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await getBlog('s1');
+
+    const [url, opts] = fetchMock.mock.calls[0] as [string, { headers?: Record<string, string> }];
+    expect(url).toContain('/api/v1/blogs/s1');
+    expect(opts?.headers?.Authorization).toBeUndefined();
   });
 });
 
