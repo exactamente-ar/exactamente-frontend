@@ -7,6 +7,8 @@ import { formatDateTime } from '../utils/format';
 import VoteControl from './VoteControl';
 import type { BlogComment } from '../types/blog';
 
+import CommentLines from './CommentLines';
+
 interface Props {
   subjectId: string;
   postId: string;
@@ -86,17 +88,7 @@ function CommentItem({
 
   return (
     <div className='flex flex-col relative' onMouseEnter={() => onHover(comment.id)}>
-      {/* Curva conectora al comentario (siempre visible, usa el espaciado base -29px exacto) */}
-      <div
-        className={`absolute -left-[29px] top-0 w-[29px] h-[18px] border-b-2 border-l-2 rounded-bl-xl pointer-events-none transition-colors ${lineColor(isActive)}`}
-      />
-
-      {/* Línea recta que sigue hacia abajo, solo si NO es el último hermano */}
-      {!isLast && (
-        <div
-          className={`absolute -left-[29px] top-[18px] border-l-2 pointer-events-none transition-colors ${lineColor(isActive)} ${!comment.parentId ? '-bottom-1' : '-bottom-3'}`}
-        />
-      )}
+      <CommentLines isActive={isActive} isLast={isLast} isRoot={!comment.parentId} />
 
       <div className='flex gap-3 relative z-10'>
         <div className='flex w-7 shrink-0 flex-col items-center pt-1'>
@@ -106,6 +98,11 @@ function CommentItem({
             canVote={!!token && !comment.mine}
             onVote={vote}
           />
+          {hasChildren && (
+            <div
+              className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-2 ${lineColor(isActive)} transition-colors`}
+            />
+          )}
         </div>
         <div className='flex min-w-0 mt-2 flex-1 flex-col gap-1 pb-1 pr-1'>
           <div className='flex items-baseline justify-between gap-3'>
@@ -189,7 +186,7 @@ export default function Comments({ subjectId, postId, comments, hoveredId, onHov
     <div className={`${THREAD_LINE_ML} relative`}>
       {/* Pequeño segmento superior para conectar con el primer root, compensando el pt-2 (8px) */}
       <div
-        className={`absolute -left-[29px] top-0 h-2 border-l-2 pointer-events-none transition-colors ${lineColor(hoveredId !== null)}`}
+        className={`absolute left-0 top-0 h-2 border-l-2 pointer-events-none transition-colors ${lineColor(hoveredId !== null)}`}
       />
       <div className='flex flex-col gap-1 pl-[29px] pt-2'>
         {roots.map((root, index) => (
