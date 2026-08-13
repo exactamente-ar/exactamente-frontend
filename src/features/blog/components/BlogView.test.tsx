@@ -137,4 +137,15 @@ describe('BlogView', () => {
     render(<BlogView subject={subject} />);
     expect(screen.getByRole('button', { name: 'Votar a favor' })).toHaveClass('text-yellow-300');
   });
+
+  it('deshabilita los votos en una publicación eliminada', () => {
+    authMock.token = 'token-123';
+    blogMock.blog = {
+      ...blog,
+      posts: [{ ...post('p1', 'sub-general', '[Eliminado]'), status: 'deleted' }],
+    };
+    render(<BlogView subject={subject} />);
+    expect(screen.getByRole('button', { name: 'Votar a favor' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Votar en contra' })).toBeDisabled();
+  });
 });

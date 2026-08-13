@@ -63,6 +63,8 @@ function CommentItem({
   const children = tree.get(comment.id) ?? [];
   const hasChildren = children.length > 0;
 
+  const votable = !!token && !comment.mine && comment.status !== 'deleted';
+
   const descendantsCount = useMemo(() => {
     function countDescendants(cId: string): number {
       const childs = tree.get(cId) ?? [];
@@ -76,7 +78,7 @@ function CommentItem({
   }, [comment.id, tree]);
 
   async function vote(value: 1 | -1) {
-    if (!token) return;
+    if (!votable) return;
     const result = await voteComment(subjectId, postId, comment.id, value, token);
     if (result.error !== null) return;
     setNetScore(result.data.netScore);
@@ -119,12 +121,7 @@ function CommentItem({
 
       <div className='flex gap-3 relative z-10 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400'>
         <div className='flex w-7 shrink-0 flex-col items-center pt-1'>
-          <VoteControl
-            netScore={netScore}
-            myVote={myVote}
-            canVote={!!token && !comment.mine}
-            onVote={vote}
-          />
+          <VoteControl netScore={netScore} myVote={myVote} canVote={votable} onVote={vote} />
           {hasChildren && !isCollapsed && (
             <div
               className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-[1.5px] ${getLineColor(isInnerLineActive)} transition-all relative after:content-[''] after:absolute after:-left-[15px] after:-right-[15px] after:-top-[5px] after:-bottom-[5px] cursor-pointer`}

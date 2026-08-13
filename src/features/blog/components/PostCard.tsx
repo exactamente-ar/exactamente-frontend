@@ -21,8 +21,10 @@ export default function PostCard({ subjectId, post }: Props) {
   const [deleting, setDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  const votable = !!token && !post.mine && post.status !== 'deleted';
+
   async function vote(value: 1 | -1) {
-    if (!token) return;
+    if (!votable) return;
     const result = await votePost(subjectId, post.id, value, token);
     if (result.error !== null) return;
     setNetScore(result.data.netScore);
@@ -49,12 +51,7 @@ export default function PostCard({ subjectId, post }: Props) {
     >
       <div className='flex gap-2'>
         <div className='flex w-8 shrink-0 flex-col items-center'>
-          <VoteControl
-            netScore={netScore}
-            myVote={myVote}
-            canVote={!!token && !post.mine}
-            onVote={vote}
-          />
+          <VoteControl netScore={netScore} myVote={myVote} canVote={votable} onVote={vote} />
           {post.comments.length > 0 && (
             <div
               className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-[1.5px] ${getLineColor(hoveredId !== null)} transition-all`}
