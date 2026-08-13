@@ -50,10 +50,10 @@ function BlogViewInner({ subject, blog }: Props) {
         <div className='absolute left-1/2 top-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(#6b46c1,#b83280,#f6e05e,#38b2ac,#6b46c1)] opacity-40 animate-[spin_6s_linear_infinite]' />
       </div>
 
-      <div className='relative z-10 flex min-h-0 flex-1 flex-col gap-4 md:p-6'>
-        <header className='md:px-4'>
+      <div className='relative z-10 flex min-h-0 flex-1 flex-col gap-4 md:py-6'>
+        <header className='md:px-4 w-full gap-2'>
           {/* todo hacer efecto cool en este titulo idk */}
-          <h2 className='shrink-0 text-4xl font-bold text-white md:mx-1'>
+          <h2 className='shrink-0 text-4xl font-bold text-white md:m-1'>
             {subject.shortName || subject.title}
           </h2>
 
