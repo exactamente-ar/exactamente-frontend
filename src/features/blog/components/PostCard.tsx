@@ -42,7 +42,7 @@ export default function PostCard({ subjectId, post }: Props) {
 
   return (
     <li
-      className='flex flex-col rounded-xl border border-zinc-700/40 bg-zinc-900/30 p-4 group/post'
+      className='flex flex-col rounded-2xl p-4 group/post'
       onMouseLeave={() => setHoveredId(null)}
     >
       <div className='flex gap-2' onMouseEnter={() => setHoveredId(null)}>

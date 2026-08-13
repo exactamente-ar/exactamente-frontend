@@ -110,7 +110,7 @@ export default function NewPostForm({ subjectId, subtopicId }: Props) {
         </div>
       )}
 
-      <div className='flex items-end gap-2 rounded-2xl border border-zinc-700/60 bg-zinc-900/70 p-2'>
+      <div className='flex items-end gap-2 rounded-xl border border-zinc-700/60 bg-zinc-900/70 p-2'>
         <input
           ref={fileInputRef}
           type='file'
