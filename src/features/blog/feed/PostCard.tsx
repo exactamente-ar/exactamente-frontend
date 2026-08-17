@@ -3,9 +3,9 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { votePost, deletePost } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
 import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comments';
-import VoteControl from './VoteControl';
-import Comments from './Comments';
-import ImageGallery from './ImageGallery';
+import VoteControl from '../shared/VoteControl';
+import Comments from '../comments/Comments';
+import ImageGallery from '../shared/ImageGallery';
 import { formatDateTime } from '../utils/format';
 import type { BlogPost } from '../types/blog';
 

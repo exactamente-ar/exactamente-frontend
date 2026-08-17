@@ -4,8 +4,8 @@ import { voteComment, deleteComment } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
 import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comments';
 import { formatDateTime } from '../utils/format';
-import VoteControl from './VoteControl';
-import ImageGallery from './ImageGallery';
+import VoteControl from '../shared/VoteControl';
+import ImageGallery from '../shared/ImageGallery';
 import type { BlogComment } from '../types/blog';
 
 import CommentLines from './CommentLines';

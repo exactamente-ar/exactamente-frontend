@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import NewPostForm from './NewPostForm';
+import NewPostForm from '../composer/NewPostForm';
 import PostCard from './PostCard';
 import SubtopicChips from './SubtopicChips';
 import BlogViewSkeleton from './BlogViewSkeleton';
