@@ -180,6 +180,18 @@ function CommentItem({
                 Borrar
               </button>
             )}
+            {hasChildren && !isCollapsed && (
+              <button
+                type='button'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsCollapsed(true);
+                }}
+                className='ml-auto font-semibold text-zinc-400 hover:text-zinc-200'
+              >
+                Ocultar comentarios
+              </button>
+            )}
           </div>
         </div>
       </div>
