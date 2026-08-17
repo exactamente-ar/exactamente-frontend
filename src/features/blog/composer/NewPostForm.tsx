@@ -22,9 +22,18 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const urls = images.map((file) => URL.createObjectURL(file));
@@ -33,9 +42,9 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
   }, [images]);
 
   function handleFiles(e: ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files) return;
-    setImages((prev) => [...prev, ...Array.from(files)].slice(0, MAX_IMAGES));
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+    setImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
     e.target.value = '';
   }
 
@@ -101,23 +110,20 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
       )}
 
       <div className='flex items-end gap-2 rounded-xl border border-zinc-700/60 bg-zinc-900/70 p-2'>
-        <input
-          ref={fileInputRef}
-          type='file'
-          accept='image/jpeg,image/png,image/webp'
-          multiple
-          className='hidden'
-          onChange={handleFiles}
-        />
-        <button
-          type='button'
-          onClick={() => fileInputRef.current?.click()}
+        <label
           aria-label='Agregar imágenes'
           title='Agregar imágenes'
-          className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200'
+          className='flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200'
         >
+          <input
+            type='file'
+            accept='image/jpeg,image/png,image/webp'
+            multiple
+            className='hidden'
+            onChange={handleFiles}
+          />
           <ImagePlus size={20} />
-        </button>
+        </label>
 
         <div className='flex flex-col flex-1 gap-2 bg-transparent overflow-hidden'>
           {images.length > 0 && (
@@ -156,7 +162,7 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
                 }
               }
             }}
-            placeholder='¿Qué querés preguntar o compartir?'
+            placeholder={isMobile ? '¿Qué querés compartir?' : '¿Qué querés preguntar o compartir?'}
             maxLength={50_000}
             rows={1}
             className='max-h-40 flex-1 resize-none bg-transparent py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none'
