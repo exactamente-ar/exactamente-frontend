@@ -1,0 +1,31 @@
+import { describe, expect, it } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import ImageGallery from './ImageGallery';
+
+const images = [{ id: 'img-1', url: 'https://files.exactamente.com.ar/blog/img-1.jpg' }];
+
+async function openViewer() {
+  render(<ImageGallery images={images} />);
+  await userEvent.click(screen.getAllByRole('button')[0]);
+  const closeBtn = screen.getByRole('button', { name: /cerrar imagen/i });
+  return closeBtn;
+}
+
+describe('ImageGallery — visor ampliado', () => {
+  it('el botón de cerrar tiene fondo sólido, no translúcido', async () => {
+    const closeBtn = await openViewer();
+
+    expect(closeBtn.className).toContain('bg-zinc-900');
+    expect(closeBtn.className).not.toMatch(/bg-zinc-900\//);
+  });
+
+  it('el botón de cerrar es más grande y su icono también', async () => {
+    const closeBtn = await openViewer();
+
+    expect(closeBtn.className).toContain('h-12');
+    expect(closeBtn.className).toContain('w-12');
+    const icon = closeBtn.querySelector('svg');
+    expect(icon?.getAttribute('width')).toBe('28');
+  });
+});

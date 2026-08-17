@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Download } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import type { BlogPostImage } from '../types/blog';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogTitle,
   DialogDescription,
@@ -38,7 +39,7 @@ export default function ImageGallery({ images }: Props) {
       </div>
 
       <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
-        <DialogContent className='max-w-[90vw] max-h-[90vh] bg-transparent border-none shadow-none flex flex-col items-center justify-center p-0'>
+        <DialogContent className='max-w-[90vw] max-h-[90vh] bg-transparent border-none shadow-none flex flex-col items-center justify-center p-0 [&>button:last-child]:hidden'>
           <DialogTitle className='sr-only'>Visor de imagen</DialogTitle>
           <DialogDescription className='sr-only'>Ver imagen completa</DialogDescription>
           {selectedImage && (
@@ -62,6 +63,12 @@ export default function ImageGallery({ images }: Props) {
               </div>
             </>
           )}
+          <DialogClose
+            aria-label='Cerrar imagen ampliada'
+            className='absolute right-4 top-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-zinc-900 border border-zinc-600 text-zinc-100 shadow-lg transition-colors hover:bg-zinc-800 hover:border-zinc-500 hover:text-white'
+          >
+            <X size={28} strokeWidth={2.5} />
+          </DialogClose>
         </DialogContent>
       </Dialog>
     </>
