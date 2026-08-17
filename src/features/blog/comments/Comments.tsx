@@ -16,7 +16,7 @@ interface Props {
   comments: BlogComment[];
   hoveredId: string | null;
   onHover: (id: string | null) => void;
-  onDeleted?: () => void;
+  onDeleted?: (commentId: string) => void;
 }
 
 type CommentTree = Map<string | null, BlogComment[]>;
@@ -37,7 +37,7 @@ interface ItemProps {
   postId: string;
   comment: BlogComment;
   tree: CommentTree;
-  onSubmitted: () => void;
+  onSubmitted: (commentId: string) => void;
   hoveredId: string | null;
   onHover: (id: string | null) => void;
   isLast: boolean;
@@ -91,7 +91,7 @@ function CommentItem({
     if (!token) return;
     const result = await deleteComment(subjectId, postId, comment.id, token);
     if (result.error !== null) return;
-    onSubmitted();
+    onSubmitted(comment.id);
   }
 
   const isThreadActive = activePath.has(comment.id);
@@ -266,8 +266,8 @@ export default function Comments({
 
   const activeRootIndex = roots.findIndex((r) => activePath.has(r.id));
 
-  function refresh() {
-    if (onDeleted) onDeleted();
+  function handleDeleted(commentId: string) {
+    if (onDeleted) onDeleted(commentId);
   }
 
   if (roots.length === 0) return null;
@@ -286,7 +286,7 @@ export default function Comments({
             postId={postId}
             comment={root}
             tree={tree}
-            onSubmitted={refresh}
+            onSubmitted={handleDeleted}
             hoveredId={hoveredId}
             onHover={onHover}
             isLast={index === roots.length - 1}

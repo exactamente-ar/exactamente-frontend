@@ -1,19 +1,27 @@
 import { useRef, useState, useEffect, type ChangeEvent } from 'react';
-import { CornerDownRight, EyeOff, ImagePlus, LoaderCircle, Send, X } from 'lucide-react';
+import { CornerDownRight, EyeOff, FileText, ImagePlus, LoaderCircle, Send, X } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { createPost, createComment } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
 import { snippetOf } from '../utils/format';
+import type { BlogComment, BlogPost } from '../types/blog';
 
 interface Props {
   subjectId: string;
   subtopicId: string;
-  onSuccess?: () => void;
+  onPostCreated?: (post: BlogPost) => void;
+  onCommentCreated?: (postId: string, comment: BlogComment) => void;
 }
 
-const MAX_IMAGES = 6;
+const MAX_ATTACHMENTS = 6;
+const PDF_MIME = 'application/pdf';
 
-export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props) {
+export default function NewPostForm({
+  subjectId,
+  subtopicId,
+  onPostCreated,
+  onCommentCreated,
+}: Props) {
   const { token } = useAuth();
   const { replyTarget, setReplyTarget } = useReplyContext();
   const [body, setBody] = useState('');
@@ -44,7 +52,7 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
   function handleFiles(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (files.length === 0) return;
-    setImages((prev) => [...prev, ...files].slice(0, MAX_IMAGES));
+    setImages((prev) => [...prev, ...files].slice(0, MAX_ATTACHMENTS));
     e.target.value = '';
   }
 
@@ -59,6 +67,12 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
     area.style.height = `${Math.min(area.scrollHeight, 160)}px`;
   }
 
+  function resetForm() {
+    setBody('');
+    setImages([]);
+    setReplyTarget(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token || !body.trim() || submitting) return;
@@ -68,24 +82,36 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
     setError(null);
     const authority = anonymous ? 'anonymous' : 'visible';
 
-    const result = replyTarget
-      ? await createComment(
-          subjectId,
-          replyTarget.postId,
-          { parentId: replyTarget.parentId, body: body.trim(), authority, images },
-          token,
-        )
-      : await createPost(subjectId, { subtopicId, body: body.trim(), authority, images }, token);
+    if (replyTarget) {
+      const { postId, parentId } = replyTarget;
+      const result = await createComment(
+        subjectId,
+        postId,
+        { parentId, body: body.trim(), authority, images },
+        token,
+      );
+      setSubmitting(false);
+      if (result.error !== null) {
+        setError(result.error);
+        return;
+      }
+      resetForm();
+      onCommentCreated?.(postId, result.data);
+      return;
+    }
 
+    const result = await createPost(
+      subjectId,
+      { subtopicId, body: body.trim(), authority, images },
+      token,
+    );
     setSubmitting(false);
     if (result.error !== null) {
       setError(result.error);
       return;
     }
-    setBody('');
-    setImages([]);
-    setReplyTarget(null);
-    if (onSuccess) onSuccess();
+    resetForm();
+    onPostCreated?.(result.data);
   }
 
   const canSend = Boolean(token && body.trim() && (replyTarget || subtopicId)) && !submitting;
@@ -111,13 +137,13 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
 
       <div className='flex items-end gap-2 rounded-xl border border-zinc-700/60 bg-zinc-900/70 p-2'>
         <label
-          aria-label='Agregar imágenes'
-          title='Agregar imágenes'
+          aria-label='Agregar imágenes o PDFs'
+          title='Agregar imágenes o PDFs'
           className='flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200'
         >
           <input
             type='file'
-            accept='image/jpeg,image/png,image/webp'
+            accept='image/jpeg,image/png,image/webp,application/pdf'
             multiple
             className='hidden'
             onChange={handleFiles}
@@ -128,13 +154,26 @@ export default function NewPostForm({ subjectId, subtopicId, onSuccess }: Props)
         <div className='flex flex-col flex-1 gap-2 bg-transparent overflow-hidden'>
           {images.length > 0 && (
             <div className='flex flex-wrap gap-2 pt-2 px-1'>
-              {imagePreviews.map((url, i) => (
+              {images.map((file, i) => (
                 <div key={i} className='relative group'>
-                  <img
-                    src={url}
-                    className='h-16 w-16 rounded-md object-cover border border-zinc-700'
-                    alt=''
-                  />
+                  {file.type === PDF_MIME ? (
+                    <a
+                      href={imagePreviews[i]}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='flex h-16 w-16 flex-col items-center justify-center gap-1 rounded-md border border-zinc-700 bg-zinc-900/70 text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200'
+                      aria-label='Abrir PDF adjunto'
+                    >
+                      <FileText size={20} aria-hidden='true' />
+                      <span className='text-[10px] font-bold'>PDF</span>
+                    </a>
+                  ) : (
+                    <img
+                      src={imagePreviews[i]}
+                      className='h-16 w-16 rounded-md object-cover border border-zinc-700'
+                      alt=''
+                    />
+                  )}
                   <button
                     type='button'
                     onClick={() => removeImage(i)}

@@ -16,14 +16,27 @@ vi.mock('@/shared/services/api', () => ({
   createComment: createCommentMock,
 }));
 
-function ReplyHarness({ target }: { target: ReplyTarget }) {
+function ReplyHarness({
+  target,
+  onPostCreated,
+  onCommentCreated,
+}: {
+  target: ReplyTarget;
+  onPostCreated?: (post: unknown) => void;
+  onCommentCreated?: (postId: string, comment: unknown) => void;
+}) {
   const { setReplyTarget } = useReplyContext();
   return (
     <div>
       <button type='button' onClick={() => setReplyTarget(target)}>
         activar respuesta
       </button>
-      <NewPostForm subjectId='subj-1' subtopicId='sub-a' />
+      <NewPostForm
+        subjectId='subj-1'
+        subtopicId='sub-a'
+        onPostCreated={onPostCreated}
+        onCommentCreated={onCommentCreated}
+      />
     </div>
   );
 }
@@ -116,19 +129,72 @@ describe('NewPostForm', () => {
     URL.revokeObjectURL = originalRevokeObjectURL;
   });
 
-  it('llama onSuccess al publicar con éxito', async () => {
-    const onSuccess = vi.fn();
+  it('muestra una tile "PDF" en la preview al adjuntar un PDF, sin intentar renderizarlo como imagen', () => {
+    render(
+      <ReplyProvider>
+        <NewPostForm subjectId='subj-1' subtopicId='sub-a' />
+      </ReplyProvider>,
+    );
+
+    const file = new File(['pdf-bytes'], 'apunte.pdf', { type: 'application/pdf' });
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+    const originalCreateObjectURL = URL.createObjectURL;
+    const originalRevokeObjectURL = URL.revokeObjectURL;
+    URL.createObjectURL = vi.fn(() => 'blob:mock-pdf-url');
+    URL.revokeObjectURL = vi.fn();
+
+    fireEvent.change(input, { target: { files: [file] } });
+
+    expect(screen.getByText('PDF')).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Abrir PDF adjunto' })).toHaveAttribute(
+      'href',
+      'blob:mock-pdf-url',
+    );
+    expect(document.querySelector('img[src="blob:mock-pdf-url"]')).toBeNull();
+
+    URL.createObjectURL = originalCreateObjectURL;
+    URL.revokeObjectURL = originalRevokeObjectURL;
+  });
+
+  it('llama onPostCreated con el post creado al publicar con éxito', async () => {
+    const onPostCreated = vi.fn();
+    const created = { id: 'p1', subtopicId: 'sub-a' };
+    createPostMock.mockResolvedValue({ data: created, error: null });
     const user = userEvent.setup();
     render(
       <ReplyProvider>
-        <NewPostForm subjectId='subj-1' subtopicId='sub-a' onSuccess={onSuccess} />
+        <NewPostForm subjectId='subj-1' subtopicId='sub-a' onPostCreated={onPostCreated} />
       </ReplyProvider>,
     );
 
     await user.type(screen.getByPlaceholderText('¿Qué querés preguntar o compartir?'), 'hola');
     await user.click(screen.getByRole('button', { name: 'Enviar' }));
 
-    expect(onSuccess).toHaveBeenCalledTimes(1);
+    expect(onPostCreated).toHaveBeenCalledTimes(1);
+    expect(onPostCreated).toHaveBeenCalledWith(created);
+  });
+
+  it('llama onCommentCreated con el postId y el comentario al responder', async () => {
+    const onCommentCreated = vi.fn();
+    const created = { id: 'c2', postId: 'p1' };
+    createCommentMock.mockResolvedValue({ data: created, error: null });
+    const user = userEvent.setup();
+    render(
+      <ReplyProvider>
+        <ReplyHarness
+          target={{ postId: 'p1', parentId: 'c1', snippet: 'Recordatorio a todos los alumnos' }}
+          onCommentCreated={onCommentCreated}
+        />
+      </ReplyProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'activar respuesta' }));
+    await user.type(screen.getByPlaceholderText('¿Qué querés preguntar o compartir?'), 'gracias');
+    await user.click(screen.getByRole('button', { name: 'Enviar' }));
+
+    expect(onCommentCreated).toHaveBeenCalledTimes(1);
+    expect(onCommentCreated).toHaveBeenCalledWith('p1', created);
   });
 
   it('muestra "Respondiendo a" y crea un comentario al responder', async () => {

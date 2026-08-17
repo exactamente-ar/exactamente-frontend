@@ -18,7 +18,14 @@ interface Props {
 
 function BlogViewInner({ subject }: Props) {
   const { token, loading } = useAuth();
-  const { blog, loading: blogLoading, refresh } = useBlog(subject.id, token, loading);
+  const {
+    blog,
+    loading: blogLoading,
+    addPost,
+    addComment,
+    removePost,
+    removeComment,
+  } = useBlog(subject.id, token, loading);
   const [selected, setSelected] = useState('');
 
   if (blogLoading) return <BlogViewSkeleton />;
@@ -82,8 +89,8 @@ function BlogViewInner({ subject }: Props) {
                       key={post.id}
                       subjectId={subject.id}
                       post={post}
-                      onDeleted={refresh}
-                      onCommentAdded={refresh}
+                      onDeleted={removePost}
+                      onCommentAdded={(commentId) => removeComment(post.id, commentId)}
                     />
                   ))}
                 </ul>
@@ -106,7 +113,8 @@ function BlogViewInner({ subject }: Props) {
               <NewPostForm
                 subjectId={subject.id}
                 subtopicId={activeSubtopicId}
-                onSuccess={refresh}
+                onPostCreated={addPost}
+                onCommentCreated={addComment}
               />
             </div>
           </div>

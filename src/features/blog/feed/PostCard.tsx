@@ -12,8 +12,8 @@ import type { BlogPost } from '../types/blog';
 interface Props {
   subjectId: string;
   post: BlogPost;
-  onDeleted?: () => void;
-  onCommentAdded?: () => void;
+  onDeleted?: (postId: string) => void;
+  onCommentAdded?: (commentId: string) => void;
 }
 
 export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }: Props) {
@@ -42,7 +42,7 @@ export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }:
       setDeleting(false);
       return;
     }
-    if (onDeleted) onDeleted();
+    if (onDeleted) onDeleted(post.id);
   }
 
   return (
