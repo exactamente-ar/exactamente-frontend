@@ -9,7 +9,7 @@ import { useBlog } from '../hooks/useBlog';
 import { ReplyProvider } from '../context/ReplyContext';
 import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 import EmptyState from '@/shared/components/EmptyState';
-import { ALL_SUBTOPICS_ID, filterPostsBySubtopic, resolveComposerSubtopic } from '../utils/feed';
+import { filterPostsBySubtopic, resolveActiveSubtopic } from '../utils/feed';
 import type { Subject } from '@/features/home/types/subjects';
 
 interface Props {
@@ -19,14 +19,13 @@ interface Props {
 function BlogViewInner({ subject }: Props) {
   const { token, loading } = useAuth();
   const { blog, loading: blogLoading, refresh } = useBlog(subject.id, token, loading);
-  const [selected, setSelected] = useState(ALL_SUBTOPICS_ID);
+  const [selected, setSelected] = useState('');
 
   if (blogLoading) return <BlogViewSkeleton />;
 
   const subtopics = blog?.subtopics ?? [];
-
-  const posts = filterPostsBySubtopic(blog?.posts ?? [], selected);
-  const composerSubtopicId = resolveComposerSubtopic(selected, subtopics);
+  const activeSubtopicId = resolveActiveSubtopic(selected, subtopics);
+  const posts = filterPostsBySubtopic(blog?.posts ?? [], activeSubtopicId);
   const gated = !loading && !token;
 
   return (
@@ -54,15 +53,19 @@ function BlogViewInner({ subject }: Props) {
         <div className='absolute left-1/2 top-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(#6b46c1,#b83280,#f6e05e,#38b2ac,#6b46c1)] opacity-40 animate-[spin_6s_linear_infinite]' />
       </div>
 
-      <div className='relative z-10 flex min-h-0 flex-1 flex-col md:pb-3'>
-        <header className='md:px-4 md:py-6 w-full bg-black/10 rounded-2xl border-b-1 border-b-gray-700 shadow-2xl'>
-          {/* todo hacer efecto cool en este titulo idk */}
+      {/* Inicio del contenido "real" del blog */}
+      <div className='relative z-10 flex min-h-0 flex-1 flex-col pb-3'>
+        <header className='px-4 py-6 w-full bg-black/10 rounded-2xl border-b-1 border-b-gray-700 shadow-2xl'>
           <h2 className='shrink-0 text-4xl font-bold text-white md:m-1'>
             {subject.shortName || subject.title}
           </h2>
 
-          <div className='shrink-0 md:mt-4'>
-            <SubtopicChips subtopics={subtopics} selected={selected} onChange={setSelected} />
+          <div className='shrink-0 mt-4'>
+            <SubtopicChips
+              subtopics={subtopics}
+              selected={activeSubtopicId}
+              onChange={setSelected}
+            />
           </div>
         </header>
         <div className='relative flex min-h-0 flex-1 flex-col'>
@@ -93,7 +96,7 @@ function BlogViewInner({ subject }: Props) {
                   <img
                     src='/illustrations/empty_blog_illustation.svg'
                     alt='No hay publicaciones'
-                    className='w-48 h-auto'
+                    className='w-32 h-auto -mt-12 md:mt-0 md:w-48'
                   />
                 </div>
               )}
@@ -102,7 +105,7 @@ function BlogViewInner({ subject }: Props) {
             <div className='shrink-0 border-t border-zinc-800 pt-3 mx-3'>
               <NewPostForm
                 subjectId={subject.id}
-                subtopicId={composerSubtopicId}
+                subtopicId={activeSubtopicId}
                 onSuccess={refresh}
               />
             </div>

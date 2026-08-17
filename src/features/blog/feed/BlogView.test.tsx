@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BlogView from './BlogView';
 import type { Blog, BlogPost, BlogSubtopic } from '../types/blog';
@@ -33,8 +33,8 @@ const subject: Subject = {
 };
 
 const subtopics: BlogSubtopic[] = [
-  { id: 'sub-general', name: 'Subtema general', slug: 'general', isDefault: true },
   { id: 'sub-parciales', name: 'Parciales y finales', slug: 'parciales', isDefault: false },
+  { id: 'sub-general', name: 'General', slug: 'general', isDefault: true },
 ];
 
 function post(id: string, subtopicId: string, body: string): BlogPost {
@@ -106,7 +106,7 @@ describe('BlogView', () => {
     render(<BlogView subject={subject} />);
 
     expect(screen.getByText('Duda del tema 1')).toBeTruthy();
-    expect(screen.getByText('¿Alguien tiene el parcial?')).toBeTruthy();
+    expect(screen.queryByText('¿Alguien tiene el parcial?')).toBeNull();
 
     await user.click(screen.getByRole('button', { name: 'Parciales y finales' }));
 
@@ -114,12 +114,27 @@ describe('BlogView', () => {
     expect(screen.queryByText('Duda del tema 1')).toBeNull();
   });
 
-  it('muestra el chip "General" además de cada subtema', () => {
+  it('selecciona el único chip "General" al entrar', () => {
     authMock.token = 'token-123';
     render(<BlogView subject={subject} />);
-    expect(screen.getByRole('button', { name: 'General' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Subtema general' })).toBeTruthy();
+
+    const general = screen.getAllByRole('button', { name: 'General' });
+    expect(general).toHaveLength(1);
+    expect(general[0]).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('button', { name: 'Todos' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Parciales y finales' })).toBeTruthy();
+  });
+
+  it('muestra el subtema general primero aunque la API lo entregue después', () => {
+    authMock.token = 'token-123';
+    render(<BlogView subject={subject} />);
+
+    const group = screen.getByRole('group', { name: 'Subtema del blog' });
+    const labels = within(group)
+      .getAllByRole('button')
+      .map((button) => button.textContent);
+
+    expect(labels).toEqual(['General', 'Parciales y finales']);
   });
 
   it('aplica el scrollbar custom al feed', () => {

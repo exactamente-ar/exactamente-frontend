@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_SUBTOPICS_ID, filterPostsBySubtopic, resolveComposerSubtopic } from './feed';
+import { filterPostsBySubtopic, resolveActiveSubtopic } from './feed';
 import type { BlogPost, BlogSubtopic } from '../types/blog';
 
 const subtopics: BlogSubtopic[] = [
-  { id: 'sub-general', name: 'Subtema general', slug: 'general', isDefault: true },
+  { id: 'sub-general', name: 'General', slug: 'general', isDefault: true },
   { id: 'sub-parciales', name: 'Parciales y finales', slug: 'parciales', isDefault: false },
 ];
 
@@ -27,10 +27,6 @@ function post(id: string, subtopicId: string): BlogPost {
 describe('filterPostsBySubtopic', () => {
   const posts = [post('a', 'sub-general'), post('b', 'sub-parciales'), post('c', 'sub-general')];
 
-  it('devuelve todos los posts con el chip "Todos"', () => {
-    expect(filterPostsBySubtopic(posts, ALL_SUBTOPICS_ID)).toHaveLength(3);
-  });
-
   it('filtra solo los posts del subtema seleccionado', () => {
     const result = filterPostsBySubtopic(posts, 'sub-parciales');
     expect(result).toHaveLength(1);
@@ -42,25 +38,25 @@ describe('filterPostsBySubtopic', () => {
   });
 });
 
-describe('resolveComposerSubtopic', () => {
+describe('resolveActiveSubtopic', () => {
   it('mantiene el subtema seleccionado cuando es real', () => {
-    expect(resolveComposerSubtopic('sub-parciales', subtopics)).toBe('sub-parciales');
+    expect(resolveActiveSubtopic('sub-parciales', subtopics)).toBe('sub-parciales');
   });
 
-  it('cae al subtema por defecto con el chip "Todos"', () => {
-    expect(resolveComposerSubtopic(ALL_SUBTOPICS_ID, subtopics)).toBe('sub-general');
+  it('selecciona el subtema por defecto al entrar', () => {
+    expect(resolveActiveSubtopic('', subtopics)).toBe('sub-general');
   });
 
   it('cae al subtema por defecto si el id ya no existe', () => {
-    expect(resolveComposerSubtopic('sub-borrado', subtopics)).toBe('sub-general');
+    expect(resolveActiveSubtopic('sub-borrado', subtopics)).toBe('sub-general');
   });
 
   it('cae al primer subtema si ninguno está marcado como default', () => {
     const sinDefault = subtopics.map((s) => ({ ...s, isDefault: false }));
-    expect(resolveComposerSubtopic(ALL_SUBTOPICS_ID, sinDefault)).toBe('sub-general');
+    expect(resolveActiveSubtopic('', sinDefault)).toBe('sub-general');
   });
 
   it('devuelve string vacío si no hay subtemas', () => {
-    expect(resolveComposerSubtopic(ALL_SUBTOPICS_ID, [])).toBe('');
+    expect(resolveActiveSubtopic('', [])).toBe('');
   });
 });
