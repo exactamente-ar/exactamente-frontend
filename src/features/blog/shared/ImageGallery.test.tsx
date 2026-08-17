@@ -3,7 +3,9 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ImageGallery from './ImageGallery';
 
-const images = [{ id: 'img-1', url: 'https://files.exactamente.com.ar/blog/img-1.jpg' }];
+const images = [
+  { id: 'img-1', url: 'https://files.exactamente.com.ar/blog/img-1.jpg', mimeType: 'image/webp' },
+];
 
 async function openViewer() {
   render(<ImageGallery images={images} />);
@@ -27,5 +29,23 @@ describe('ImageGallery — visor ampliado', () => {
     expect(closeBtn.className).toContain('w-12');
     const icon = closeBtn.querySelector('svg');
     expect(icon?.getAttribute('width')).toBe('28');
+  });
+});
+
+describe('ImageGallery — PDFs', () => {
+  it('renderiza un PDF como link directo, sin abrir el visor de imagen', async () => {
+    const pdf = {
+      id: 'pdf-1',
+      url: 'https://files.exactamente.com.ar/blog/apunte.pdf',
+      mimeType: 'application/pdf',
+    };
+    render(<ImageGallery images={[pdf]} />);
+
+    const link = screen.getByRole('link', { name: 'Abrir PDF' });
+    expect(link).toHaveAttribute('href', pdf.url);
+    expect(link).toHaveAttribute('target', '_blank');
+
+    await userEvent.click(link);
+    expect(screen.queryByRole('button', { name: /cerrar imagen/i })).toBeNull();
   });
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, X } from 'lucide-react';
+import { Download, FileText, X } from 'lucide-react';
 import type { BlogPostImage } from '../types/blog';
 import {
   Dialog,
@@ -8,6 +8,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/shared/components/ui/dialog';
+
+const PDF_MIME = 'application/pdf';
 
 interface Props {
   images: BlogPostImage[];
@@ -21,21 +23,35 @@ export default function ImageGallery({ images }: Props) {
   return (
     <>
       <div className='flex flex-wrap gap-2 pt-1'>
-        {images.map((img) => (
-          <button
-            key={img.id}
-            type='button'
-            onClick={() => setSelectedImage(img)}
-            className='h-32 w-32 shrink-0 overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-zinc-400'
-          >
-            <img
-              src={img.url}
-              alt=''
-              loading='lazy'
-              className='h-full w-full object-cover transition-transform hover:scale-105'
-            />
-          </button>
-        ))}
+        {images.map((img) =>
+          img.mimeType === PDF_MIME ? (
+            <a
+              key={img.id}
+              href={img.url}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='flex h-32 w-32 shrink-0 flex-col items-center justify-center gap-1 rounded-lg border border-zinc-700 bg-zinc-900/70 text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200'
+              aria-label='Abrir PDF'
+            >
+              <FileText size={32} aria-hidden='true' />
+              <span className='text-xs font-bold'>PDF</span>
+            </a>
+          ) : (
+            <button
+              key={img.id}
+              type='button'
+              onClick={() => setSelectedImage(img)}
+              className='h-32 w-32 shrink-0 overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-zinc-400'
+            >
+              <img
+                src={img.url}
+                alt=''
+                loading='lazy'
+                className='h-full w-full object-cover transition-transform hover:scale-105'
+              />
+            </button>
+          ),
+        )}
       </div>
 
       <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>

@@ -335,7 +335,7 @@ export interface paths {
         put?: never;
         /**
          * Crear un post en el blog
-         * @description Requiere autenticación. Crea un post en el subtema elegido con autoría visible o anónima. Multipart: `subtopicId`, `authority`, `body` (texto) y hasta 6 imágenes (jpeg/png/webp). El texto pasa por la blacklist y las imágenes se re-encodifican sin metadata EXIF.
+         * @description Requiere autenticación. Crea un post en el subtema elegido con autoría visible o anónima. Multipart: `subtopicId`, `authority`, `body` (texto) y hasta 6 adjuntos (imágenes jpeg/png/webp o PDFs). El texto pasa por la blacklist; las imágenes se re-encodifican sin metadata EXIF y los PDFs se suben tal cual.
          */
         post: operations["postApiV1BlogsBySubjectIdPosts"];
         delete?: never;
@@ -416,7 +416,7 @@ export interface paths {
         post?: never;
         /**
          * Borrar un post
-         * @description Requiere autenticación. El autor o un admin pueden borrarlo. Soft delete: borra físicamente las imágenes de R2, marca `status: deleted` y conserva el árbol de comentarios.
+         * @description Requiere autenticación. El autor o un admin pueden borrarlo. Soft delete (marca `status: deleted`) si todavía hay comentarios activos; borra el árbol completo (posts, comentarios, votos e imágenes) si todos los comentarios ya están eliminados.
          */
         delete: operations["deleteApiV1BlogsBySubjectIdPostsByPostId"];
         options?: never;
@@ -436,7 +436,7 @@ export interface paths {
         post?: never;
         /**
          * Borrar un comentario
-         * @description Requiere autenticación. El autor o un admin pueden borrarlo. Soft delete: marca `status: deleted` y conserva las respuestas (hijos) en el árbol.
+         * @description Requiere autenticación. El autor o un admin pueden borrarlo. Soft delete (marca `status: deleted`) si todavía hay respuestas activas en el árbol; borra el subárbol completo (comentario, descendientes, votos e imágenes) si todos sus descendientes ya están eliminados.
          */
         delete: operations["deleteApiV1BlogsBySubjectIdPostsByPostIdCommentsByCommentId"];
         options?: never;
@@ -1181,10 +1181,14 @@ export interface components {
         BlogPostImage: {
             id: string;
             url: string;
+            /** @description image/webp o application/pdf según el adjunto */
+            mimeType: string;
         };
         BlogCommentImage: {
             id: string;
             url: string;
+            /** @description image/webp o application/pdf según el adjunto */
+            mimeType: string;
         };
         BlogResponse: {
             subjectId: string;

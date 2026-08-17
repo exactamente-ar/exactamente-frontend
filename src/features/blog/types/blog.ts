@@ -12,6 +12,7 @@ export type BlogAuthor = {
 export type BlogPostImage = {
   id: string;
   url: string;
+  mimeType: string;
 };
 
 export type BlogComment = {
