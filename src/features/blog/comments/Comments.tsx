@@ -17,6 +17,7 @@ interface Props {
   hoveredId: string | null;
   onHover: (id: string | null) => void;
   onDeleted?: (commentId: string) => void;
+  onVoteChanged?: (commentId: string, vote: { netScore: number; myVote: number }) => void;
 }
 
 type CommentTree = Map<string | null, BlogComment[]>;
@@ -38,6 +39,7 @@ interface ItemProps {
   comment: BlogComment;
   tree: CommentTree;
   onSubmitted: (commentId: string) => void;
+  onVoteChanged?: (commentId: string, vote: { netScore: number; myVote: number }) => void;
   hoveredId: string | null;
   onHover: (id: string | null) => void;
   isLast: boolean;
@@ -51,6 +53,7 @@ function CommentItem({
   comment,
   tree,
   onSubmitted,
+  onVoteChanged,
   hoveredId,
   onHover,
   isLast,
@@ -59,9 +62,9 @@ function CommentItem({
 }: ItemProps) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
-  const [netScore, setNetScore] = useState(comment.netScore);
-  const [myVote, setMyVote] = useState(comment.myVote);
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const children = tree.get(comment.id) ?? [];
   const hasChildren = children.length > 0;
 
@@ -80,16 +83,19 @@ function CommentItem({
   }, [comment.id, tree]);
 
   async function vote(value: 1 | -1) {
-    if (!votable) return;
+    if (!votable || isVoting) return;
+    setIsVoting(true);
     const result = await voteComment(subjectId, postId, comment.id, value, token);
+    setIsVoting(false);
     if (result.error !== null) return;
-    setNetScore(result.data.netScore);
-    setMyVote(result.data.myVote);
+    onVoteChanged?.(comment.id, result.data);
   }
 
   async function remove() {
-    if (!token) return;
+    if (!token || isDeleting) return;
+    setIsDeleting(true);
     const result = await deleteComment(subjectId, postId, comment.id, token);
+    setIsDeleting(false);
     if (result.error !== null) return;
     onSubmitted(comment.id);
   }
@@ -123,7 +129,12 @@ function CommentItem({
 
       <div className='flex gap-3 relative z-10 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400'>
         <div className='flex w-7 shrink-0 flex-col items-center pt-1'>
-          <VoteControl netScore={netScore} myVote={myVote} canVote={votable} onVote={vote} />
+          <VoteControl
+            netScore={comment.netScore}
+            myVote={comment.myVote}
+            canVote={votable && !isVoting}
+            onVote={vote}
+          />
           {hasChildren && !isCollapsed && (
             <div
               className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-[1.5px] ${getLineColor(isInnerLineActive)} transition-all relative after:content-[''] after:absolute after:-left-[15px] after:-right-[15px] after:-top-[5px] after:-bottom-[5px] cursor-pointer`}
@@ -171,13 +182,14 @@ function CommentItem({
             {comment.mine && (
               <button
                 type='button'
+                disabled={isDeleting}
                 onClick={(e) => {
                   e.stopPropagation();
                   remove();
                 }}
-                className='text-red-400/80 hover:text-red-300'
+                className='text-red-400/80 hover:text-red-300 disabled:opacity-50'
               >
-                Borrar
+                {isDeleting ? 'Borrando...' : 'Borrar'}
               </button>
             )}
             {hasChildren && !isCollapsed && (
@@ -207,6 +219,7 @@ function CommentItem({
                 comment={child}
                 tree={tree}
                 onSubmitted={onSubmitted}
+                onVoteChanged={onVoteChanged}
                 hoveredId={hoveredId}
                 onHover={onHover}
                 isLast={index === children.length - 1}
@@ -245,6 +258,7 @@ export default function Comments({
   hoveredId,
   onHover,
   onDeleted,
+  onVoteChanged,
 }: Props) {
   const tree = useMemo(() => buildTree(comments), [comments]);
   const roots = tree.get(null) ?? [];
@@ -287,6 +301,7 @@ export default function Comments({
             comment={root}
             tree={tree}
             onSubmitted={handleDeleted}
+            onVoteChanged={onVoteChanged}
             hoveredId={hoveredId}
             onHover={onHover}
             isLast={index === roots.length - 1}

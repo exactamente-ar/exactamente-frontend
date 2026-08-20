@@ -21,8 +21,17 @@ describe('VoteControl', () => {
     expect(onVote).toHaveBeenCalledWith(1);
   });
 
-  it('marca el voto activo en dorado', () => {
-    render(<VoteControl netScore={3} myVote={1} canVote onVote={() => {}} />);
-    expect(screen.getByRole('button', { name: 'Votar a favor' })).toHaveClass('text-yellow-300');
+  it('aplica el color verde al upvote activo y rojo al downvote activo', () => {
+    const { unmount } = render(<VoteControl netScore={3} myVote={1} canVote onVote={() => {}} />);
+    expect(screen.getByRole('button', { name: 'Votar a favor' })).toHaveClass('text-green-500');
+    unmount();
+
+    render(<VoteControl netScore={3} myVote={-1} canVote onVote={() => {}} />);
+    expect(screen.getByRole('button', { name: 'Votar en contra' })).toHaveClass('text-red-500');
+  });
+
+  it('renderiza el score correctamente', () => {
+    render(<VoteControl netScore={42} myVote={0} canVote onVote={() => {}} />);
+    expect(screen.getByText('42')).toBeInTheDocument();
   });
 });

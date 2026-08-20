@@ -80,6 +80,75 @@
   }
 }
 
+@keyframes rollOutUp {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes rollInUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes rollOutDown {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes rollInDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+.animate-roll-out-up {
+  animation: rollOutUp 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-roll-in-up {
+  animation: rollInUp 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-roll-out-down {
+  animation: rollOutDown 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-roll-in-down {
+  animation: rollInDown 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-roll-out-up,
+  .animate-roll-in-up,
+  .animate-roll-out-down,
+  .animate-roll-in-down {
+    animation: none;
+  }
+}
+
 .text-juan {
   background: linear-gradient(89.81deg, red, orange, yellow);
   fill: linear-gradient(89.81deg, red, orange, yellow);

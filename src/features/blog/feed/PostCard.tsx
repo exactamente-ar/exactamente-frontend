@@ -13,25 +13,38 @@ interface Props {
   subjectId: string;
   post: BlogPost;
   onDeleted?: (postId: string) => void;
-  onCommentAdded?: (commentId: string) => void;
+  onCommentDeleted?: (commentId: string) => void;
+  onVoteChanged?: (postId: string, vote: { netScore: number; myVote: number }) => void;
+  onCommentVoteChanged?: (
+    postId: string,
+    commentId: string,
+    vote: { netScore: number; myVote: number },
+  ) => void;
 }
 
-export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }: Props) {
+export default function PostCard({
+  subjectId,
+  post,
+  onDeleted,
+  onCommentDeleted,
+  onVoteChanged,
+  onCommentVoteChanged,
+}: Props) {
   const { token } = useAuth();
   const { setReplyTarget } = useReplyContext();
-  const [netScore, setNetScore] = useState(post.netScore);
-  const [myVote, setMyVote] = useState(post.myVote);
+  const [isVoting, setIsVoting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const votable = !!token && !post.mine && post.status !== 'deleted';
 
   async function vote(value: 1 | -1) {
-    if (!votable) return;
+    if (!votable || isVoting) return;
+    setIsVoting(true);
     const result = await votePost(subjectId, post.id, value, token);
+    setIsVoting(false);
     if (result.error !== null) return;
-    setNetScore(result.data.netScore);
-    setMyVote(result.data.myVote);
+    onVoteChanged?.(post.id, result.data);
   }
 
   async function remove() {
@@ -54,7 +67,12 @@ export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }:
     >
       <div className='flex gap-2'>
         <div className='flex w-8 shrink-0 flex-col items-center'>
-          <VoteControl netScore={netScore} myVote={myVote} canVote={votable} onVote={vote} />
+          <VoteControl
+            netScore={post.netScore}
+            myVote={post.myVote}
+            canVote={votable && !isVoting}
+            onVote={vote}
+          />
           {post.comments.length > 0 && (
             <div
               className={`mt-2 self-start ${THREAD_LINE_ML} flex-1 border-l-[1.5px] ${getLineColor(hoveredId !== null)} transition-all`}
@@ -93,9 +111,9 @@ export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }:
                 type='button'
                 onClick={remove}
                 disabled={deleting}
-                className='text-red-400/80 hover:text-red-300'
+                className='text-red-400/80 hover:text-red-300 disabled:opacity-50'
               >
-                Borrar
+                {deleting ? 'Borrando...' : 'Borrar'}
               </button>
             )}
           </div>
@@ -109,7 +127,8 @@ export default function PostCard({ subjectId, post, onDeleted, onCommentAdded }:
           comments={post.comments}
           hoveredId={hoveredId}
           onHover={setHoveredId}
-          onDeleted={onCommentAdded}
+          onDeleted={onCommentDeleted}
+          onVoteChanged={(commentId, vote) => onCommentVoteChanged?.(post.id, commentId, vote)}
         />
       )}
     </li>

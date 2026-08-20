@@ -1,3 +1,7 @@
+import IconArrowUp from '@/shared/components/icons/react/IconArrowUp';
+import IconArrowDown from '@/shared/components/icons/react/IconArrowDown';
+import RollingNumber from './RollingNumber';
+
 interface Props {
   netScore: number;
   myVote: number;
@@ -19,17 +23,17 @@ export default function VoteControl({ netScore, myVote, canVote, onVote }: Props
           e.stopPropagation();
           onVote(1);
         }}
-        className={`rounded px-2 py-1 text-sm transition-colors ${
+        className={`rounded p-1 transition-colors ${
           !canVote
             ? disabledClass
             : myVote === 1
-              ? 'text-yellow-300'
+              ? 'text-green-500'
               : 'text-zinc-500 hover:text-zinc-300'
         }`}
       >
-        ▲
+        <IconArrowUp size={20} />
       </button>
-      <span className={`text-sm font-semibold ${scoreClass}`}>{netScore}</span>
+      <RollingNumber value={netScore} className={`text-sm font-semibold ${scoreClass}`} />
       <button
         type='button'
         aria-label='Votar en contra'
@@ -38,15 +42,15 @@ export default function VoteControl({ netScore, myVote, canVote, onVote }: Props
           e.stopPropagation();
           onVote(-1);
         }}
-        className={`rounded px-2 py-1 text-sm transition-colors ${
+        className={`rounded p-1 transition-colors ${
           !canVote
             ? disabledClass
             : myVote === -1
-              ? 'text-yellow-300'
+              ? 'text-red-500'
               : 'text-zinc-500 hover:text-zinc-300'
         }`}
       >
-        ▼
+        <IconArrowDown size={20} />
       </button>
     </div>
   );
