@@ -23,7 +23,7 @@ export default function BlogViewSkeleton() {
     <div
       role='status'
       aria-label='Cargando publicaciones'
-      className='mt-6 relative flex min-h-0 flex-1 flex-col rounded-2xl border border-zinc-800/50 overflow-hidden'
+      className='mt-6 relative flex flex-col h-[750px] rounded-2xl border border-zinc-800/50 overflow-hidden'
       style={{
         backgroundImage: 'url("/images/materia-2.webp")',
         backgroundSize: 'cover',
@@ -58,11 +58,11 @@ export default function BlogViewSkeleton() {
 
           <div className='relative z-10 h-9 w-48 rounded-lg bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 shimmer m-1' />
 
-          <div className='relative z-10 flex flex-wrap gap-1.5 mt-4'>
+          <div className='relative z-10 flex gap-1.5 overflow-x-hidden whitespace-nowrap mt-4'>
             {['w-20', 'w-28', 'w-24', 'w-16'].map((width, i) => (
               <div
                 key={i}
-                className={`h-8 ${width} rounded-full border border-white/10 bg-white/5 backdrop-saturate-150 backdrop-brightness-110 shimmer`}
+                className={`h-[30px] shrink-0 ${width} rounded-full border border-white/10 bg-white/5 backdrop-saturate-150 backdrop-brightness-110 shimmer`}
               />
             ))}
           </div>

@@ -39,7 +39,7 @@ function BlogViewInner({ subject }: Props) {
 
   return (
     <div
-      className='mt-6 relative flex min-h-0 flex-1 flex-col rounded-2xl border border-zinc-800/50 overflow-hidden scroll-smooth'
+      className='mt-6 relative flex flex-col h-[750px] rounded-2xl border border-zinc-800/50 overflow-hidden scroll-smooth'
       style={{
         backgroundImage: 'url("/images/materia-2.webp")',
         backgroundSize: 'cover',
@@ -63,7 +63,7 @@ function BlogViewInner({ subject }: Props) {
       </div>
 
       {/* Inicio del contenido "real" del blog */}
-      <div className='relative z-10 flex min-h-0 flex-1 flex-col'>
+      <div className='relative z-10 flex min-h-0 flex-1 flex-col h-full'>
         {/* Header fijo arriba con efecto Liquid Glass transparente */}
         <header className='shrink-0 px-4 py-5 w-full rounded-b-2xl border-b border-white/20 bg-white/[0.02] backdrop-saturate-[120%] backdrop-brightness-[110%] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3),inset_0_-1px_1px_rgba(255,255,255,0.2)] backdrop-blur-md'>
           {/* Brillo especular superior (Glossy) */}
@@ -86,7 +86,7 @@ function BlogViewInner({ subject }: Props) {
         </header>
 
         {/* Scroll únicamente en el área de contenido del blog */}
-        <div className='custom-scrollbar relative min-h-0 flex-1 overflow-y-auto p-4 pb-18'>
+        <div className='custom-scrollbar relative min-h-0 flex-1 overflow-y-auto p-4 pb-4'>
           {error ? (
             <div className='flex flex-col items-center justify-center h-full gap-3 p-6 text-center'>
               <p className='text-sm text-red-400'>{error}</p>

@@ -70,7 +70,7 @@ export default function SubtopicChips({ subtopics, selected, onChange }: Props) 
               type='button'
               onClick={() => onChange(chip.id)}
               aria-pressed={active}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+              className={`shrink-0 rounded-full border px-3 py-1 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                 active
                   ? 'border-white/30 bg-white/20 text-white backdrop-saturate-150 backdrop-brightness-110 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]'
                   : 'border-white/10 bg-white/5 text-zinc-300 backdrop-saturate-150 backdrop-brightness-110 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] hover:border-white/25 hover:bg-white/10 hover:text-white'
