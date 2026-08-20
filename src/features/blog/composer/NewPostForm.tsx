@@ -5,6 +5,7 @@ import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton'
 import { createPost, createComment } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
 import { snippetOf } from '../utils/format';
+import { FormatSelector } from './FormatSelector';
 import type { BlogComment, BlogPost } from '../types/blog';
 
 interface Props {
@@ -50,6 +51,30 @@ export default function NewPostForm({
     return () => urls.forEach((url) => URL.revokeObjectURL(url));
   }, [images]);
 
+  useEffect(() => {
+    const area = textareaRef.current;
+    if (!area) return;
+    if (!body) {
+      area.style.height = 'auto';
+      area.style.overflowY = 'hidden';
+      return;
+    }
+    area.style.height = 'auto';
+    const newHeight = area.scrollHeight;
+    const maxHeight = 320;
+
+    if (newHeight > maxHeight) {
+      area.style.height = `${maxHeight}px`;
+      area.style.overflowY = 'auto';
+    } else if (newHeight > 0) {
+      area.style.height = `${newHeight}px`;
+      area.style.overflowY = 'hidden';
+    } else {
+      area.style.height = 'auto';
+      area.style.overflowY = 'hidden';
+    }
+  }, [body]);
+
   function handleFiles(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (files.length === 0) return;
@@ -76,8 +101,25 @@ export default function NewPostForm({
   function resizeTextarea() {
     const area = textareaRef.current;
     if (!area) return;
+    if (!body) {
+      area.style.height = 'auto';
+      area.style.overflowY = 'hidden';
+      return;
+    }
     area.style.height = 'auto';
-    area.style.height = `${Math.min(area.scrollHeight, 160)}px`;
+    const newHeight = area.scrollHeight;
+    const maxHeight = 320;
+
+    if (newHeight > maxHeight) {
+      area.style.height = `${maxHeight}px`;
+      area.style.overflowY = 'auto';
+    } else if (newHeight > 0) {
+      area.style.height = `${newHeight}px`;
+      area.style.overflowY = 'hidden';
+    } else {
+      area.style.height = 'auto';
+      area.style.overflowY = 'hidden';
+    }
   }
 
   function resetForm() {
@@ -86,7 +128,35 @@ export default function NewPostForm({
     setReplyTarget(null);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.overflowY = 'hidden';
     }
+  }
+
+  function insertSnippet(snippet: string) {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      setBody((prev) => (prev ? `${prev}\n\n${snippet}` : snippet));
+      return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const prev = body;
+    const before = prev.substring(0, start);
+    const after = prev.substring(end);
+    const newBody =
+      before +
+      (before && !before.endsWith('\n') ? '\n' : '') +
+      snippet +
+      (after && !after.startsWith('\n') ? '\n' : '') +
+      after;
+
+    setBody(newBody);
+
+    setTimeout(() => {
+      textarea.focus();
+      resizeTextarea();
+    }, 0);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -176,7 +246,7 @@ export default function NewPostForm({
           <ImagePlus size={20} />
         </label>
 
-        <div className='flex flex-col flex-1 gap-2 bg-transparent overflow-hidden'>
+        <div className='flex flex-col flex-1 gap-2 bg-transparent min-w-0'>
           {images.length > 0 && (
             <div className='flex flex-wrap gap-2 pt-2 px-1'>
               {images.map((file, i) => (
@@ -216,7 +286,6 @@ export default function NewPostForm({
             value={body}
             onChange={(e) => {
               setBody(e.target.value);
-              resizeTextarea();
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -229,22 +298,24 @@ export default function NewPostForm({
             placeholder={isMobile ? '¿Qué querés compartir?' : '¿Qué querés preguntar o compartir?'}
             maxLength={50_000}
             rows={1}
-            className='max-h-40 flex-1 resize-none bg-transparent py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none'
+            className='min-h-[40px] max-h-80 w-full resize-none bg-transparent py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none custom-scrollbar leading-relaxed overflow-hidden'
           />
         </div>
+
+        <FormatSelector onSelectFormat={insertSnippet} />
 
         <button
           type='button'
           onClick={() => setAnonymous(!anonymous)}
-          className={`flex h-10 shrink-0 select-none items-center justify-center gap-1.5 rounded-full px-3 text-xs transition-colors ${
+          className={`flex h-10 w-10 shrink-0 select-none items-center justify-center rounded-full transition-colors ${
             anonymous
-              ? 'text-zinc-100 bg-zinc-800'
-              : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
+              ? 'text-zinc-100 bg-zinc-800 border border-zinc-600'
+              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
           }`}
-          title='Publicar como anónimo'
+          title={anonymous ? 'Publicando como anónimo' : 'Publicar como anónimo'}
+          aria-label={anonymous ? 'Publicando como anónimo' : 'Publicar como anónimo'}
         >
-          <EyeOff size={16} aria-hidden='true' />
-          <span className='hidden sm:inline'>Anónimo</span>
+          <EyeOff size={18} aria-hidden='true' />
         </button>
 
         <button
