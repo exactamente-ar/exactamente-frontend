@@ -23,7 +23,7 @@ export default function BlogViewSkeleton() {
     <div
       role='status'
       aria-label='Cargando publicaciones'
-      className='mt-6 relative flex flex-col h-[750px] rounded-2xl border border-zinc-800/50 overflow-hidden'
+      className='mt-6 relative flex flex-col h-[80dvh] rounded-2xl border border-zinc-800/50 overflow-hidden'
       style={{
         backgroundImage: 'url("/images/materia-2.webp")',
         backgroundSize: 'cover',

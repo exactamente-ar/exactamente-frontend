@@ -6,6 +6,7 @@ import BlogViewSkeleton from './BlogViewSkeleton';
 import { AuthProvider } from '@/features/auth/context/AuthContext';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useBlog } from '../hooks/useBlog';
+import { useKeyboardViewport } from '../hooks/useKeyboardViewport';
 import { ReplyProvider } from '../context/ReplyContext';
 import EmptyState from '@/shared/components/EmptyState';
 import { filterPostsBySubtopic, resolveActiveSubtopic } from '../utils/feed';
@@ -30,6 +31,7 @@ function BlogViewInner({ subject }: Props) {
     updateCommentVote,
   } = useBlog(subject.id, token, loading);
   const [selected, setSelected] = useState('');
+  const { isKeyboardOpen, viewportHeight } = useKeyboardViewport();
 
   if (blogLoading) return <BlogViewSkeleton />;
 
@@ -37,13 +39,19 @@ function BlogViewInner({ subject }: Props) {
   const activeSubtopicId = resolveActiveSubtopic(selected, subtopics);
   const posts = filterPostsBySubtopic(blog?.posts ?? [], activeSubtopicId);
 
+  const dynamicHeightStyle =
+    isKeyboardOpen && viewportHeight !== null
+      ? { height: `${Math.max(280, viewportHeight - 16)}px` }
+      : undefined;
+
   return (
     <div
-      className='mt-6 relative flex flex-col h-[750px] rounded-2xl border border-zinc-800/50 overflow-hidden scroll-smooth'
+      className='mt-6 relative flex flex-col h-[80dvh] rounded-2xl border border-zinc-800/50 overflow-hidden scroll-smooth transition-[height] duration-150'
       style={{
         backgroundImage: 'url("/images/materia-2.webp")',
         backgroundSize: 'cover',
         backgroundPosition: 'right',
+        ...dynamicHeightStyle,
       }}
     >
       {/* Fondo oscuro sobre la imagen */}

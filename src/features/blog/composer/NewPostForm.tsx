@@ -287,6 +287,13 @@ export default function NewPostForm({
             onChange={(e) => {
               setBody(e.target.value);
             }}
+            onFocus={() => {
+              if (isMobile && textareaRef.current) {
+                setTimeout(() => {
+                  textareaRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }, 150);
+              }
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
