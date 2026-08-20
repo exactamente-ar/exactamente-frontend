@@ -97,4 +97,10 @@ describe('contentParser', () => {
     const tokens = parseContent(text);
     expect(tokens).toEqual([{ type: 'text', content: text }]);
   });
+
+  it('colapsa más de dos líneas en blanco consecutivas en texto plano', () => {
+    const text = 'Párrafo 1\n\n\n\n\n\nPárrafo 2';
+    const tokens = parseContent(text);
+    expect(tokens).toEqual([{ type: 'text', content: 'Párrafo 1\n\n\nPárrafo 2' }]);
+  });
 });

@@ -277,4 +277,22 @@ describe('NewPostForm', () => {
     );
     expect(createPostMock).not.toHaveBeenCalled();
   });
+
+  it('bloquea el envío si el texto contiene más de 2 líneas en blanco consecutivas', async () => {
+    const user = userEvent.setup();
+    render(
+      <ReplyProvider>
+        <NewPostForm subjectId='subj-1' subtopicId='sub-a' />
+      </ReplyProvider>,
+    );
+
+    const textarea = screen.getByPlaceholderText('¿Qué querés preguntar o compartir?');
+    fireEvent.change(textarea, { target: { value: 'linea 1\n\n\n\nlinea 2' } });
+    await user.click(screen.getByRole('button', { name: 'Enviar' }));
+
+    expect(
+      screen.getByText('No se permiten más de dos líneas en blanco consecutivas'),
+    ).toBeTruthy();
+    expect(createPostMock).not.toHaveBeenCalled();
+  });
 });

@@ -23,6 +23,10 @@ function isPlainCurrency(text: string): boolean {
   return /^\d+(?:[.,]\d+)?$/.test(text.trim());
 }
 
+function sanitizeTextToken(text: string): string {
+  return text.replace(/(?:\r?\n[ \t]*){4,}/g, '\n\n\n');
+}
+
 /**
  * Tokeniza un texto reconociendo bloques de código, código inline y fórmulas LaTeX.
  */
@@ -44,7 +48,7 @@ export function parseContent(text: string): ContentToken[] {
     if (matchIndex > lastIndex) {
       tokens.push({
         type: 'text',
-        content: text.slice(lastIndex, matchIndex),
+        content: sanitizeTextToken(text.slice(lastIndex, matchIndex)),
       });
     }
 
@@ -75,7 +79,7 @@ export function parseContent(text: string): ContentToken[] {
         // Tratar como texto plano si parece un precio
         tokens.push({
           type: 'text',
-          content: fullMatch,
+          content: sanitizeTextToken(fullMatch),
         });
       } else {
         tokens.push({
@@ -92,7 +96,7 @@ export function parseContent(text: string): ContentToken[] {
   if (lastIndex < text.length) {
     tokens.push({
       type: 'text',
-      content: text.slice(lastIndex),
+      content: sanitizeTextToken(text.slice(lastIndex)),
     });
   }
 

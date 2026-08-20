@@ -164,6 +164,11 @@ export default function NewPostForm({
     if (!token || !body.trim() || submitting) return;
     if (!replyTarget && !subtopicId) return;
 
+    if (/(?:\r?\n[ \t]*){4,}/.test(body)) {
+      setError('No se permiten más de dos líneas en blanco consecutivas');
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
     const authority = anonymous ? 'anonymous' : 'visible';
