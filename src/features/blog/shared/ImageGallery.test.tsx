@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ImageGallery from './ImageGallery';
@@ -29,6 +29,33 @@ describe('ImageGallery — visor ampliado', () => {
     expect(closeBtn.className).toContain('w-12');
     const icon = closeBtn.querySelector('svg');
     expect(icon?.getAttribute('width')).toBe('28');
+  });
+
+  it('descarga la imagen mediante fetch y blob al hacer click en Descargar', async () => {
+    const user = userEvent.setup();
+    const blob = new Blob(['image-data'], { type: 'image/webp' });
+    const fetchMock = vi.fn().mockResolvedValue({
+      blob: async () => blob,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const originalCreateObjectURL = URL.createObjectURL;
+    const originalRevokeObjectURL = URL.revokeObjectURL;
+    URL.createObjectURL = vi.fn(() => 'blob:download-url');
+    URL.revokeObjectURL = vi.fn();
+
+    render(<ImageGallery images={images} />);
+    await user.click(screen.getAllByRole('button')[0]);
+
+    const downloadBtn = screen.getByRole('button', { name: /descargar/i });
+    await user.click(downloadBtn);
+
+    expect(fetchMock).toHaveBeenCalledWith('https://files.exactamente.com.ar/blog/img-1.jpg');
+    expect(URL.createObjectURL).toHaveBeenCalledWith(blob);
+
+    URL.createObjectURL = originalCreateObjectURL;
+    URL.revokeObjectURL = originalRevokeObjectURL;
+    vi.unstubAllGlobals();
   });
 });
 

@@ -20,7 +20,8 @@ import Layout from '@/layouts/Layout.astro';
   function redirectHome() {
     const redirect = sessionStorage.getItem('exactamente_auth_redirect');
     sessionStorage.removeItem('exactamente_auth_redirect');
-    const target = redirect && redirect.startsWith('/') ? redirect : '/';
+    const target =
+      redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/';
     window.location.replace(target);
   }
 

@@ -17,13 +17,27 @@ export function useBlog(
 ): {
   blog: Blog | null;
   loading: boolean;
+  error: string | null;
+  retry: () => void;
   addPost: (post: BlogPost) => void;
   addComment: (postId: string, comment: BlogComment) => void;
   removePost: (postId: string) => void;
   removeComment: (postId: string, commentId: string) => void;
+  updatePostVote: (postId: string, vote: { netScore: number; myVote: number }) => void;
+  updateCommentVote: (
+    postId: string,
+    commentId: string,
+    vote: { netScore: number; myVote: number },
+  ) => void;
 } {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [fetchIndex, setFetchIndex] = useState(0);
+
+  const retry = useCallback(() => {
+    setFetchIndex((prev) => prev + 1);
+  }, []);
 
   useEffect(() => {
     if (authLoading) return;
@@ -36,7 +50,13 @@ export function useBlog(
       const remaining = Math.max(0, MIN_LOADING_MS - (Date.now() - startedAt));
       setTimeout(() => {
         if (cancelled) return;
-        setBlog(result);
+        if (result.error === null) {
+          setBlog(result.data);
+          setError(null);
+        } else {
+          setBlog(null);
+          setError(result.error);
+        }
         setLoading(false);
       }, remaining);
     });
@@ -44,7 +64,7 @@ export function useBlog(
     return () => {
       cancelled = true;
     };
-  }, [subjectId, token, authLoading]);
+  }, [subjectId, token, authLoading, fetchIndex]);
 
   const addPost = useCallback((post: BlogPost) => {
     setBlog((prev) => (prev ? { ...prev, posts: insertPost(prev.posts, post) } : prev));
@@ -78,5 +98,53 @@ export function useBlog(
     });
   }, []);
 
-  return { blog, loading, addPost, addComment, removePost, removeComment };
+  const updatePostVote = useCallback(
+    (postId: string, vote: { netScore: number; myVote: number }) => {
+      setBlog((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          posts: prev.posts.map((p) =>
+            p.id === postId ? { ...p, netScore: vote.netScore, myVote: vote.myVote } : p,
+          ),
+        };
+      });
+    },
+    [],
+  );
+
+  const updateCommentVote = useCallback(
+    (postId: string, commentId: string, vote: { netScore: number; myVote: number }) => {
+      setBlog((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          posts: prev.posts.map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  comments: p.comments.map((c) =>
+                    c.id === commentId ? { ...c, netScore: vote.netScore, myVote: vote.myVote } : c,
+                  ),
+                }
+              : p,
+          ),
+        };
+      });
+    },
+    [],
+  );
+
+  return {
+    blog,
+    loading,
+    error,
+    retry,
+    addPost,
+    addComment,
+    removePost,
+    removeComment,
+    updatePostVote,
+    updateCommentVote,
+  };
 }

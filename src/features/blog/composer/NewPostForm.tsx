@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, type ChangeEvent } from 'react';
 import { CornerDownRight, EyeOff, FileText, ImagePlus, LoaderCircle, Send, X } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 import { createPost, createComment } from '@/shared/services/api';
 import { useReplyContext } from '../context/ReplyContext';
 import { snippetOf } from '../utils/format';
@@ -52,12 +53,24 @@ export default function NewPostForm({
   function handleFiles(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (files.length === 0) return;
-    setImages((prev) => [...prev, ...files].slice(0, MAX_ATTACHMENTS));
+    if (images.length + files.length > MAX_ATTACHMENTS) {
+      setError(`Podés adjuntar hasta ${MAX_ATTACHMENTS} archivos`);
+      e.target.value = '';
+      return;
+    }
+    setError(null);
+    setImages((prev) => [...prev, ...files]);
     e.target.value = '';
   }
 
   function removeImage(index: number) {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImages((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      if (next.length <= MAX_ATTACHMENTS) {
+        setError(null);
+      }
+      return next;
+    });
   }
 
   function resizeTextarea() {
@@ -71,6 +84,9 @@ export default function NewPostForm({
     setBody('');
     setImages([]);
     setReplyTarget(null);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -112,6 +128,15 @@ export default function NewPostForm({
     }
     resetForm();
     onPostCreated?.(result.data);
+  }
+
+  if (!token) {
+    return (
+      <div className='flex items-center justify-between gap-3 rounded-xl border border-zinc-700/60 bg-zinc-900/70 p-3'>
+        <p className='text-xs text-zinc-400'>Iniciá sesión para publicar o responder en el blog.</p>
+        <GoogleLoginButton />
+      </div>
+    );
   }
 
   const canSend = Boolean(token && body.trim() && (replyTarget || subtopicId)) && !submitting;

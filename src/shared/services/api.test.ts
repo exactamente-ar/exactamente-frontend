@@ -138,33 +138,59 @@ describe('getBlog', () => {
     vi.unstubAllGlobals();
   });
 
-  it('envía el token de autorización cuando se lo pasan', async () => {
+  it('envía el token de autorización cuando se lo pasan y devuelve ApiResult exitoso', async () => {
+    const mockData = { subjectId: 's1', subtopics: [], posts: [] };
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ subjectId: 's1', subtopics: [], posts: [] }),
+      json: async () => mockData,
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    await getBlog('s1', 'token-123');
+    const result = await getBlog('s1', 'token-123');
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/api/v1/blogs/s1'),
       expect.objectContaining({ headers: { Authorization: 'Bearer token-123' } }),
     );
+    expect(result).toEqual({ data: mockData, error: null });
   });
 
   it('no envía Authorization sin token', async () => {
+    const mockData = { subjectId: 's1', subtopics: [], posts: [] };
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ subjectId: 's1', subtopics: [], posts: [] }),
+      json: async () => mockData,
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    await getBlog('s1');
+    const result = await getBlog('s1');
 
     const [url, opts] = fetchMock.mock.calls[0] as [string, { headers?: Record<string, string> }];
     expect(url).toContain('/api/v1/blogs/s1');
     expect(opts?.headers?.Authorization).toBeUndefined();
+    expect(result).toEqual({ data: mockData, error: null });
+  });
+
+  it('devuelve ApiResult con error si la respuesta no es ok', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: async () => ({ error: 'Materia no encontrada' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getBlog('s1');
+
+    expect(result).toEqual({ data: [], error: 'Materia no encontrada' });
+  });
+
+  it('devuelve ApiResult con error si fetch arroja una excepción de red', async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getBlog('s1');
+
+    expect(result).toEqual({ data: [], error: 'Network error' });
   });
 });
 

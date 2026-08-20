@@ -20,6 +20,25 @@ export default function ImageGallery({ images }: Props) {
 
   if (images.length === 0) return null;
 
+  async function handleDownload(img: BlogPostImage) {
+    try {
+      const response = await fetch(img.url);
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      const ext =
+        img.mimeType === 'image/png' ? 'png' : img.mimeType === 'image/jpeg' ? 'jpg' : 'webp';
+      a.download = `imagen-${img.id}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      window.open(img.url, '_blank');
+    }
+  }
+
   return (
     <>
       <div className='flex flex-wrap gap-2 pt-1'>
@@ -66,16 +85,14 @@ export default function ImageGallery({ images }: Props) {
                 className='max-h-[80vh] w-auto object-contain rounded-lg'
               />
               <div className='absolute -bottom-12 right-0'>
-                <a
-                  href={selectedImage.url}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  download
+                <button
+                  type='button'
+                  onClick={() => handleDownload(selectedImage)}
                   className='flex items-center gap-2 rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700'
                 >
                   <Download size={16} />
                   Descargar
-                </a>
+                </button>
               </div>
             </>
           )}

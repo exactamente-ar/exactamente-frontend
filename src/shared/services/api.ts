@@ -348,16 +348,22 @@ export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
   return result.data.find((s) => s.url === '/' + slug) ?? null;
 }
 
-export async function getBlog(subjectId: string, token?: string | null): Promise<Blog | null> {
+export async function getBlog(subjectId: string, token?: string | null): Promise<ApiResult<Blog>> {
   try {
     const headers: Record<string, string> = {};
     if (token) headers.Authorization = `Bearer ${token}`;
     const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}`, { headers });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      const json: { error?: string } = await response.json().catch(() => ({}));
+      return { data: [], error: json.error ?? `Request failed with status ${response.status}` };
+    }
     const json: Blog = await response.json();
-    return mapBlog(json);
-  } catch {
-    return null;
+    return { data: mapBlog(json), error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Error al cargar el blog',
+    };
   }
 }
 
