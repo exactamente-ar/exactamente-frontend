@@ -6,6 +6,7 @@ import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comment
 import VoteControl from '../shared/VoteControl';
 import Comments from '../comments/Comments';
 import ImageGallery from '../shared/ImageGallery';
+import { FormattedContent } from '../shared/FormattedContent';
 import { formatDateTime } from '../utils/format';
 import type { BlogPost } from '../types/blog';
 
@@ -91,7 +92,7 @@ export default function PostCard({
             </time>
           </div>
 
-          <p className='text-zinc-200'>{post.body}</p>
+          <FormattedContent text={post.body} />
           <ImageGallery images={post.images} />
 
           <div className='flex items-center text-xs text-zinc-500 gap-2'>

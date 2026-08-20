@@ -6,6 +6,7 @@ import { THREAD_LINE_ML, getLineColor, getLineStyle } from '../constants/comment
 import { formatDateTime } from '../utils/format';
 import VoteControl from '../shared/VoteControl';
 import ImageGallery from '../shared/ImageGallery';
+import { FormattedContent } from '../shared/FormattedContent';
 import type { BlogComment } from '../types/blog';
 
 import CommentLines from './CommentLines';
@@ -164,7 +165,7 @@ function CommentItem({
               {formatDateTime(comment.createdAt)}
             </time>
           </div>
-          <p className='text-sm text-zinc-200 mt-1'>{comment.body}</p>
+          <FormattedContent text={comment.body} className='text-sm mt-1' />
           {comment.images && <ImageGallery images={comment.images} />}
           <div className='flex items-center gap-3 text-xs text-zinc-500 mt-1'>
             {token && (
