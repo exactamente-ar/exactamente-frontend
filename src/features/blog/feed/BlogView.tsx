@@ -7,7 +7,6 @@ import { AuthProvider } from '@/features/auth/context/AuthContext';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useBlog } from '../hooks/useBlog';
 import { ReplyProvider } from '../context/ReplyContext';
-import { GoogleLoginButton } from '@/features/auth/components/GoogleLoginButton';
 import EmptyState from '@/shared/components/EmptyState';
 import { filterPostsBySubtopic, resolveActiveSubtopic } from '../utils/feed';
 import type { Subject } from '@/features/home/types/subjects';
@@ -21,10 +20,14 @@ function BlogViewInner({ subject }: Props) {
   const {
     blog,
     loading: blogLoading,
+    error,
+    retry,
     addPost,
     addComment,
     removePost,
     removeComment,
+    updatePostVote,
+    updateCommentVote,
   } = useBlog(subject.id, token, loading);
   const [selected, setSelected] = useState('');
 
@@ -33,7 +36,6 @@ function BlogViewInner({ subject }: Props) {
   const subtopics = blog?.subtopics ?? [];
   const activeSubtopicId = resolveActiveSubtopic(selected, subtopics);
   const posts = filterPostsBySubtopic(blog?.posts ?? [], activeSubtopicId);
-  const gated = !loading && !token;
 
   return (
     <div
@@ -61,13 +63,20 @@ function BlogViewInner({ subject }: Props) {
       </div>
 
       {/* Inicio del contenido "real" del blog */}
-      <div className='relative z-10 flex min-h-0 flex-1 flex-col pb-3'>
-        <header className='px-4 py-6 w-full bg-black/10 rounded-2xl border-b-1 border-b-gray-700 shadow-2xl'>
-          <h2 className='shrink-0 text-4xl font-bold text-white md:m-1'>
+      <div className='relative z-10 flex min-h-0 flex-1 flex-col'>
+        {/* Header fijo arriba con efecto Liquid Glass transparente */}
+        <header className='shrink-0 px-4 py-5 w-full rounded-b-2xl border-b border-white/20 bg-white/[0.02] backdrop-saturate-[120%] backdrop-brightness-[110%] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3),inset_0_-1px_1px_rgba(255,255,255,0.2)] backdrop-blur-md'>
+          {/* Brillo especular superior (Glossy) */}
+          <div
+            className='absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.10] to-transparent pointer-events-none rounded-t-2xl'
+            aria-hidden='true'
+          />
+
+          <h2 className='relative z-10 shrink-0 text-3xl md:text-4xl font-bold text-white md:m-1 tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]'>
             {subject.shortName || subject.title}
           </h2>
 
-          <div className='shrink-0 mt-4'>
+          <div className='relative z-10 shrink-0 mt-4'>
             <SubtopicChips
               subtopics={subtopics}
               selected={activeSubtopicId}
@@ -75,60 +84,57 @@ function BlogViewInner({ subject }: Props) {
             />
           </div>
         </header>
-        <div className='relative flex min-h-0 flex-1 flex-col'>
-          <div
-            className={`flex min-h-0 flex-1 flex-col ${
-              gated ? 'pointer-events-none select-none blur-sm' : ''
-            }`}
-          >
-            <div className='custom-scrollbar min-h-0 flex-1 overflow-y-auto pb-18'>
-              {posts.length > 0 ? (
-                <ul className='flex flex-col gap-4'>
-                  {posts.map((post) => (
-                    <PostCard
-                      key={post.id}
-                      subjectId={subject.id}
-                      post={post}
-                      onDeleted={removePost}
-                      onCommentAdded={(commentId) => removeComment(post.id, commentId)}
-                    />
-                  ))}
-                </ul>
-              ) : (
-                <div className='flex flex-col items-center justify-center h-full'>
-                  <EmptyState
-                    title='Todavía no hay publicaciones'
-                    description='Sé el primero en preguntar o compartir algo.'
-                  />
-                  <img
-                    src='/illustrations/empty_blog_illustation.svg'
-                    alt='No hay publicaciones'
-                    className='w-32 h-auto -mt-12 md:mt-0 md:w-48'
-                  />
-                </div>
-              )}
-            </div>
 
-            <div className='shrink-0 border-t border-zinc-800 pt-3 mx-3'>
-              <NewPostForm
-                subjectId={subject.id}
-                subtopicId={activeSubtopicId}
-                onPostCreated={addPost}
-                onCommentCreated={addComment}
+        {/* Scroll únicamente en el área de contenido del blog */}
+        <div className='custom-scrollbar relative min-h-0 flex-1 overflow-y-auto p-4 pb-18'>
+          {error ? (
+            <div className='flex flex-col items-center justify-center h-full gap-3 p-6 text-center'>
+              <p className='text-sm text-red-400'>{error}</p>
+              <button
+                type='button'
+                onClick={retry}
+                className='rounded-lg bg-zinc-800 px-4 py-2 text-xs font-semibold text-zinc-200 hover:bg-zinc-700'
+              >
+                Reintentar
+              </button>
+            </div>
+          ) : posts.length > 0 ? (
+            <ul className='flex flex-col gap-4'>
+              {posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  subjectId={subject.id}
+                  post={post}
+                  onDeleted={removePost}
+                  onCommentDeleted={(commentId) => removeComment(post.id, commentId)}
+                  onVoteChanged={updatePostVote}
+                  onCommentVoteChanged={updateCommentVote}
+                />
+              ))}
+            </ul>
+          ) : (
+            <div className='flex flex-col items-center justify-center h-full'>
+              <EmptyState
+                title='Todavía no hay publicaciones'
+                description='Sé el primero en preguntar o compartir algo.'
+              />
+              <img
+                src='/illustrations/empty_blog_illustation.svg'
+                alt='No hay publicaciones'
+                className='w-32 h-auto -mt-12 md:mt-0 md:w-48'
               />
             </div>
-          </div>
-
-          {gated && (
-            <div className='absolute inset-0 z-10 flex items-center justify-center p-4 bottom-20'>
-              <div className='flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border border-zinc-700/60 bg-zinc-900/90 p-6 text-center shadow-2xl shadow-black/50'>
-                <p className='text-sm text-zinc-300'>
-                  Iniciá sesión para leer y participar en el blog.
-                </p>
-                <GoogleLoginButton />
-              </div>
-            </div>
           )}
+        </div>
+
+        {/* Input composer fijo en la base */}
+        <div className='shrink-0 border-t border-zinc-800/80 bg-zinc-950/60 backdrop-blur-xl pt-3 pb-3 px-3'>
+          <NewPostForm
+            subjectId={subject.id}
+            subtopicId={activeSubtopicId}
+            onPostCreated={addPost}
+            onCommentCreated={addComment}
+          />
         </div>
       </div>
     </div>

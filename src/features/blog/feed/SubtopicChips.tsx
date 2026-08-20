@@ -70,10 +70,10 @@ export default function SubtopicChips({ subtopics, selected, onChange }: Props) 
               type='button'
               onClick={() => onChange(chip.id)}
               aria-pressed={active}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
                 active
-                  ? 'bg-zinc-500/20 text-zinc-200'
-                  : 'border-zinc-700 bg-transparent text-zinc-400 hover:border-zinc-500 hover:text-zinc-200'
+                  ? 'border-white/30 bg-white/20 text-white backdrop-saturate-150 backdrop-brightness-110 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]'
+                  : 'border-white/10 bg-white/5 text-zinc-300 backdrop-saturate-150 backdrop-brightness-110 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] hover:border-white/25 hover:bg-white/10 hover:text-white'
               }`}
             >
               {chip.name}
@@ -87,7 +87,7 @@ export default function SubtopicChips({ subtopics, selected, onChange }: Props) 
           type='button'
           onClick={() => scrollByPage(-1)}
           aria-label='Ver subtemas anteriores'
-          className='absolute left-0 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900/95 text-zinc-300 shadow-lg transition-colors hover:bg-zinc-800 hover:text-white'
+          className='absolute left-0 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 shadow-md transition-colors hover:border-zinc-500 hover:bg-zinc-800 hover:text-white'
         >
           <ChevronLeft size={16} aria-hidden='true' />
         </button>
@@ -98,7 +98,7 @@ export default function SubtopicChips({ subtopics, selected, onChange }: Props) 
           type='button'
           onClick={() => scrollByPage(1)}
           aria-label='Ver más subtemas'
-          className='absolute right-0 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900/95 text-zinc-300 shadow-lg transition-colors hover:bg-zinc-800 hover:text-white'
+          className='absolute right-0 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 shadow-md transition-colors hover:border-zinc-500 hover:bg-zinc-800 hover:text-white'
         >
           <ChevronRight size={16} aria-hidden='true' />
         </button>
