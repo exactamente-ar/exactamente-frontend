@@ -313,7 +313,7 @@ export interface paths {
         };
         /**
          * Blog de una materia
-         * @description Devuelve los subtemas (con el "general" por defecto) y los posts del blog. Lectura pública. Posts ordenados por votos (`net_score`), con una ventana 30 días para que la paginación sea estable. Los comentarios se ordenan por votos dentro de sus hermanos.
+         * @description Devuelve los subtemas (con el "general" por defecto) y los posts del blog. Lectura pública. Posts ordenados por votos (`net_score`), desempatando por fecha e id; los comentarios se ordenan por votos dentro de sus hermanos.
          */
         get: operations["getApiV1BlogsBySubjectId"];
         put?: never;
@@ -5345,6 +5345,18 @@ export interface operations {
                     };
                 };
             };
+            /** @description Conflicto de estado */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
         };
     };
     deleteApiV1AdminBlogsSubtopicsById: {
@@ -5477,6 +5489,18 @@ export interface operations {
             };
             /** @description Recurso no encontrado */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Mensaje descriptivo, apto para mostrar al usuario */
+                        error: string;
+                    };
+                };
+            };
+            /** @description Conflicto de estado */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
