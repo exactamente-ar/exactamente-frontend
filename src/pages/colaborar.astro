@@ -1,0 +1,41 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SupportOptions from '@/shared/components/SupportOptions.astro';
+import { MONTHLY_COST_USD } from '@/shared/constants/support';
+---
+
+<Layout>
+  <div class='max-w-3xl mx-auto pt-24 pb-16 px-4'>
+    <h1 class='text-3xl font-bold text-zinc-100 mb-2'>
+      Bancá <span class='gradient-text'>Exactamente</span>
+    </h1>
+    <p class='text-sm text-zinc-500 mb-10'>
+      Sin vueltas: la plataforma tiene costos y hoy los paga una sola persona.
+    </p>
+
+    <div class='space-y-8 text-zinc-300 leading-relaxed'>
+      <section class='space-y-3'>
+        <h2 class='text-lg font-semibold text-zinc-200'>Qué se paga</h2>
+        <p>
+          Servidor, base de datos, almacenamiento de los PDF y el dominio. Todo junto son unos USD {
+            MONTHLY_COST_USD
+          } por mes, que hasta ahora salen del bolsillo de quien mantiene el proyecto. Con que un puñado
+          de personas colabore de forma regular, se cubre.
+        </p>
+      </section>
+
+      <section class='space-y-4'>
+        <h2 class='text-lg font-semibold text-zinc-200'>Cómo colaborar</h2>
+        <SupportOptions />
+      </section>
+
+      <section class='space-y-3'>
+        <h2 class='text-lg font-semibold text-zinc-200'>Sin condiciones</h2>
+        <p>
+          Colaborar no desbloquea nada ni cambia lo que ves: todo el material sigue libre para
+          cualquiera. Es solo para que la plataforma siga en pie.
+        </p>
+      </section>
+    </div>
+  </div>
+</Layout>
