@@ -1,4 +1,6 @@
 ---
+import IconCoffee from '@/shared/components/icons/IconCoffee.astro';
+import IconMercadoPago from '@/shared/components/icons/IconMercadoPago.astro';
 import { CAFECITO_URL, MERCADOPAGO_ALIAS } from '@/shared/constants/support';
 ---
 
@@ -13,12 +15,16 @@ import { CAFECITO_URL, MERCADOPAGO_ALIAS } from '@/shared/constants/support';
     <span
       class='inline-flex items-center gap-2 rounded-[calc(0.5rem-1px)] bg-zinc-950 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-zinc-900 transition-colors'
     >
+      <IconCoffee size={18} />
       Invitanos un cafecito
     </span>
   </a>
 
   <div class='rounded-xl border border-zinc-800 bg-zinc-900/40 p-4'>
-    <p class='text-sm text-zinc-400 mb-2'>O transferí al alias de Mercado Pago:</p>
+    <div class='flex items-center gap-2 mb-2'>
+      <IconMercadoPago size={18} />
+      <p class='text-sm text-zinc-400'>O transferí al alias de Mercado Pago:</p>
+    </div>
     <button
       type='button'
       data-copy={MERCADOPAGO_ALIAS}
