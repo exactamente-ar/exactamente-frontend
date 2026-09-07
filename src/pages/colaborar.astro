@@ -14,7 +14,9 @@ import { MONTHLY_COST_USD } from '@/shared/constants/support';
       <section class='space-y-3'>
         <h2 class='text-lg font-semibold text-zinc-200'>Qué se paga</h2>
         <p>
-          El proyecto tiene un costo de infraestructura de aproximadamente USD {MONTHLY_COST_USD}
+          El proyecto tiene un costo de infraestructura de aproximadamente USD {MONTHLY_COST_USD}{
+            ' '
+          }
           mensuales, que incluye servidor, base de datos, almacenamiento de los PDF y dominio. Hasta ahora
           estos gastos los cubre personalmente quien mantiene el proyecto. Una colaboración pequeña y
           regular de varias personas sería suficiente para cubrirlos y garantizar que el proyecto pueda
@@ -25,14 +27,6 @@ import { MONTHLY_COST_USD } from '@/shared/constants/support';
       <section class='space-y-4'>
         <h2 class='text-lg font-semibold text-zinc-200'>Cómo colaborar</h2>
         <SupportOptions />
-      </section>
-
-      <section class='space-y-3'>
-        <h2 class='text-lg font-semibold text-zinc-200'>Sin condiciones</h2>
-        <p>
-          Colaborar no desbloquea nada ni cambia lo que ves: todo el material sigue libre para
-          cualquiera. Es solo para que la plataforma siga en pie.
-        </p>
       </section>
     </div>
   </div>
