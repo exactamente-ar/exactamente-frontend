@@ -113,7 +113,12 @@ const { hideSponsor = false } = Astro.props;
       class='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-white/6 pt-6'
     >
       <p class='text-sm text-zinc-600'>© Todos los derechos reservados 2025.</p>
-      <div class='flex items-center gap-4'>
+      <div class='flex flex-wrap items-center gap-x-4 gap-y-2'>
+        <a
+          href='/colaborar'
+          class='text-sm text-zinc-600 hover:text-zinc-400 transition-colors duration-200'
+          >Colaborar</a
+        >
         <a
           href='/privacy'
           class='text-sm text-zinc-600 hover:text-zinc-400 transition-colors duration-200'
@@ -124,7 +129,7 @@ const { hideSponsor = false } = Astro.props;
           class='text-sm text-zinc-600 hover:text-zinc-400 transition-colors duration-200'
           >Términos</a
         >
-        <span class='text-sm text-zinc-600'>Facultad de Ciencias Exactas</span>
+        <span class='text-sm text-zinc-600 whitespace-nowrap'>Facultad de Ciencias Exactas</span>
       </div>
     </div>
   </div>

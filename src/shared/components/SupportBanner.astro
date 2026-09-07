@@ -1,0 +1,59 @@
+<aside
+  hidden
+  id='support-banner'
+  class='fixed inset-x-0 bottom-0 z-30 border-t border-zinc-800 bg-zinc-950/95 backdrop-blur-md'
+>
+  <div
+    class='mx-auto flex max-w-6xl 2xl:max-w-8xl items-center gap-3 px-4 py-2.5 text-sm text-foreground-muted'
+  >
+    <p class='flex-1'>
+      Exactamente se sostiene con el aporte de quienes lo usan. <a
+        href='/colaborar'
+        onclick="gtag('event', 'support_click', { method: 'banner_cta', location: 'banner' })"
+        class='font-semibold text-foreground underline underline-offset-2 hover:text-white'
+        >Colaborá acá</a
+      >.
+    </p>
+    <button
+      type='button'
+      id='support-banner-dismiss'
+      aria-label='Cerrar aviso'
+      class='shrink-0 rounded-md p-1.5 text-zinc-500 hover:bg-white/5 hover:text-zinc-300 transition-colors'
+    >
+      <svg width='16' height='16' viewBox='0 0 24 24' fill='none' aria-hidden='true'>
+        <path d='M6 6l12 12M18 6L6 18' stroke='currentColor' stroke-width='2' stroke-linecap='round'
+        ></path>
+      </svg>
+    </button>
+  </div>
+</aside>
+
+<script>
+  import { shouldShowSupportBanner } from '@/shared/lib/supportBanner';
+  import { SUPPORT_BANNER_DEADLINE, SUPPORT_BANNER_DISMISS_KEY } from '@/shared/constants/support';
+
+  const banner = document.getElementById('support-banner');
+  const dismiss = document.getElementById('support-banner-dismiss');
+
+  if (banner && dismiss) {
+    let dismissedAt: string | null = null;
+    try {
+      dismissedAt = localStorage.getItem(SUPPORT_BANNER_DISMISS_KEY);
+    } catch {
+      // localStorage puede tirar en modo privado: se trata como "no descartado".
+    }
+
+    if (shouldShowSupportBanner({ deadline: SUPPORT_BANNER_DEADLINE, dismissedAt })) {
+      banner.hidden = false;
+    }
+
+    dismiss.addEventListener('click', () => {
+      banner.hidden = true;
+      try {
+        localStorage.setItem(SUPPORT_BANNER_DISMISS_KEY, new Date().toISOString());
+      } catch {
+        // Si no se puede persistir, al menos queda cerrado en esta sesión.
+      }
+    });
+  }
+</script>

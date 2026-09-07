@@ -25,4 +25,16 @@ describe('Footer.astro', () => {
 
     expect(html).not.toContain('Con el apoyo de');
   });
+
+  it('siempre tiene un link a /colaborar', async () => {
+    const container = await AstroContainer.create();
+
+    const conSponsors = await container.renderToString(Footer);
+    const sinSponsors = await container.renderToString(Footer, {
+      props: { hideSponsor: true },
+    });
+
+    expect(conSponsors).toContain('href="/colaborar"');
+    expect(sinSponsors).toContain('href="/colaborar"');
+  });
 });

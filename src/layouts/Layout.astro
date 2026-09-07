@@ -5,6 +5,7 @@ import GoogleAnalytics from '@/shared/components/GoogleAnalytics.astro';
 import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
+import SupportBanner from '@/shared/components/SupportBanner.astro';
 
 interface Props {
   hideFooterSponsor?: boolean;
@@ -51,5 +52,6 @@ const { hideFooterSponsor = false } = Astro.props;
       <slot />
     </ContainerPage>
     <Footer hideSponsor={hideFooterSponsor} />
+    <SupportBanner />
   </body>
 </html>
