@@ -29,7 +29,7 @@ describe('SupportOptions.astro', () => {
 
     // Fragmentos del path de cada icono: si el SVG no está, la vía de aporte
     // pierde el ancla visual que la hace reconocible de un vistazo.
-    expect(html).toContain('M2,21V19H20V21H2');
+    expect(html).toContain('M17 11.6V15a6 6 0 0 1-6 6H9');
     expect(html).toContain('M11.115 16.479');
   });
 });
