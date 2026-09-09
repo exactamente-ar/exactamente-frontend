@@ -3,6 +3,7 @@ import IconOpenBook from '@/shared/components/icons/react/IconOpenBook';
 import IconUniversity from '@/shared/components/icons/react/IconUniversity';
 import IconDocument from '@/shared/components/icons/react/IconDocument';
 import IconLink from '@/shared/components/icons/react/IconLink';
+import IconBlog from '@/shared/components/icons/react/IconBlog';
 import ContainerLink from '@/shared/components/ContainerLink.tsx';
 import type { SubjectCareer, ResourceCounts } from '@/features/home/types/subjects';
 
@@ -39,21 +40,23 @@ function ResourceButton({
   activeIconClass,
 }: ResourceButtonProps) {
   const isEmpty = count === 0;
+  const isCommunity = count === -1;
+
   return (
     <ContainerLink
-      url={isEmpty ? uploadUrl : resourceUrl}
+      url={isEmpty && !isCommunity ? uploadUrl : resourceUrl}
       className={`group/resource hover:scale-105 justify-between active:scale-95 font-semibold flex items-center gap-3 transition-all duration-200 ${
-        isEmpty
+        isEmpty && !isCommunity
           ? 'bg-gradient-to-br from-zinc-800/30 to-zinc-900/20 border border-zinc-700/30 hover:border-zinc-600/50 text-zinc-500 hover:text-zinc-400'
           : `grayscale-50 ${activeClass}`
       }`}
     >
       <div className='flex items-center gap-2'>
-        <Icon size={20} className={isEmpty ? 'fill-zinc-600' : activeIconClass} />
+        <Icon size={20} className={isEmpty && !isCommunity ? 'fill-zinc-600' : activeIconClass} />
         <span>{label}</span>
       </div>
       <div className='flex items-center gap-1.5'>
-        <span className='text-xs opacity-60'>{count}</span>
+        {!isCommunity && <span className='text-xs opacity-60'>{count}</span>}
         <IconLink size={20} />
       </div>
     </ContainerLink>
@@ -154,6 +157,7 @@ function Card({
           </h4>
 
           <div className='flex flex-col space-y-3 w-full'>
+            {/* Resumenes */}
             <ResourceButton
               resourceUrl={`./${id}/resumenes${resourceSuffix}`}
               uploadUrl={`${uploadBase}&type=resumen`}
@@ -163,6 +167,7 @@ function Card({
               activeClass='bg-gradient-to-br from-emerald-500/50 to-emerald-600/10 border border-emerald-500/40 hover:border-emerald-400/60 text-emerald-200 hover:text-emerald-100'
               activeIconClass='fill-emerald-200'
             />
+            {/* Parciales */}
             <ResourceButton
               resourceUrl={`./${id}/parciales${resourceSuffix}`}
               uploadUrl={`${uploadBase}&type=parcial`}
@@ -172,6 +177,7 @@ function Card({
               activeClass='bg-gradient-to-br from-blue-500/50 to-blue-600/10 border border-blue-500/40 hover:border-blue-400/60 text-blue-200 hover:text-blue-100'
               activeIconClass='fill-blue-200'
             />
+            {/* Finales */}
             <ResourceButton
               resourceUrl={`./${id}/finales${resourceSuffix}`}
               uploadUrl={`${uploadBase}&type=final`}
@@ -181,49 +187,16 @@ function Card({
               activeClass='bg-gradient-to-br from-purple-500/50 to-purple-600/10 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 hover:text-purple-100'
               activeIconClass='fill-purple-200'
             />
-            {/* 
-            <ContainerLink
-              url={urlMoodle}
-              target='_blank'
-              className={`${
-                urlMoodle.length == 0
-                  ? 'pointer-events-none grayscale-100 border-foreground-muted text-foreground-muted'
-                  : 'border-foreground text-foreground'
-              }  border  font-bold flex justify-between items-center`}
-            >
-              <div className='flex items-center gap-2'>
-                <IconMoodle
-                  size={20}
-                  className={`${
-                    urlPrograma.length == 0 ? 'fill-foreground-muted' : 'fill-foreground'
-                  }`}
-                />
-                <span> Moodle </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-
-            <ContainerLink
-              url={urlPrograma}
-              target='_blank'
-              className={`font-bold flex justify-between items-center border ${
-                urlPrograma.length == 0
-                  ? 'bg-gray-800 text-foreground-muted pointer-events-none grayscale-100 border-foreground-muted'
-                  : ' border-primary bg-primary '
-              }`}
-            >
-              <div className='flex items-center gap-2'>
-                <IconDownload
-                  size={20}
-                  className={`${
-                    urlPrograma.length == 0 ? 'fill-foreground-muted' : 'fill-primary-foreground'
-                  }`}
-                />
-                <span> Programa </span>
-              </div>
-              <IconLink size={20} />
-            </ContainerLink>
-            */}
+            {/* Blog */}
+            <ResourceButton
+              resourceUrl={`./${id}/blog${resourceSuffix}`}
+              uploadUrl={`./${id}/blog${resourceSuffix}`}
+              count={-1}
+              label='Blog'
+              Icon={IconBlog}
+              activeClass='bg-gradient-to-br from-yellow-500/50 to-yellow-600/10 border border-yellow-500/40 hover:border-yellow-400/60 text-yellow-200 hover:text-yellow-100'
+              activeIconClass='fill-yellow-200'
+            />
           </div>
         </div>
       </div>

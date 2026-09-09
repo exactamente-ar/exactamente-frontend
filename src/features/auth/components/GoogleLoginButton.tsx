@@ -3,6 +3,13 @@ import { Button } from '@/shared/components/ui/button';
 
 const GOOGLE_AUTH_URL = `${import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000'}/api/v1/auth/google`;
 
+/**
+ * Clave en sessionStorage donde se guarda la página en la que estaba el usuario
+ * al iniciar sesión, para volver ahí después del callback OAuth (en vez de
+ * caer siempre en `/upload`).
+ */
+const AUTH_REDIRECT_KEY = 'exactamente_auth_redirect';
+
 export function GoogleLoginButton({ onBeforeRedirect }: { onBeforeRedirect?: () => void } = {}) {
   return (
     <Button
@@ -10,6 +17,12 @@ export function GoogleLoginButton({ onBeforeRedirect }: { onBeforeRedirect?: () 
       className='w-full gap-3 bg-primary text-black font-bold rounded-full py-3 h-auto cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:bg-primary'
       onClick={() => {
         onBeforeRedirect?.();
+        // sessionStorage sobrevive el viaje a Google y vuelta (misma pestaña,
+        // mismo origen del frontend), así que el callback puede volver acá.
+        sessionStorage.setItem(
+          AUTH_REDIRECT_KEY,
+          window.location.pathname + window.location.search,
+        );
         window.location.href = GOOGLE_AUTH_URL;
       }}
     >

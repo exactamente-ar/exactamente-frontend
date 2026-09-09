@@ -1,6 +1,7 @@
 import type { Subject } from '@/features/home/types/subjects';
 import type { ResourceFetch, StringResource } from '@/features/resource/types/resource';
 import type { PublicUser } from '@/features/auth/types/auth';
+import type { Blog, BlogComment, BlogPost } from '@/features/blog/types/blog';
 
 // Backend types
 type BackendCareer = {
@@ -189,6 +190,15 @@ export function mapResource(backend: BackendResource): ResourceFetch {
 }
 
 /**
+ * La respuesta de `GET /blogs/:subjectId` ya viene con la forma que consume el
+ * frontend, así que el mapeo es identidad. Se mantiene como función para no
+ * exponer el tipo de backend en los componentes y por si el contrato evoluciona.
+ */
+export function mapBlog(backend: Blog): Blog {
+  return backend;
+}
+
+/**
  * URL para **bajar** un recurso. Distinta de `fileUrl`, que es para **verlo**.
  *
  * `fileUrl` apunta directo a R2 y no pasa por la API, así que bajar desde ahí
@@ -336,6 +346,187 @@ export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
   const result = await getSubjects({ slug });
   if (result.error) return null;
   return result.data.find((s) => s.url === '/' + slug) ?? null;
+}
+
+export async function getBlog(subjectId: string, token?: string | null): Promise<ApiResult<Blog>> {
+  try {
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}`, { headers });
+    if (!response.ok) {
+      const json: { error?: string } = await response.json().catch(() => ({}));
+      return { data: [], error: json.error ?? `Request failed with status ${response.status}` };
+    }
+    const json: Blog = await response.json();
+    return { data: mapBlog(json), error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Error al cargar el blog',
+    };
+  }
+}
+
+export async function createPost(
+  subjectId: string,
+  data: {
+    subtopicId: string;
+    body: string;
+    authority: 'visible' | 'anonymous';
+    images?: File[];
+  },
+  token: string,
+): Promise<ApiResult<BlogPost>> {
+  try {
+    const form = new FormData();
+    form.append('subtopicId', data.subtopicId);
+    form.append('body', data.body);
+    form.append('authority', data.authority);
+    for (const image of data.images ?? []) form.append('images', image);
+
+    const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}/posts`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    });
+    if (!response.ok) {
+      const json: { error?: string } = await response.json().catch(() => ({}));
+      return { data: [], error: json.error ?? `Request failed with status ${response.status}` };
+    }
+    const json: BlogPost = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Unknown error creating post',
+    };
+  }
+}
+
+export type BlogVoteResult = { netScore: number; myVote: number };
+
+async function postVote(
+  url: string,
+  value: 1 | -1,
+  token: string,
+): Promise<ApiResult<BlogVoteResult>> {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ value }),
+    });
+    if (!response.ok) {
+      const json: { error?: string } = await response.json().catch(() => ({}));
+      return { data: [], error: json.error ?? `Request failed with status ${response.status}` };
+    }
+    const json: BlogVoteResult = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Unknown error voting',
+    };
+  }
+}
+
+export function votePost(
+  subjectId: string,
+  postId: string,
+  value: 1 | -1,
+  token: string,
+): Promise<ApiResult<BlogVoteResult>> {
+  return postVote(`${BASE_URL}/api/v1/blogs/${subjectId}/posts/${postId}/vote`, value, token);
+}
+
+export function voteComment(
+  subjectId: string,
+  postId: string,
+  commentId: string,
+  value: 1 | -1,
+  token: string,
+): Promise<ApiResult<BlogVoteResult>> {
+  return postVote(
+    `${BASE_URL}/api/v1/blogs/${subjectId}/posts/${postId}/comments/${commentId}/vote`,
+    value,
+    token,
+  );
+}
+
+export async function createComment(
+  subjectId: string,
+  postId: string,
+  data: {
+    parentId?: string | null;
+    body: string;
+    authority: 'visible' | 'anonymous';
+    images?: File[];
+  },
+  token: string,
+): Promise<ApiResult<BlogComment>> {
+  try {
+    const form = new FormData();
+    if (data.parentId) form.append('parentId', data.parentId);
+    form.append('body', data.body);
+    form.append('authority', data.authority);
+    for (const image of data.images ?? []) form.append('images', image);
+
+    const response = await fetch(`${BASE_URL}/api/v1/blogs/${subjectId}/posts/${postId}/comments`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    });
+    if (!response.ok) {
+      const json: { error?: string } = await response.json().catch(() => ({}));
+      return { data: [], error: json.error ?? `Request failed with status ${response.status}` };
+    }
+    const json: BlogComment = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Unknown error creating comment',
+    };
+  }
+}
+
+async function deleteResource(url: string, token: string): Promise<ApiResult<null>> {
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      const json: { error?: string } = await response.json().catch(() => ({}));
+      return { data: [], error: json.error ?? `Request failed with status ${response.status}` };
+    }
+    return { data: null, error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err.message : 'Unknown error deleting',
+    };
+  }
+}
+
+export function deletePost(
+  subjectId: string,
+  postId: string,
+  token: string,
+): Promise<ApiResult<null>> {
+  return deleteResource(`${BASE_URL}/api/v1/blogs/${subjectId}/posts/${postId}`, token);
+}
+
+export function deleteComment(
+  subjectId: string,
+  postId: string,
+  commentId: string,
+  token: string,
+): Promise<ApiResult<null>> {
+  return deleteResource(
+    `${BASE_URL}/api/v1/blogs/${subjectId}/posts/${postId}/comments/${commentId}`,
+    token,
+  );
 }
 
 export async function getResources(
