@@ -32,6 +32,8 @@ jobs:
       # cambió y acá no se regeneró, el sitio compila contra una API que ya no
       # existe.
       - run: pnpm check:api
+        env:
+          EXACTAMENTE_OPENAPI_URL: https://raw.githubusercontent.com/exactamente-ar/exactamente-backend/feat/blog-page/openapi.json
 
       - run: pnpm typecheck
 

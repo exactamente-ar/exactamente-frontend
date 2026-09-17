@@ -16,8 +16,17 @@ import Layout from '@/layouts/Layout.astro';
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
 
+  // Volver a la página donde el usuario estaba al iniciar sesión, o a `/`.
+  function redirectHome() {
+    const redirect = sessionStorage.getItem('exactamente_auth_redirect');
+    sessionStorage.removeItem('exactamente_auth_redirect');
+    const target =
+      redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/';
+    window.location.replace(target);
+  }
+
   if (!code) {
-    window.location.replace('/upload');
+    redirectHome();
   } else {
     try {
       const exchangeRes = await fetch(`${BASE_URL}/api/v1/auth/exchange`, {
@@ -27,19 +36,19 @@ import Layout from '@/layouts/Layout.astro';
       });
 
       if (!exchangeRes.ok) {
-        window.location.replace('/upload');
+        redirectHome();
       } else {
         const { token } = (await exchangeRes.json()) as { token: string };
         const result = await getMe(token);
         if (result.error) {
-          window.location.replace('/upload');
+          redirectHome();
         } else {
           localStorage.setItem('exactamente_auth', JSON.stringify({ user: result.data, token }));
-          window.location.replace('/upload');
+          redirectHome();
         }
       }
     } catch {
-      window.location.replace('/upload');
+      redirectHome();
     }
   }
 </script>
