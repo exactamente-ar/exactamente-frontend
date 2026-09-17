@@ -1249,7 +1249,6 @@ export interface components {
             email: string;
             displayName: string;
             photoUrl: string | null;
-            /** @description Los registros nuevos siempre son user */
             role: components["schemas"]["UserRole"];
             /** @description Existe en DB pero hoy ningún flujo de producto lo usa */
             emailVerified: boolean;
