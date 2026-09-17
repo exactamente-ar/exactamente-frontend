@@ -2,27 +2,14 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
-// Some Node/jsdom combinations expose no localStorage in the test environment.
-if (typeof window !== 'undefined') {
-  if (!window.localStorage) {
-    const values = new Map<string, string>();
-    const storage = {
-      get length() {
-        return values.size;
-      },
-      clear: () => values.clear(),
-      getItem: (key: string) => values.get(key) ?? null,
-      key: (index: number) => [...values.keys()][index] ?? null,
-      removeItem: (key: string) => values.delete(key),
-      setItem: (key: string, value: string) => values.set(key, String(value)),
-    };
+const jsdomWindow = (globalThis as typeof globalThis & { jsdom?: { window: Window } }).jsdom
+  ?.window;
 
-    Object.defineProperty(window, 'localStorage', { configurable: true, value: storage });
-  }
-
+// Node 26 exposes an empty localStorage global that shadows jsdom's implementation.
+if (jsdomWindow) {
   Object.defineProperty(globalThis, 'localStorage', {
     configurable: true,
-    value: window.localStorage,
+    get: () => jsdomWindow.localStorage,
   });
 }
 
