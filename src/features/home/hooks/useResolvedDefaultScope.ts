@@ -64,10 +64,15 @@ export function useResolvedDefaultScope() {
         }
         return;
       }
-      const university = uniRes.data.find((u) => matchShort(u.shortName, DEFAULT_UNIVERSITY_SHORT));
+      // Si el shortName no matchea (un rename de catálogo, p. ej.), se degrada
+      // a la primera de la lista en vez de romper. Solo es error real si la
+      // lista viene vacía o la API falló.
+      const university =
+        uniRes.data.find((u) => matchShort(u.shortName, DEFAULT_UNIVERSITY_SHORT)) ??
+        uniRes.data[0];
       if (!university) {
         if (!cached) {
-          setScopeError('No se encontró la universidad UNICEN en la API.');
+          setScopeError('No hay universidades cargadas en la API.');
           setScopeReady(true);
         }
         return;
@@ -81,10 +86,11 @@ export function useResolvedDefaultScope() {
         }
         return;
       }
-      const faculty = facRes.data.find((f) => matchShort(f.shortName, DEFAULT_FACULTY_SHORT));
+      const faculty =
+        facRes.data.find((f) => matchShort(f.shortName, DEFAULT_FACULTY_SHORT)) ?? facRes.data[0];
       if (!faculty) {
         if (!cached) {
-          setScopeError('No se encontró la facultad EXACTAS en la API.');
+          setScopeError('No hay facultades cargadas para esta universidad.');
           setScopeReady(true);
         }
         return;
@@ -98,18 +104,14 @@ export function useResolvedDefaultScope() {
         }
         return;
       }
-      const career = carRes.data.find((c) => matchShort(c.shortName, DEFAULT_CAREER_SHORT));
-      if (!career) {
-        if (!cached) {
-          setScopeError(`No se encontró la carrera ${DEFAULT_CAREER_SHORT} en la API.`);
-          setScopeReady(true);
-        }
-        return;
-      }
+      // Una facultad recién cargada puede no tener carreras todavía: no es un
+      // error, se resuelve con carrera vacía y el usuario la elige.
+      const career =
+        carRes.data.find((c) => matchShort(c.shortName, DEFAULT_CAREER_SHORT)) ?? carRes.data[0];
       const scope: ResolvedDefaultScope = {
         universityId: university.id,
         facultyId: faculty.id,
-        careerId: career.id,
+        careerId: career?.id ?? '',
       };
       writeCache(scope);
       if (

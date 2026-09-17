@@ -4,6 +4,7 @@ import type {
   AppliedFilters,
   ResolvedDefaultScope,
 } from '@/features/home/types/filter';
+import { readStoredFaculty, type StoredFaculty } from '@/features/home/utils/storedFaculty';
 
 const EMPTY_DRAFT: DraftFilters = {
   universityId: '',
@@ -49,7 +50,10 @@ export function buildFilterSearchParams(applied: AppliedFilters): URLSearchParam
   return params;
 }
 
-function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
+export function readInitialFilters(
+  defaultScope: ResolvedDefaultScope | null,
+  storedFaculty: StoredFaculty | null = null,
+): {
   applied: AppliedFilters;
   urlHadUniversity: boolean;
 } {
@@ -88,6 +92,21 @@ function readInitialFilters(defaultScope: ResolvedDefaultScope | null): {
     };
   }
 
+  // La facultad que el usuario eligió la última vez gana sobre el default:
+  // el que vuelve cae en su facultad, no siempre en la de arranque. La carrera
+  // arranca vacía, se re-elige al cambiar de facultad.
+  if (storedFaculty) {
+    return {
+      applied: {
+        ...EMPTY_DRAFT,
+        universityId: storedFaculty.universityId,
+        facultyId: storedFaculty.facultyId,
+        search,
+      },
+      urlHadUniversity: false,
+    };
+  }
+
   if (defaultScope) {
     return {
       applied: {
@@ -110,7 +129,7 @@ export const useFilterState = (defaultScope: ResolvedDefaultScope | null) => {
   defaultScopeRef.current = defaultScope;
 
   const [applied, setApplied] = useState<AppliedFilters>(() => {
-    const { applied, urlHadUniversity } = readInitialFilters(defaultScope);
+    const { applied, urlHadUniversity } = readInitialFilters(defaultScope, readStoredFaculty());
     urlHadUniversityRef.current = urlHadUniversity;
     return applied;
   });
@@ -149,19 +168,18 @@ export const useFilterState = (defaultScope: ResolvedDefaultScope | null) => {
     setApplied((prev) => ({ ...prev, search }));
   }, []);
 
+  // "Restablecer filtros" mantiene la facultad actual y limpia el resto
+  // (carrera, plan, año, cuatrimestre, búsqueda). Saltar a otra facultad al
+  // resetear es desconcertante cuando hay varias.
   const clearAll = useCallback(() => {
-    const ds = defaultScopeRef.current;
-    if (ds) {
-      setApplied({
-        ...EMPTY_DRAFT,
-        universityId: ds.universityId,
-        facultyId: ds.facultyId,
-        careerId: ds.careerId,
-        search: '',
-      });
-    } else {
-      setApplied(EMPTY_APPLIED);
-    }
+    setApplied((prev) => {
+      const ds = defaultScopeRef.current;
+      return {
+        ...EMPTY_APPLIED,
+        universityId: prev.universityId || ds?.universityId || '',
+        facultyId: prev.facultyId || ds?.facultyId || '',
+      };
+    });
   }, []);
 
   return {

@@ -1,10 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import FilterBar from './FilterBar';
+import FacultySelector from './FacultySelector';
 import ListOfSubjects from './ListOfSubjects';
 import { useFilterState, buildFilterSearchParams } from '@/features/home/hooks/useFilterState';
 import { useFilterOptions } from '@/features/home/hooks/useFilterOptions';
 import { useResolvedDefaultScope } from '@/features/home/hooks/useResolvedDefaultScope';
 import { useSubjects } from '@/features/home/hooks/useSubjects';
+import { writeStoredFaculty } from '@/features/home/utils/storedFaculty';
 import type { FilterOptions } from '@/features/home/types/filter';
 import { DEFAULT_PLAN_YEAR } from '@/features/home/constants/filter';
 
@@ -45,6 +47,17 @@ function SubjectsView() {
     }
   }, [planOptions]);
 
+  // Solo se persiste la facultad que el usuario elige a mano (no la de arranque),
+  // así el que nunca cambió de facultad conserva su carrera por defecto al volver.
+  const { commitFilter } = filterState;
+  const handleFacultyChange = useCallback(
+    (id: string) => {
+      commitFilter('facultyId', id);
+      if (id) writeStoredFaculty({ universityId, facultyId: id });
+    },
+    [commitFilter, universityId],
+  );
+
   const homeQuery = useMemo(
     () => buildFilterSearchParams(filterState.applied).toString(),
     [filterState.applied],
@@ -75,6 +88,12 @@ function SubjectsView() {
 
   return (
     <>
+      <FacultySelector
+        options={options.faculties}
+        value={facultyId}
+        onChange={handleFacultyChange}
+        loading={options.loadingFaculties}
+      />
       <FilterBar
         applied={filterState.applied}
         commitFilter={filterState.commitFilter}

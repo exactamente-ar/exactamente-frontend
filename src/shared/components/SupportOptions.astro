@@ -1,0 +1,59 @@
+---
+import IconCoffee from '@/shared/components/icons/IconCoffee.astro';
+import IconMercadoPago from '@/shared/components/icons/IconMercadoPago.astro';
+import { CAFECITO_URL, MERCADOPAGO_ALIAS } from '@/shared/constants/support';
+---
+
+<div class='space-y-4'>
+  <a
+    href={CAFECITO_URL}
+    target='_blank'
+    rel='noopener noreferrer'
+    onclick="gtag('event', 'support_click', { method: 'cafecito', location: 'colaborar' })"
+    class='gradient-bg-animated inline-flex rounded-lg p-[1px]'
+  >
+    <span
+      class='inline-flex items-center gap-2 rounded-[calc(0.5rem-1px)] bg-zinc-950 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-zinc-900 transition-colors'
+    >
+      <IconCoffee size={18} />
+      Invitanos un cafecito
+    </span>
+  </a>
+
+  <div class='rounded-xl border border-zinc-800 bg-zinc-900/40 p-4'>
+    <div class='flex items-center gap-2 mb-2'>
+      <IconMercadoPago size={18} />
+      <p class='text-sm text-zinc-400'>O transferí al alias de Mercado Pago:</p>
+    </div>
+    <button
+      type='button'
+      data-copy={MERCADOPAGO_ALIAS}
+      onclick="gtag('event', 'support_click', { method: 'mercadopago', location: 'colaborar' })"
+      class='inline-flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 font-mono text-sm text-foreground hover:border-zinc-500 transition-colors'
+    >
+      <span>{MERCADOPAGO_ALIAS}</span>
+      <span data-copy-label class='text-xs text-zinc-500'>copiar</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  const label = btn?.querySelector<HTMLElement>('[data-copy-label]');
+
+  btn?.addEventListener('click', async () => {
+    const value = btn.dataset.copy;
+    if (!value) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      if (label) {
+        label.textContent = 'copiado';
+        setTimeout(() => {
+          label.textContent = 'copiar';
+        }, 2000);
+      }
+    } catch {
+      // Si el navegador bloquea el portapapeles, el alias igual está a la vista.
+    }
+  });
+</script>
