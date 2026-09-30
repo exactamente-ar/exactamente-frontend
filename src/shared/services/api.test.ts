@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RESOURCE_TYPE_MAP, mapResource, mapSubject } from './api';
+import { RESOURCE_TYPE_MAP, mapBlog, mapResource, mapSubject, getBlog } from './api';
 
 // Mínimo viable de un BackendSubject; cada test pisa solo lo que le importa.
 function backendSubject(overrides: Record<string, unknown> = {}) {
@@ -101,6 +101,96 @@ describe('mapResource', () => {
     expect(mapped.examYear).toBeNull();
     expect(mapped.examMonth).toBeNull();
     expect(mapped.topic).toBeNull();
+  });
+});
+
+function backendBlog(overrides: Record<string, unknown> = {}) {
+  return {
+    subjectId: 's1',
+    subtopics: [{ id: 'st1', name: 'General', slug: 'general', isDefault: true }],
+    posts: [
+      {
+        id: 'p1',
+        subtopicId: 'st1',
+        body: '¿Alguien tiene el parcial 2024?',
+        authority: 'anonymous',
+        status: 'published',
+        netScore: 0,
+        createdAt: '2026-08-12T10:00:00.000Z',
+        author: null,
+        images: [],
+        comments: [],
+      },
+    ],
+    ...overrides,
+  };
+}
+
+describe('mapBlog', () => {
+  it('conserva la estructura del blog sin transformar los campos', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(mapBlog(backendBlog() as any)).toEqual(backendBlog());
+  });
+});
+
+describe('getBlog', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('envía el token de autorización cuando se lo pasan y devuelve ApiResult exitoso', async () => {
+    const mockData = { subjectId: 's1', subtopics: [], posts: [] };
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockData,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getBlog('s1', 'token-123');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/api/v1/blogs/s1'),
+      expect.objectContaining({ headers: { Authorization: 'Bearer token-123' } }),
+    );
+    expect(result).toEqual({ data: mockData, error: null });
+  });
+
+  it('no envía Authorization sin token', async () => {
+    const mockData = { subjectId: 's1', subtopics: [], posts: [] };
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockData,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getBlog('s1');
+
+    const [url, opts] = fetchMock.mock.calls[0] as [string, { headers?: Record<string, string> }];
+    expect(url).toContain('/api/v1/blogs/s1');
+    expect(opts?.headers?.Authorization).toBeUndefined();
+    expect(result).toEqual({ data: mockData, error: null });
+  });
+
+  it('devuelve ApiResult con error si la respuesta no es ok', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: async () => ({ error: 'Materia no encontrada' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getBlog('s1');
+
+    expect(result).toEqual({ data: [], error: 'Materia no encontrada' });
+  });
+
+  it('devuelve ApiResult con error si fetch arroja una excepción de red', async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getBlog('s1');
+
+    expect(result).toEqual({ data: [], error: 'Network error' });
   });
 });
 
