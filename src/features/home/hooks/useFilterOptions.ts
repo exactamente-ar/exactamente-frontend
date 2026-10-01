@@ -70,6 +70,7 @@ export const useFilterOptions = (filters: DraftFilters) => {
   const careerOptions = useMemo(() => careers.map(toOption), [careers]);
 
   return {
+    faculties,
     universityOptions,
     facultyOptions,
     careerOptions,

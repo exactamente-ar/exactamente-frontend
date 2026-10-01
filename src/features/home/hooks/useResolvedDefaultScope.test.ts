@@ -25,7 +25,9 @@ beforeEach(() => {
 describe('useResolvedDefaultScope', () => {
   it('resuelve el scope cuando todos los shortName matchean', async () => {
     mockGetUniversities.mockResolvedValue(ok([{ id: 'u1', name: 'UNICEN', shortName: 'UNICEN' }]));
-    mockGetFaculties.mockResolvedValue(ok([{ id: 'f1', name: 'Exactas', shortName: 'EXACTAS' }]));
+    mockGetFaculties.mockResolvedValue(
+      ok([{ id: 'f1', name: 'Exactas', shortName: 'EXACTAS', slug: 'exactas' }]),
+    );
     mockGetCareers.mockResolvedValue(
       ok([{ id: 'c1', name: 'Sistemas', shortName: 'Ing. en Sistemas' }]),
     );
@@ -45,8 +47,8 @@ describe('useResolvedDefaultScope', () => {
     mockGetUniversities.mockResolvedValue(ok([{ id: 'u1', name: 'UNICEN', shortName: 'UNICEN' }]));
     mockGetFaculties.mockResolvedValue(
       ok([
-        { id: 'fA', name: 'Cs. Exactas', shortName: 'FCEyN' },
-        { id: 'fB', name: 'Ingeniería', shortName: 'FI' },
+        { id: 'fA', name: 'Cs. Exactas', shortName: 'FCEyN', slug: 'exactas' },
+        { id: 'fB', name: 'Ingeniería', shortName: 'FI', slug: 'ingenieria' },
       ]),
     );
     mockGetCareers.mockResolvedValue(ok([{ id: 'cA', name: 'Algo', shortName: 'Otra' }]));
@@ -85,7 +87,9 @@ describe('useResolvedDefaultScope', () => {
 
   it('resuelve sin carrera si la facultad todavía no tiene carreras cargadas', async () => {
     mockGetUniversities.mockResolvedValue(ok([{ id: 'u1', name: 'UNICEN', shortName: 'UNICEN' }]));
-    mockGetFaculties.mockResolvedValue(ok([{ id: 'f1', name: 'Nueva', shortName: 'NUEVA' }]));
+    mockGetFaculties.mockResolvedValue(
+      ok([{ id: 'f1', name: 'Nueva', shortName: 'NUEVA', slug: 'nueva' }]),
+    );
     mockGetCareers.mockResolvedValue(ok([]));
 
     const { result } = renderHook(() => useResolvedDefaultScope());

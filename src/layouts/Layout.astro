@@ -6,6 +6,8 @@ import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
 import SupportBanner from '@/shared/components/SupportBanner.astro';
+import { FACULTY_SLUGS, DEFAULT_FACULTY_SLUG } from '@/core/theme/facultyPalettes';
+import { STORED_FACULTY_KEY } from '@/features/home/utils/storedFaculty';
 
 interface Props {
   hideFooterSponsor?: boolean;
@@ -23,6 +25,24 @@ const { hideFooterSponsor = false } = Astro.props;
     <meta name='google-site-verification' content='W4j-waCOcYtizIRcI-3fHGekR9CnUWYutunME4biXhc' />
     <GoogleAnalytics />
 
+    <!-- Aplica el tema de la facultad guardada antes de pintar, para evitar el flash del tema por defecto. -->
+    <script
+      is:inline
+      define:vars={{
+        storageKey: STORED_FACULTY_KEY,
+        slugs: FACULTY_SLUGS,
+        fallback: DEFAULT_FACULTY_SLUG,
+      }}
+    >
+      let slug = fallback;
+      try {
+        const stored = JSON.parse(localStorage.getItem(storageKey) || 'null');
+        if (stored && slugs.indexOf(stored.slug) !== -1) slug = stored.slug;
+      } catch {
+        // localStorage no disponible: se queda el tema por defecto.
+      }
+      document.documentElement.dataset.faculty = slug;
+    </script>
     <title>Exactamente</title>
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
