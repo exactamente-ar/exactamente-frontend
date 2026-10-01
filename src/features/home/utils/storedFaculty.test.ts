@@ -29,4 +29,17 @@ describe('storedFaculty', () => {
     writeStoredFaculty({ universityId: '', facultyId: 'f2' });
     expect(localStorage.getItem(STORED_FACULTY_KEY)).toBeNull();
   });
+
+  it('guarda y relee el slug de la facultad', () => {
+    writeStoredFaculty({ universityId: 'u1', facultyId: 'f2', slug: 'humanas' });
+    expect(readStoredFaculty()).toEqual({ universityId: 'u1', facultyId: 'f2', slug: 'humanas' });
+  });
+
+  it('lee valores viejos sin slug (compatibilidad)', () => {
+    localStorage.setItem(
+      STORED_FACULTY_KEY,
+      JSON.stringify({ universityId: 'u1', facultyId: 'f2' }),
+    );
+    expect(readStoredFaculty()).toEqual({ universityId: 'u1', facultyId: 'f2' });
+  });
 });

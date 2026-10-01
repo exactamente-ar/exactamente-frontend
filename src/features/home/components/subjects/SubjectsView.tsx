@@ -6,6 +6,7 @@ import { useFilterState, buildFilterSearchParams } from '@/features/home/hooks/u
 import { useFilterOptions } from '@/features/home/hooks/useFilterOptions';
 import { useResolvedDefaultScope } from '@/features/home/hooks/useResolvedDefaultScope';
 import { useSubjects } from '@/features/home/hooks/useSubjects';
+import { useFacultyTheme } from '@/features/home/hooks/useFacultyTheme';
 import { writeStoredFaculty } from '@/features/home/utils/storedFaculty';
 import type { FilterOptions } from '@/features/home/types/filter';
 import { DEFAULT_PLAN_YEAR } from '@/features/home/constants/filter';
@@ -21,6 +22,7 @@ function SubjectsView() {
   );
 
   const {
+    faculties,
     universityOptions,
     facultyOptions,
     careerOptions,
@@ -53,10 +55,14 @@ function SubjectsView() {
   const handleFacultyChange = useCallback(
     (id: string) => {
       commitFilter('facultyId', id);
-      if (id) writeStoredFaculty({ universityId, facultyId: id });
+      const slug = faculties.find((f) => f.id === id)?.slug;
+      if (id) writeStoredFaculty({ universityId, facultyId: id, slug });
     },
-    [commitFilter, universityId],
+    [commitFilter, universityId, faculties],
   );
+
+  // El tema cambia solo al cambiar la facultad aplicada, sin recargar.
+  useFacultyTheme(facultyId, faculties);
 
   const homeQuery = useMemo(
     () => buildFilterSearchParams(filterState.applied).toString(),

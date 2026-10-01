@@ -3,6 +3,8 @@ export const STORED_FACULTY_KEY = 'exactamente:selectedFaculty:v1';
 export type StoredFaculty = {
   universityId: string;
   facultyId: string;
+  /** Slug de la facultad, para pintar el tema antes de que cargue la API. Ausente en valores viejos. */
+  slug?: string;
 };
 
 /**
@@ -18,7 +20,12 @@ export function readStoredFaculty(): StoredFaculty | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<StoredFaculty>;
     if (!parsed.universityId || !parsed.facultyId) return null;
-    return { universityId: parsed.universityId, facultyId: parsed.facultyId };
+    const stored: StoredFaculty = {
+      universityId: parsed.universityId,
+      facultyId: parsed.facultyId,
+    };
+    if (typeof parsed.slug === 'string' && parsed.slug) stored.slug = parsed.slug;
+    return stored;
   } catch {
     return null;
   }

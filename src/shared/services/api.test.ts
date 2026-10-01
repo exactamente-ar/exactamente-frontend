@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RESOURCE_TYPE_MAP, mapResource, mapSubject } from './api';
+import { RESOURCE_TYPE_MAP, getFaculties, mapResource, mapSubject } from './api';
 
 // Mínimo viable de un BackendSubject; cada test pisa solo lo que le importa.
 function backendSubject(overrides: Record<string, unknown> = {}) {
@@ -166,5 +166,39 @@ describe('withCache', () => {
     expect(primera.error).toBe('boom');
     expect(segunda.error).toBeNull();
     expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('getFaculties', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('expone el slug de cada facultad', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [
+          {
+            id: 'f1',
+            universityId: 'u-slug-test',
+            name: 'Facultad de Ciencias Exactas',
+            shortName: 'EXACTAS',
+            slug: 'exactas',
+            createdAt: '2024-01-01',
+          },
+        ],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await getFaculties({ universityId: 'u-slug-test' });
+
+    expect(result).toEqual({
+      data: [
+        { id: 'f1', name: 'Facultad de Ciencias Exactas', shortName: 'EXACTAS', slug: 'exactas' },
+      ],
+      error: null,
+    });
   });
 });

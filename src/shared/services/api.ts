@@ -24,6 +24,7 @@ type BackendFaculty = {
   universityId: string;
   name: string;
   shortName: string;
+  slug: string;
   createdAt: string;
 };
 
@@ -43,6 +44,7 @@ export type Faculty = {
   id: string;
   name: string;
   shortName: string;
+  slug: string;
 };
 
 export type CareerPlan = {
@@ -254,7 +256,7 @@ export function getFaculties(params: { universityId: string }): Promise<ApiResul
       if (!response.ok) return { data: [], error: `Request failed with status ${response.status}` };
       const json: { data: BackendFaculty[] } = await response.json();
       return {
-        data: json.data.map(({ id, name, shortName }) => ({ id, name, shortName })),
+        data: json.data.map(({ id, name, shortName, slug }) => ({ id, name, shortName, slug })),
         error: null,
       };
     } catch (err) {

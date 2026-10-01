@@ -3,8 +3,6 @@
 @theme {
   /* 🎨 Colores base */
   --color-primary: #efefef; /* Usa un color sólido compatible con Tailwind */
-  /* Si necesitas el gradiente, crea una clase utilitaria en Tailwind: */
-  /* .bg-primary-gradient { background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #f6e05e, #38b2ac, #6b46c1); } */
   --color-primary-foreground: #131314; /* Texto o íconos sobre primario */
 
   --color-secondary: #1e40af; /* Elementos secundarios: cards, fondos alternos */
@@ -150,6 +148,78 @@ select option {
   font-weight: bold;
 }
 
+/* Tema por facultad: los defaults son Exactas; data-faculty en <html> pisa la paleta.
+   Mantener en sincronía con src/core/theme/facultyPalettes.ts (lo verifica globalCss.test.ts). */
+:root {
+  --theme-accent: #facc15;
+  --theme-1: #facc15;
+  --theme-2: #fde047;
+  --theme-3: #f6e05e;
+  --theme-4: #fbbf24;
+  --theme-5: #facc15;
+  --theme-dark-1: #5a4a00;
+  --theme-dark-2: #6b5600;
+  --theme-dark-3: #4a3d00;
+  --theme-dark-4: #5c4300;
+  --theme-dark-5: #5a4a00;
+}
+
+html[data-faculty='exactas'] {
+  --theme-accent: #facc15;
+  --theme-1: #facc15;
+  --theme-2: #fde047;
+  --theme-3: #f6e05e;
+  --theme-4: #fbbf24;
+  --theme-5: #facc15;
+  --theme-dark-1: #5a4a00;
+  --theme-dark-2: #6b5600;
+  --theme-dark-3: #4a3d00;
+  --theme-dark-4: #5c4300;
+  --theme-dark-5: #5a4a00;
+}
+
+html[data-faculty='veterinarias'] {
+  --theme-accent: #a78bfa;
+  --theme-1: #a78bfa;
+  --theme-2: #c4b5fd;
+  --theme-3: #c084fc;
+  --theme-4: #d8b4fe;
+  --theme-5: #a78bfa;
+  --theme-dark-1: #2d1b69;
+  --theme-dark-2: #3b2a7a;
+  --theme-dark-3: #4c1d95;
+  --theme-dark-4: #33256b;
+  --theme-dark-5: #2d1b69;
+}
+
+html[data-faculty='humanas'] {
+  --theme-accent: #fb923c;
+  --theme-1: #fb923c;
+  --theme-2: #fdba74;
+  --theme-3: #f97316;
+  --theme-4: #fed7aa;
+  --theme-5: #fb923c;
+  --theme-dark-1: #6b2f0a;
+  --theme-dark-2: #7c3a10;
+  --theme-dark-3: #5a2a08;
+  --theme-dark-4: #6e3410;
+  --theme-dark-5: #6b2f0a;
+}
+
+html[data-faculty='economicas'] {
+  --theme-accent: #38bdf8;
+  --theme-1: #38bdf8;
+  --theme-2: #7dd3fc;
+  --theme-3: #0ea5e9;
+  --theme-4: #bae6fd;
+  --theme-5: #38bdf8;
+  --theme-dark-1: #0c4a6e;
+  --theme-dark-2: #075985;
+  --theme-dark-3: #0b3f5c;
+  --theme-dark-4: #0a4f74;
+  --theme-dark-5: #0c4a6e;
+}
+
 @keyframes gradient-animation {
   0% {
     background-position: 0% 50%;
@@ -163,7 +233,14 @@ select option {
 }
 
 .gradient-text {
-  background-image: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background-image: linear-gradient(
+    to right,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   background-repeat: no-repeat;
   -webkit-background-clip: text;
@@ -176,7 +253,14 @@ select option {
 }
 
 .gradient-bg {
-  background-image: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background-image: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   background-repeat: no-repeat;
   animation: gradient-animation 8s linear infinite;
@@ -214,7 +298,14 @@ select option {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   -webkit-mask:
@@ -235,13 +326,27 @@ select option {
 }
 
 .gradient-bg-animated {
-  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
 }
 
 .gradient-bg-dark {
-  background: linear-gradient(45deg, #2d1b69, #6d1a40, #5a4a00, #0d4a47, #2d1b69);
+  background: linear-gradient(
+    45deg,
+    var(--theme-dark-1),
+    var(--theme-dark-2),
+    var(--theme-dark-3),
+    var(--theme-dark-4),
+    var(--theme-dark-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
 }
@@ -256,7 +361,14 @@ select option {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='white' stroke-width='1.5' stroke-dasharray='6 4'/%3E%3C/svg%3E");
@@ -286,7 +398,14 @@ select option {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    to right,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-animation 8s linear infinite;
 }
@@ -297,7 +416,14 @@ select option {
   inset: 0;
   border-radius: inherit;
   padding: 1px; /* grosor del borde */
-  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   transform: translateZ(0);
@@ -324,7 +450,14 @@ select option {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    to right,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   opacity: 0.4;
@@ -340,7 +473,14 @@ select option {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    to right,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   opacity: 0.1;
@@ -352,7 +492,14 @@ select option {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   -webkit-mask:
@@ -370,7 +517,14 @@ select option {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(45deg, #6b46c1, #b83280, #f6e05e, #38b2ac, #6b46c1);
+  background: linear-gradient(
+    45deg,
+    var(--theme-1),
+    var(--theme-2),
+    var(--theme-3),
+    var(--theme-4),
+    var(--theme-5)
+  );
   background-size: 300% 300%;
   animation: gradient-border 8s linear infinite;
   -webkit-mask:
