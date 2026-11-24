@@ -1,7 +1,7 @@
 // @vitest-environment node
 // Los componentes .astro se renderizan a string con el Container API, no se
 // montan en jsdom (ver Footer.test.ts para el porqué del entorno node).
-import { getContainerRenderer } from '@astrojs/react/container-renderer';
+import { getContainerRenderer } from '@astrojs/react';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { loadRenderers } from 'astro:container';
 import { describe, expect, it } from 'vitest';
