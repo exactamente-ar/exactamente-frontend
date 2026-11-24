@@ -4,7 +4,10 @@ import SubjectsSection from '@/features/home/components/subjects/SubjectsSection
 import SponsorsSection from '@/features/home/components/sponsors/SponsorsSection.astro';
 ---
 
-<Layout hideFooterSponsor={true}>
+<Layout
+  description='Resúmenes, parciales y finales de tu carrera universitaria, organizados por materia y compartidos por estudiantes.'
+  hideFooterSponsor={true}
+>
   <SubjectsSection />
   <SponsorsSection />
 </Layout>

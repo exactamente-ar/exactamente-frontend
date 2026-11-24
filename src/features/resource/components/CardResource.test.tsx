@@ -78,3 +78,57 @@ describe('CardResource — descarga', () => {
     expect(assign).not.toHaveBeenCalled();
   });
 });
+
+describe('CardResource — eventos de analítica', () => {
+  let gtag: ReturnType<typeof vi.fn<NonNullable<Window['gtag']>>>;
+
+  beforeEach(() => {
+    gtag = vi.fn<NonNullable<Window['gtag']>>();
+    window.gtag = gtag;
+  });
+
+  afterEach(() => {
+    delete window.gtag;
+  });
+
+  it('registra la descarga antes de navegar', async () => {
+    render(<CardResource {...props} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /descargar/i }));
+
+    expect(gtag).toHaveBeenCalledWith('event', 'resource_download', {
+      resource_id: 'abc-123',
+      type: 'parcial',
+      transport_type: 'beacon',
+    });
+    expect(gtag.mock.invocationCallOrder[0]).toBeLessThan(assign.mock.invocationCallOrder[0]);
+  });
+
+  it('registra la vista previa al abrirla, no al cerrarla', async () => {
+    render(<CardResource {...props} />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Vista Previa' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Ocultar Vista' }));
+
+    expect(gtag).toHaveBeenCalledTimes(1);
+    expect(gtag).toHaveBeenCalledWith('event', 'resource_preview', {
+      resource_id: 'abc-123',
+      type: 'parcial',
+      mode: 'inline',
+    });
+  });
+
+  it('registra la vista completa', async () => {
+    render(<CardResource {...props} />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Vista Previa' }));
+    gtag.mockClear();
+    await userEvent.click(screen.getByRole('button', { name: 'Ver completo' }));
+
+    expect(gtag).toHaveBeenCalledWith('event', 'resource_preview', {
+      resource_id: 'abc-123',
+      type: 'parcial',
+      mode: 'fullscreen',
+    });
+  });
+});

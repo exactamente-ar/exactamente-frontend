@@ -24,7 +24,10 @@ const homeHref = homeQuery ? `../?${homeQuery}#subjects` : `../#subjects`;
 const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
 ---
 
-<Layout>
+<Layout
+  title={`${subject.title} — Finales`}
+  description={`Finales anteriores de ${subject.title} para practicar, compartidos por estudiantes.`}
+>
   <ContainerSection id='finales'>
     <Breadcrumb url={homeHref}>
       <ContainerLink

@@ -6,6 +6,7 @@ import IconVisibility from '@/shared/components/icons/react/IconVisibility';
 import IconVisibilityOff from '@/shared/components/icons/react/IconVisibilityOff';
 import HeaderCardResource from './HeaderCardResource';
 import { usePreview } from '@/features/resource/hooks/usePreview';
+import { trackEvent } from '@/shared/analytics/trackEvent';
 import { getResourceDownloadUrl } from '@/shared/services/api';
 
 interface Props {
@@ -67,8 +68,20 @@ const CardResource: React.FC<Props> = ({
    * pone el backend con Content-Disposition.
    */
   const handleDownload = useCallback(() => {
+    // `beacon` para que el evento salga aunque la navegación descarte la página.
+    trackEvent('resource_download', { resource_id: id, type, transport_type: 'beacon' });
     window.location.assign(getResourceDownloadUrl(id));
-  }, [id]);
+  }, [id, type]);
+
+  const handleTogglePreview = () => {
+    if (!previewOpen) trackEvent('resource_preview', { resource_id: id, type, mode: 'inline' });
+    togglePreview();
+  };
+
+  const openFullscreen = () => {
+    trackEvent('resource_preview', { resource_id: id, type, mode: 'fullscreen' });
+    setFullscreenOpen(true);
+  };
 
   return (
     <div className='flex flex-col bg-gradient-to-br from-zinc-900/90 to-zinc-950/95 border border-zinc-800/60 rounded-xl hover:border-zinc-700/80 transition-all duration-300 group overflow-hidden'>
@@ -91,7 +104,7 @@ const CardResource: React.FC<Props> = ({
                 Vista previa
               </span>
               <button
-                onClick={() => setFullscreenOpen(true)}
+                onClick={openFullscreen}
                 aria-label='Ver completo'
                 title='Ver completo'
                 className='cursor-pointer flex items-center justify-center p-2 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-md transition-all duration-200'
@@ -137,7 +150,7 @@ const CardResource: React.FC<Props> = ({
             </button>
 
             <button
-              onClick={togglePreview}
+              onClick={handleTogglePreview}
               className={`preview-toggle cursor-pointer group/preview w-full sm:w-max font-bold flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 border ${
                 previewOpen
                   ? 'bg-red-800/50 hover:bg-red-700/60 border-red-700 hover:border-red-600 text-white'

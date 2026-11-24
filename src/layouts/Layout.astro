@@ -8,13 +8,19 @@ import Header from '@/shared/components/Header.astro';
 import SupportBanner from '@/shared/components/SupportBanner.astro';
 
 interface Props {
+  title?: string;
+  description?: string;
   hideFooterSponsor?: boolean;
 }
-const { hideFooterSponsor = false } = Astro.props;
+
+const DEFAULT_DESCRIPTION =
+  'Encontrá y compartí resúmenes, parciales y finales de tu carrera universitaria, organizados por materia.';
+
+const { title, description = DEFAULT_DESCRIPTION, hideFooterSponsor = false } = Astro.props;
 ---
 
 <!doctype html>
-<html lang='en' class='scroll-smooth'>
+<html lang='es' class='scroll-smooth'>
   <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
@@ -23,7 +29,8 @@ const { hideFooterSponsor = false } = Astro.props;
     <meta name='google-site-verification' content='W4j-waCOcYtizIRcI-3fHGekR9CnUWYutunME4biXhc' />
     <GoogleAnalytics />
 
-    <title>Exactamente</title>
+    <title>{title ? `${title} | Exactamente` : 'Exactamente'}</title>
+    <meta name='description' content={description} />
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
     <div class='fixed inset-0 bg-noise opacity-10 -z-0'></div>
