@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { jsPDF } from 'jspdf';
 import { uploadResource, checkDuplicate } from '@/shared/services/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { trackEvent } from '@/shared/analytics/trackEvent';
 import type { UploadFormState, UploadFormErrors } from '../types/form';
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
@@ -162,6 +163,7 @@ export function useUploadForm(initialValues?: InitialValues) {
       }
 
       setShowSuccess(true);
+      trackEvent('resource_upload', { subject_id: formData.subjectId, type: formData.type });
       setFormData(INITIAL_STATE);
       setDuplicateWarning(null);
       setDuplicateConfirmed(false);
