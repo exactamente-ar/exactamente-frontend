@@ -6,17 +6,33 @@ import Footer from '@/shared/components/Footer.astro';
 import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
 import SupportBanner from '@/shared/components/SupportBanner.astro';
+import { SITE_NAME, toAbsoluteUrl } from '@/shared/constants/site';
 
 interface Props {
   title?: string;
   description?: string;
   hideFooterSponsor?: boolean;
+  /** URL canónica absoluta. Por defecto, el origen de producción + el path actual. */
+  canonical?: string;
+  /** Imagen para Open Graph. Si es relativa se resuelve sobre el origen de producción. */
+  ogImage?: string;
 }
 
 const DEFAULT_DESCRIPTION =
   'Encontrá y compartí resúmenes, parciales y finales de tu carrera universitaria, organizados por materia.';
 
-const { title, description = DEFAULT_DESCRIPTION, hideFooterSponsor = false } = Astro.props;
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  hideFooterSponsor = false,
+  canonical,
+  ogImage = '/logo.png',
+} = Astro.props;
+
+const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+// Sin query string: los parámetros de navegación (`?home=`) no cambian el contenido.
+const canonicalUrl = canonical ?? toAbsoluteUrl(Astro.url.pathname);
+const ogImageUrl = toAbsoluteUrl(ogImage);
 ---
 
 <!doctype html>
@@ -29,8 +45,19 @@ const { title, description = DEFAULT_DESCRIPTION, hideFooterSponsor = false } = 
     <meta name='google-site-verification' content='W4j-waCOcYtizIRcI-3fHGekR9CnUWYutunME4biXhc' />
     <GoogleAnalytics />
 
-    <title>{title ? `${title} | Exactamente` : 'Exactamente'}</title>
+    <title>{fullTitle}</title>
     <meta name='description' content={description} />
+    <link rel='canonical' href={canonicalUrl} />
+
+    <meta property='og:title' content={fullTitle} />
+    <meta property='og:description' content={description} />
+    <meta property='og:url' content={canonicalUrl} />
+    <meta property='og:type' content='website' />
+    <meta property='og:site_name' content={SITE_NAME} />
+    <meta property='og:locale' content='es_AR' />
+    <meta property='og:image' content={ogImageUrl} />
+    <meta name='twitter:card' content='summary' />
+    <slot name='head' />
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
     <div class='fixed inset-0 bg-noise opacity-10 -z-0'></div>
