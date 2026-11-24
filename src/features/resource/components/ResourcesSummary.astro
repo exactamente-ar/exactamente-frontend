@@ -1,0 +1,19 @@
+---
+// Texto descriptivo de la materia, renderizado en el servidor. Los buscadores
+// que no ejecutan JS lo leen aunque la lista de recursos sea una island.
+interface Props {
+  lines: string[];
+}
+
+const { lines } = Astro.props;
+---
+
+{
+  lines.length > 0 && (
+    <section aria-label='Sobre esta materia' class='mt-4 px-2 text-foreground-muted space-y-1'>
+      {lines.map((line) => (
+        <p>{line}</p>
+      ))}
+    </section>
+  )
+}

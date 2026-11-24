@@ -12,6 +12,8 @@ import ContainerLink from '@/shared/components/ContainerLink.astro';
 import IconDocument from '@/shared/components/icons/IconDocument.astro';
 import IconUniversity from '@/shared/components/icons/IconUniversity.astro';
 import ResourcesView from '@/features/resource/components/ResourcesView';
+import ResourcesSummary from '@/features/resource/components/ResourcesSummary.astro';
+import { loadResourcesPage } from '@/features/resource/services/resourcesPage';
 import { getSubjectById } from '@/shared/services/api';
 
 const { id } = Astro.params;
@@ -21,6 +23,9 @@ if (!subject) {
   return Astro.redirect('/');
 }
 
+const page = await loadResourcesPage(subject, 'Resumenes', Astro.url.pathname);
+Astro.response.headers.set('Cache-Control', page.cacheControl);
+
 const homeQuery = Astro.url.searchParams.get('home') ?? '';
 const homeHref = homeQuery ? `../?${homeQuery}#subjects` : `../#subjects`;
 const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
@@ -28,8 +33,10 @@ const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
 
 <Layout
   title={`${subject.title} — Resúmenes`}
-  description={`Resúmenes de ${subject.title} para estudiar, compartidos por estudiantes.`}
+  description={page.description}
+  canonical={page.canonicalUrl}
 >
+  <script is:inline slot='head' type='application/ld+json' set:html={page.jsonLd} />
   <ContainerSection id='resumenes'>
     <Breadcrumb url={homeHref}>
       <ContainerLink
@@ -62,6 +69,13 @@ const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
         </div>
       </ContainerLink>
     </Breadcrumb>
-    <ResourcesView client:load type='Resumenes' subject={subject} />
+    <ResourcesSummary lines={page.summary} />
+    <ResourcesView
+      client:load
+      type='Resumenes'
+      subject={subject}
+      initialData={page.initialData}
+      initialError={page.initialError}
+    />
   </ContainerSection>
 </Layout>

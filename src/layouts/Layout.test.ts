@@ -9,10 +9,13 @@ import Layout from './Layout.astro';
 
 // El Header monta islands de React (UserMenu), así que el container necesita
 // el renderer de React para poder renderizar el layout completo.
-async function render(props: Record<string, unknown> = {}) {
+async function render(
+  props: Record<string, unknown> = {},
+  { url = 'http://localhost:4321/', slots }: { url?: string; slots?: Record<string, string> } = {},
+) {
   const renderers = await loadRenderers([getContainerRenderer()]);
   const container = await AstroContainer.create({ renderers });
-  return container.renderToString(Layout, { props });
+  return container.renderToString(Layout, { props, request: new Request(url), slots });
 }
 
 describe('Layout.astro', () => {
@@ -44,5 +47,70 @@ describe('Layout.astro', () => {
     const html = await render({ description: 'Parciales de Álgebra.' });
 
     expect(html).toContain('<meta name="description" content="Parciales de Álgebra.">');
+  });
+});
+
+describe('Layout.astro — canonical', () => {
+  it('por defecto usa el origen de producción y el path actual, sin query string', async () => {
+    const html = await render({}, { url: 'http://localhost:4321/s1/parciales?home=abc' });
+
+    expect(html).toContain(
+      '<link rel="canonical" href="https://www.exactamente.com.ar/s1/parciales">',
+    );
+  });
+
+  it('respeta la URL canónica recibida', async () => {
+    const html = await render({ canonical: 'https://www.exactamente.com.ar/otra' });
+
+    expect(html).toContain('<link rel="canonical" href="https://www.exactamente.com.ar/otra">');
+  });
+});
+
+describe('Layout.astro — Open Graph y Twitter', () => {
+  it('publica título, descripción, URL, tipo, sitio e idioma', async () => {
+    const html = await render(
+      { title: 'Álgebra — Parciales', description: 'Parciales de Álgebra.' },
+      { url: 'http://localhost:4321/s1/parciales?home=abc' },
+    );
+
+    expect(html).toContain(
+      '<meta property="og:title" content="Álgebra — Parciales | Exactamente">',
+    );
+    expect(html).toContain('<meta property="og:description" content="Parciales de Álgebra.">');
+    expect(html).toContain(
+      '<meta property="og:url" content="https://www.exactamente.com.ar/s1/parciales">',
+    );
+    expect(html).toContain('<meta property="og:type" content="website">');
+    expect(html).toContain('<meta property="og:site_name" content="Exactamente">');
+    expect(html).toContain('<meta property="og:locale" content="es_AR">');
+    expect(html).toContain('<meta name="twitter:card" content="summary">');
+  });
+
+  it('sin imagen usa el logo con URL absoluta', async () => {
+    const html = await render();
+
+    expect(html).toContain(
+      '<meta property="og:image" content="https://www.exactamente.com.ar/logo.png">',
+    );
+  });
+
+  it('convierte en absoluta una imagen relativa', async () => {
+    const html = await render({ ogImage: '/images/materia-2.webp' });
+
+    expect(html).toContain(
+      '<meta property="og:image" content="https://www.exactamente.com.ar/images/materia-2.webp">',
+    );
+  });
+});
+
+describe('Layout.astro — slot head', () => {
+  it('inserta dentro del <head> lo que recibe la página', async () => {
+    const html = await render(
+      {},
+      { slots: { head: '<script type="application/ld+json">{"a":1}</script>' } },
+    );
+    const head = html.slice(html.indexOf('<head>'), html.indexOf('</head>'));
+
+    expect(head).toContain('<script type="application/ld+json">{"a":1}</script>');
   });
 });
