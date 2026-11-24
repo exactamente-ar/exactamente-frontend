@@ -1,0 +1,46 @@
+---
+// SSR: es el índice en HTML plano que leen los crawlers que no ejecutan JS, y
+// tiene que reflejar el catálogo sin esperar un redeploy.
+export const prerender = false;
+
+import Layout from '@/layouts/Layout.astro';
+import SubjectsIndex from '@/features/subjects-index/components/SubjectsIndex.astro';
+import { SUBJECTS_INDEX_CACHE_CONTROL } from '@/features/subjects-index/constants/cache';
+import { groupSubjects } from '@/features/subjects-index/utils/groupSubjects';
+import { getAllSubjects } from '@/shared/services/api';
+
+const result = await getAllSubjects();
+const universities = result.error === null ? groupSubjects(result.data) : null;
+
+// Solo se cachea en el CDN una respuesta buena: un error no debe quedar
+// servido durante una hora.
+if (universities) {
+  Astro.response.headers.set('Cache-Control', SUBJECTS_INDEX_CACHE_CONTROL);
+} else {
+  Astro.response.status = 503;
+  Astro.response.headers.set('Cache-Control', 'no-store');
+}
+---
+
+<Layout
+  title='Todas las materias'
+  description='Índice completo de materias por universidad, facultad, carrera y año, con sus resúmenes, parciales y finales compartidos por estudiantes.'
+>
+  <div class='w-full max-w-6xl pt-24 pb-16'>
+    <h1 class='text-3xl font-bold text-zinc-100 mb-4'>
+      Todas las <span class='gradient-text'>materias</span>
+    </h1>
+    <p class='text-zinc-400 mb-10'>
+      Elige una materia para ver sus resúmenes, parciales y finales.
+    </p>
+    {
+      universities ? (
+        <SubjectsIndex universities={universities} />
+      ) : (
+        <p class='text-zinc-400'>
+          No pudimos cargar las materias en este momento. Vuelve a intentarlo en unos minutos.
+        </p>
+      )
+    }
+  </div>
+</Layout>
