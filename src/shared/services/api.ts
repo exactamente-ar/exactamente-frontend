@@ -318,6 +318,47 @@ export function getSubjects(params?: Record<string, string>): Promise<ApiResult<
   });
 }
 
+// Tope de `limit` que acepta GET /subjects (subjectFiltersSchema en el backend).
+const SUBJECTS_MAX_LIMIT = 100;
+
+/**
+ * Todas las materias, recorriendo cada página del listado.
+ *
+ * A diferencia de `getSubjects`, no se corta en la primera página: lo usan el
+ * índice `/materias` y el sitemap, que tienen que listar el catálogo completo.
+ * Si falla cualquier página devuelve error en vez de un listado parcial.
+ */
+export function getAllSubjects(): Promise<ApiResult<Subject[]>> {
+  const baseUrl = new URL(`${BASE_URL}/api/v1/subjects`);
+  baseUrl.searchParams.set('limit', String(SUBJECTS_MAX_LIMIT));
+  const key = `${baseUrl.toString()}&all=true`;
+  return withCache(key, async () => {
+    try {
+      const subjects: Subject[] = [];
+      let page = 1;
+      let totalPages = 1;
+      do {
+        const url = new URL(baseUrl);
+        url.searchParams.set('page', String(page));
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          return { data: [], error: `Request failed with status ${response.status}` };
+        }
+        const json: BackendPaginatedResponse<BackendSubject> = await response.json();
+        subjects.push(...json.data.map(mapSubject));
+        totalPages = json.totalPages;
+        page++;
+      } while (page <= totalPages);
+      return { data: subjects, error: null };
+    } catch (err) {
+      return {
+        data: [],
+        error: err instanceof Error ? err.message : 'Unknown error fetching subjects',
+      };
+    }
+  });
+}
+
 export async function getSubjectById(id: string): Promise<Subject | null> {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/subjects/${id}`);

@@ -9,4 +9,12 @@ import SubjectsView from './SubjectsView';
     <span class='gradient-text'> tu Carrera </span>
   </h1>
   <SubjectsView client:load />
+  {/* Link plano para los crawlers que no ejecutan JS y no ven el listado de la isla. */}
+  <p class='mt-10 text-center'>
+    <a
+      href='/materias'
+      class='text-sm font-semibold text-zinc-400 hover:text-zinc-200 underline underline-offset-4 transition-colors duration-200'
+      >Ver todas las materias</a
+    >
+  </p>
 </ContainerSection>

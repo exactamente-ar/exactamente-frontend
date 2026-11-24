@@ -1,0 +1,65 @@
+---
+import type { ResourceCounts } from '@/features/home/types/subjects';
+import type { IndexUniversity } from '@/features/subjects-index/types/subjectsIndex';
+
+interface Props {
+  universities: IndexUniversity[];
+}
+const { universities } = Astro.props;
+
+const plural = (count: number, singular: string, pluralForm: string) =>
+  `${count} ${count === 1 ? singular : pluralForm}`;
+
+const countsLabel = ({ resumen, parcial, final }: ResourceCounts) =>
+  [
+    plural(resumen, 'resumen', 'resúmenes'),
+    plural(parcial, 'parcial', 'parciales'),
+    plural(final, 'final', 'finales'),
+  ].join(' · ');
+---
+
+{
+  universities.length === 0 ? (
+    <p class='text-zinc-400'>Todavía no hay materias cargadas.</p>
+  ) : (
+    <div class='space-y-12'>
+      {universities.map((university) => (
+        <section class='space-y-8'>
+          <h2 class='text-2xl font-bold text-zinc-100'>{university.name}</h2>
+          {university.faculties.map((faculty) => (
+            <section class='space-y-6'>
+              <h3 class='text-xl font-semibold text-zinc-200'>{faculty.name}</h3>
+              {faculty.careers.map((career) => (
+                <section class='space-y-4'>
+                  <h4 class='text-lg font-semibold text-zinc-300'>{career.name}</h4>
+                  {career.years.map((year) => (
+                    <div class='space-y-2'>
+                      <h5 class='text-sm uppercase tracking-widest text-zinc-500'>
+                        {year.year}.º año
+                      </h5>
+                      <ul class='grid gap-2 sm:grid-cols-2'>
+                        {year.subjects.map((subject) => (
+                          <li>
+                            <a
+                              href={`/${encodeURIComponent(subject.id)}/resumenes`}
+                              class='flex flex-col rounded-lg border border-border px-4 py-3 hover:border-white/20 transition-colors duration-200'
+                            >
+                              <span class='font-medium text-zinc-200'>{subject.title}</span>
+                              <span class='text-xs text-zinc-500'>
+                                {countsLabel(subject.resourceCounts)}
+                              </span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </section>
+              ))}
+            </section>
+          ))}
+        </section>
+      ))}
+    </div>
+  )
+}

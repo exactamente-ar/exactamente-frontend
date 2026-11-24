@@ -37,4 +37,18 @@ describe('Footer.astro', () => {
     expect(conSponsors).toContain('href="/colaborar"');
     expect(sinSponsors).toContain('href="/colaborar"');
   });
+
+  // El índice plano de materias es la puerta de entrada de los crawlers que
+  // no ejecutan JS: tiene que estar enlazado desde todas las páginas.
+  it('siempre tiene un link a /materias', async () => {
+    const container = await AstroContainer.create();
+
+    const conSponsors = await container.renderToString(Footer);
+    const sinSponsors = await container.renderToString(Footer, {
+      props: { hideSponsor: true },
+    });
+
+    expect(conSponsors).toMatch(/<a[^>]*href="\/materias"[^>]*>\s*Ver todas las materias/);
+    expect(sinSponsors).toContain('href="/materias"');
+  });
 });
