@@ -189,6 +189,16 @@ const studyMode = isStudyModeEnabled();
         Colaborar
       </a>
     </div>
+    {
+      studyMode && (
+        <a
+          class='flex justify-center items-center gap-2 w-full py-3 mt-4 rounded-xl border border-white/20 font-bold text-white duration-200 hover:bg-white/10'
+          href='/estudio'
+        >
+          Mis métricas de estudio
+        </a>
+      )
+    }
     <!-- Subir Recurso al fondo -->
     <a
       href='/upload'

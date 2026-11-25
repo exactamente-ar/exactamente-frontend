@@ -1,0 +1,21 @@
+---
+// Modo Estudio, fase 1: prototipo local detrás de PUBLIC_STUDY_MODE. SSR para
+// poder responder 404 cuando el flag está apagado (producción y previews).
+export const prerender = false;
+
+import Layout from '@/layouts/Layout.astro';
+import StudyMetrics from '@/features/study/components/metrics/StudyMetrics';
+import { isStudyModeEnabled } from '@/features/study/flag';
+
+if (!isStudyModeEnabled()) {
+  return new Response(null, { status: 404 });
+}
+---
+
+<Layout
+  title='Tu estudio'
+  description='Cuánto estudiaste por semana y por materia, contra tus metas.'
+>
+  <meta slot='head' name='robots' content='noindex' />
+  <StudyMetrics client:only='react' />
+</Layout>

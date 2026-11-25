@@ -32,4 +32,19 @@ describe('Header.astro — Modo Estudio', () => {
     const menu = html.slice(html.indexOf('class="mobile-menu'));
     expect(menu).not.toMatch(/StudyChip/);
   });
+
+  it('con el flag prendido el menú mobile tiene el acceso a las métricas', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render();
+
+    const menu = html.slice(html.indexOf('class="mobile-menu'));
+    expect(menu).toMatch(/<a[^>]*href="\/estudio"[^>]*>[\s\S]*?Mis métricas de estudio/);
+  });
+
+  it('con el flag apagado no hay acceso a /estudio', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', undefined);
+    const html = await render();
+
+    expect(html).not.toContain('/estudio');
+  });
 });
