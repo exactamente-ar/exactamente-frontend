@@ -14,6 +14,7 @@ import {
   weekDays,
   weekMinutes,
 } from '@/features/study/utils/metrics';
+import SessionList from './SessionList';
 import { GoalBar, GoalEditor, Heatmap, MetricCard, SubjectBars, WeekChart } from './MetricsCharts';
 
 type Props = { store?: StudyStore };
@@ -147,6 +148,10 @@ export default function StudyMetrics({ store = studyStore }: Props) {
           className='md:col-span-2 lg:col-span-3'
         >
           <Heatmap cells={data.heat} />
+        </MetricCard>
+
+        <MetricCard title='Sesiones' className='md:col-span-2 lg:col-span-3'>
+          <SessionList sessions={sessions} store={store} />
         </MetricCard>
       </div>
     </div>
