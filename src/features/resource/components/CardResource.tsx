@@ -45,18 +45,27 @@ const CardResource: React.FC<Props> = ({
   const studyMode = isStudyModeEnabled();
 
   // With the viewer open its chip is the only visible one; the header chip
-  // closes its panel (study mode, AD-9).
+  // closes its panel (study mode, AD-9). The cleanup also runs on unmount, so
+  // a card removed with its viewer open does not leave the header chip hidden.
   useEffect(() => {
-    if (!studyMode) return;
-    void import('@/features/study/store/studyStore').then(({ studyStore }) =>
-      studyStore.setViewerOpen(fullscreenOpen),
-    );
+    if (!studyMode || !fullscreenOpen) return;
+    const setViewerOpen = (open: boolean) =>
+      void import('@/features/study/store/studyStore').then(({ studyStore }) =>
+        studyStore.setViewerOpen(open),
+      );
+    setViewerOpen(true);
+    return () => setViewerOpen(false);
   }, [studyMode, fullscreenOpen]);
 
   useEffect(() => {
     if (!fullscreenOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setFullscreenOpen(false);
+      if (e.key !== 'Escape' || e.defaultPrevented) return;
+      // Escape inside a portaled popover (the study subject picker) closes
+      // that popover, not the viewer.
+      if (e.target instanceof Element && e.target.closest('[data-radix-popper-content-wrapper]'))
+        return;
+      setFullscreenOpen(false);
     };
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';

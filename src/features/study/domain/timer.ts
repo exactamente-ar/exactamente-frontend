@@ -94,9 +94,14 @@ export function start(
   };
 }
 
+/** What a focus may credit: overtime beyond the cap never counts. */
+function cappedElapsedMs(focus: FocusState, now: number): number {
+  return Math.min(elapsedMs(focus, now), focus.targetMs + OVERTIME_CAP_MS);
+}
+
 export function pause(state: TimerState, now: number): TimerState {
   if (state.phase !== 'focus' || state.runningSince === null) return state;
-  return { ...state, accumulatedMs: elapsedMs(state, now), runningSince: null };
+  return { ...state, accumulatedMs: cappedElapsedMs(state, now), runningSince: null };
 }
 
 export function resume(state: TimerState, now: number): TimerState {
@@ -135,7 +140,8 @@ function closeFocus(
   now: number,
   endReason: 'manual' | 'break',
 ): Omit<Transition, 'state'> {
-  const minutes = Math.round(elapsedMs(focus, now) / MINUTE);
+  // Truncated: a focus under a full minute is not recorded.
+  const minutes = Math.floor(cappedElapsedMs(focus, now) / MINUTE);
   if (minutes < 1) return { registered: null, skipped: 'too-short' };
   return { registered: buildSession(focus, minutes, now, endReason), skipped: null };
 }
@@ -184,7 +190,9 @@ export function tick(state: TimerState, settings: StudySettings, now: number): T
   // While running, the instant `elapsed` reached `mark` is `now - (elapsed - mark)`.
   const instantOf = (mark: number) => now - (elapsed - mark);
 
-  if (settings.autoStartBreak && elapsed >= state.targetMs) {
+  // Only a focus that has not entered overtime yet: turning the setting on
+  // mid-overtime must not cut the focus back to its target or replay the alert.
+  if (settings.autoStartBreak && !state.targetNotified && elapsed >= state.targetMs) {
     const reachedAt = instantOf(state.targetMs);
     const minutes = Math.round(state.targetMs / MINUTE);
     const registered = buildSession(state, minutes, reachedAt, 'auto-break');

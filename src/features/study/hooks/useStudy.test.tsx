@@ -99,4 +99,32 @@ describe('useStudyEngine', () => {
 
     expect(tick).toHaveBeenCalledTimes(4);
   });
+
+  it('en reposo refresca cada minuto: pasada la medianoche "hoy" vuelve a 0', () => {
+    vi.useFakeTimers();
+    clock = new Date(2026, 10, 25, 23, 59, 30).getTime();
+    writeSessions([
+      {
+        id: 'today',
+        startedAt: new Date(2026, 10, 25, 9, 0).toISOString(),
+        endedAt: new Date(2026, 10, 25, 10, 0).toISOString(),
+        minutes: 60,
+        recordedMinutes: 60,
+        endReason: 'manual',
+        ...SUBJECT,
+        updatedAt: new Date(2026, 10, 25, 10, 0).toISOString(),
+      },
+    ]);
+    const store = createStudyStore(deps());
+    renderHook(() => useStudyEngine(store));
+    const { result } = renderHook(() => useStudy(store));
+    expect(result.current.todayMinutes).toBe(60);
+
+    act(() => {
+      clock += MIN;
+      vi.advanceTimersByTime(MIN);
+    });
+
+    expect(result.current.todayMinutes).toBe(0);
+  });
 });

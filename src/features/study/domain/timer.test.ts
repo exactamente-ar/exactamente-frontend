@@ -215,7 +215,7 @@ describe('endFocus y startBreak', () => {
     expect(endFocus(paused, T0 + 60 * MIN).registered?.minutes).toBe(12);
   });
 
-  it('un foco de menos de 30 s no se registra e informa too-short', () => {
+  it('un foco de menos de 1 min no se registra e informa too-short', () => {
     const result = endFocus(focusAt(), T0 + 29_000);
 
     expect(result.registered).toBeNull();
@@ -262,5 +262,34 @@ describe('setSubject', () => {
     const other = { ...SUBJECT, subjectId: 's2', subjectName: 'Física' };
 
     expect(setSubject(state, other)).toBe(state);
+  });
+});
+
+describe('hallazgos de revisión', () => {
+  it('activar el arranque automático ya en tiempo extra no corta el foco ni repite el aviso', () => {
+    const overtime = tick(focusAt(), settings, T0 + 58 * MIN).state;
+    const auto = { ...settings, autoStartBreak: true };
+    const result = tick(overtime, auto, T0 + 59 * MIN);
+
+    expect(result.state).toBe(overtime);
+    expect(result.registered).toBeNull();
+    expect(result.alert).toBeNull();
+  });
+
+  it('pausar después del tope no acumula más que duración + tope', () => {
+    const paused = asFocus(pause(focusAt(), T0 + 5 * 60 * MIN));
+
+    expect(paused.accumulatedMs).toBe(50 * MIN + OVERTIME_CAP_MS);
+  });
+
+  it('terminar después del tope registra como máximo duración + tope', () => {
+    const result = endFocus(focusAt(), T0 + 5 * 60 * MIN);
+
+    expect(result.registered?.minutes).toBe(110);
+  });
+
+  it('los minutos se truncan: 30 s no se registran y 1 min 50 s cuenta 1', () => {
+    expect(endFocus(focusAt(), T0 + 30_000).skipped).toBe('too-short');
+    expect(endFocus(focusAt(), T0 + 110_000).registered?.minutes).toBe(1);
   });
 });
