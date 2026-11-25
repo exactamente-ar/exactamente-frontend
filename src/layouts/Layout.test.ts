@@ -158,3 +158,14 @@ describe('Layout.astro — Modo Estudio prendido', () => {
     expect(html).not.toMatch(/id="study-context"/);
   });
 });
+
+describe('Layout.astro — región live del Modo Estudio', () => {
+  it('con el flag prendido hay una sola región polite', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render();
+    vi.unstubAllEnvs();
+
+    expect(html.match(/id="study-live"/g)).toHaveLength(1);
+    expect(html).toMatch(/id="study-live"[^>]*aria-live="polite"/);
+  });
+});

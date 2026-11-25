@@ -1,6 +1,6 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { Pause, Timer } from 'lucide-react';
+import { Pause, Settings, Timer } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import {
   studyStore,
@@ -9,6 +9,7 @@ import {
 } from '@/features/study/store/studyStore';
 import { useStudy, type StudyView } from '@/features/study/hooks/useStudy';
 import { useStudyEngine } from '@/features/study/hooks/useStudyEngine';
+import { useStudyAlerts } from '@/features/study/hooks/useStudyAlerts';
 import { useMediaQuery } from '@/features/study/hooks/useMediaQuery';
 import {
   BREAK_BORDER,
@@ -23,6 +24,8 @@ import {
 import { formatClock, formatOvertime, spokenDuration } from '@/features/study/utils/format';
 import { readPageContext, resolveContextSubject } from '@/features/study/context';
 import StudyPanel from './StudyPanel';
+import StudySettings from './StudySettings';
+import StudyToast from './StudyToast';
 
 type Props = {
   placement: PanelPlacement;
@@ -106,6 +109,7 @@ function Indicator({ indicator }: { indicator: ChipLook['indicator'] }) {
 /** The one clock per page lives in the header chip, present on every page (AD-8). */
 function HeaderEngine({ store }: { store: StudyStore }) {
   useStudyEngine(store);
+  useStudyAlerts(store);
   return null;
 }
 
@@ -120,6 +124,14 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
   const suppressed = placement === 'header' && study.viewerOpen;
   const open = study.openPanel === placement && !suppressed;
   const look = lookOf(study);
+  const [view, setView] = useState<'timer' | 'settings'>('timer');
+  // The chip shows the toast only while it is the visible one.
+  const completion = suppressed ? null : study.completion;
+
+  // Every opening starts on the timer view.
+  useEffect(() => {
+    if (!open) setView('timer');
+  }, [open]);
 
   const toggle = () => {
     const opening = !open;
@@ -195,14 +207,34 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
     return () => panel.removeEventListener('keydown', onKeyDown);
   }, [open, desktop, placement, store]);
 
-  const panelBody = (
-    <StudyPanel
-      study={study}
-      store={store}
-      id={`${panelId}-content`}
-      onClose={() => close(false)}
-    />
+  const toast = completion && (
+    <StudyToast completion={completion} onDismiss={store.dismissCompletion} />
   );
+
+  const panelBody =
+    view === 'settings' ? (
+      <StudySettings settings={study.settings} store={store} onBack={() => setView('timer')} />
+    ) : (
+      <StudyPanel
+        study={study}
+        store={store}
+        id={`${panelId}-content`}
+        onClose={() => close(false)}
+        footerExtra={
+          <button
+            type='button'
+            onClick={() => setView('settings')}
+            aria-label='Configuración'
+            className={cn(
+              'flex size-11 cursor-pointer items-center justify-center rounded-[10px] text-zinc-400 hover:bg-white/5 hover:text-white',
+              FOCUS_RING,
+            )}
+          >
+            <Settings size={18} aria-hidden='true' />
+          </button>
+        }
+      />
+    );
 
   let panel: ReactNode = null;
   if (open && desktop) {
@@ -218,6 +250,7 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
           PANEL_GRADIENT_BORDER,
         )}
       >
+        {toast && <div className='mb-3'>{toast}</div>}
         {panelBody}
       </div>
     );
@@ -241,6 +274,7 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
           )}
         >
           <div aria-hidden='true' className='mx-auto mb-3 h-1 w-8 rounded-full bg-white/20' />
+          {toast && <div className='mb-3'>{toast}</div>}
           {panelBody}
         </div>
       </div>,
@@ -277,6 +311,16 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
         </span>
       </button>
       {panel}
+      {!open && toast && (
+        <div
+          className={cn(
+            'absolute top-full right-0 mt-2 w-[min(340px,calc(100vw-2rem))]',
+            LAYER_SHEET,
+          )}
+        >
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

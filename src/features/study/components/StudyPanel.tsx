@@ -10,6 +10,7 @@ import {
   formatMinutes,
   formatOvertime,
 } from '@/features/study/utils/format';
+import { primeAudio } from '@/features/study/utils/alerts';
 import SubjectPicker from './SubjectPicker';
 
 type Props = {
@@ -81,7 +82,11 @@ function actionsOf(study: StudyView, store: StudyStore): { primary: Action; seco
   return {
     primary: {
       label: 'Arrancar foco',
-      onClick: store.start,
+      onClick: () => {
+        // Inside the click, so autoplay policies let the end-of-focus sound play later.
+        primeAudio();
+        store.start();
+      },
     },
     secondary: [],
   };

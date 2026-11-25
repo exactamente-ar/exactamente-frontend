@@ -8,6 +8,7 @@ import Header from '@/shared/components/Header.astro';
 import SupportBanner from '@/shared/components/SupportBanner.astro';
 import { SITE_NAME, toAbsoluteUrl } from '@/shared/constants/site';
 import { isStudyModeEnabled } from '@/features/study/flag';
+import { STUDY_LIVE_ID } from '@/features/study/utils/alerts';
 import {
   STUDY_CONTEXT_ID,
   serializeStudyContext,
@@ -109,5 +110,6 @@ const ogImageUrl = toAbsoluteUrl(ogImage);
     </ContainerPage>
     <Footer hideSponsor={hideFooterSponsor} />
     <SupportBanner />
+    {studyMode && <div id={STUDY_LIVE_ID} class='sr-only' aria-live='polite' aria-atomic='true' />}
   </body>
 </html>

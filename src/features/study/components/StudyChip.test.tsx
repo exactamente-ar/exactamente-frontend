@@ -244,3 +244,37 @@ describe('StudyChip — visor', () => {
     expect(onWindowKey).not.toHaveBeenCalled();
   });
 });
+
+describe('StudyChip — confirmación y configuración', () => {
+  it('el toast aparece debajo del chip visible, no en el del header con el visor abierto', () => {
+    store.setSubject(SUBJECT);
+    store.start();
+    clock += 58 * MIN;
+    store.startBreak();
+
+    const { unmount } = render(<StudyChip placement='header' store={store} />);
+    expect(screen.getByRole('status')).toHaveTextContent('+58 min de Cálculo II');
+    unmount();
+
+    act(() => store.setViewerOpen(true));
+    render(
+      <>
+        <StudyChip placement='header' store={store} />
+        <StudyChip placement='viewer' store={store} />
+      </>,
+    );
+    expect(screen.getAllByRole('status')).toHaveLength(1);
+  });
+
+  it('el engranaje abre la configuración dentro del panel y "Volver" regresa', async () => {
+    const user = userEvent.setup();
+    render(<StudyChip placement='header' store={store} />);
+
+    await user.click(chip());
+    await user.click(screen.getByRole('button', { name: 'Configuración' }));
+    expect(screen.getByRole('heading', { name: 'Configuración' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Volver' }));
+    expect(screen.getByRole('button', { name: 'Arrancar foco' })).toBeInTheDocument();
+  });
+});
