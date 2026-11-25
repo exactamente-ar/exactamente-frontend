@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import IconDownload from '@/shared/components/icons/react/IconDownload';
 import IconLink from '@/shared/components/icons/react/IconLink';
@@ -8,6 +8,11 @@ import HeaderCardResource from './HeaderCardResource';
 import { usePreview } from '@/features/resource/hooks/usePreview';
 import { trackEvent } from '@/shared/analytics/trackEvent';
 import { getResourceDownloadUrl } from '@/shared/services/api';
+import { isStudyModeEnabled } from '@/features/study/flag';
+
+// Loaded on demand: with study mode off (production) resource pages must not
+// download any of it.
+const StudyChip = lazy(() => import('@/features/study/components/StudyChip'));
 
 interface Props {
   id: string;
@@ -37,11 +42,30 @@ const CardResource: React.FC<Props> = ({
 
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const studyMode = isStudyModeEnabled();
+
+  // With the viewer open its chip is the only visible one; the header chip
+  // closes its panel (study mode, AD-9). The cleanup also runs on unmount, so
+  // a card removed with its viewer open does not leave the header chip hidden.
+  useEffect(() => {
+    if (!studyMode || !fullscreenOpen) return;
+    const setViewerOpen = (open: boolean) =>
+      void import('@/features/study/store/studyStore').then(({ studyStore }) =>
+        studyStore.setViewerOpen(open),
+      );
+    setViewerOpen(true);
+    return () => setViewerOpen(false);
+  }, [studyMode, fullscreenOpen]);
 
   useEffect(() => {
     if (!fullscreenOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setFullscreenOpen(false);
+      if (e.key !== 'Escape' || e.defaultPrevented) return;
+      // Escape inside a portaled popover (the study subject picker) closes
+      // that popover, not the viewer.
+      if (e.target instanceof Element && e.target.closest('[data-radix-popper-content-wrapper]'))
+        return;
+      setFullscreenOpen(false);
     };
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -184,14 +208,21 @@ const CardResource: React.FC<Props> = ({
         >
           <div className='flex items-center justify-between gap-4 mb-3'>
             <h2 className='text-white font-medium text-sm sm:text-base truncate'>{title}</h2>
-            <button
-              ref={closeBtnRef}
-              onClick={() => setFullscreenOpen(false)}
-              aria-label='Cerrar vista completa'
-              className='cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 text-zinc-300 hover:text-white transition-all duration-200 shrink-0'
-            >
-              <X size={20} />
-            </button>
+            <div className='flex items-center gap-2 shrink-0'>
+              {studyMode && (
+                <Suspense fallback={null}>
+                  <StudyChip placement='viewer' />
+                </Suspense>
+              )}
+              <button
+                ref={closeBtnRef}
+                onClick={() => setFullscreenOpen(false)}
+                aria-label='Cerrar vista completa'
+                className='cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 text-zinc-300 hover:text-white transition-all duration-200 shrink-0'
+              >
+                <X size={20} />
+              </button>
+            </div>
           </div>
           <iframe
             src={fileUrl}

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { studyStore } from '@/features/study/store/studyStore';
 import CardResource from './CardResource';
 
 /**
@@ -130,5 +131,90 @@ describe('CardResource — eventos de analítica', () => {
       type: 'parcial',
       mode: 'fullscreen',
     });
+  });
+});
+
+describe('CardResource — Modo Estudio en el visor', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    studyStore.setViewerOpen(false);
+  });
+
+  it('con el flag prendido el visor tiene el chip a la izquierda de la X y avisa al store', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const user = userEvent.setup();
+    render(<CardResource {...props} />);
+
+    await user.click(screen.getByRole('button', { name: /vista previa/i }));
+    await user.click(screen.getByRole('button', { name: 'Ver completo' }));
+
+    const close = screen.getByRole('button', { name: 'Cerrar vista completa' });
+    const studyChip = await screen.findByRole('button', { name: /^modo estudio/i });
+    expect(
+      studyChip.compareDocumentPosition(close) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    await waitFor(() => expect(studyStore.getSnapshot().viewerOpen).toBe(true));
+
+    await user.click(close);
+    await waitFor(() => expect(studyStore.getSnapshot().viewerOpen).toBe(false));
+  });
+
+  it('si se desmonta con el visor abierto, el store vuelve a visor cerrado', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const user = userEvent.setup();
+    const { unmount } = render(<CardResource {...props} />);
+
+    await user.click(screen.getByRole('button', { name: /vista previa/i }));
+    await user.click(screen.getByRole('button', { name: 'Ver completo' }));
+    await waitFor(() => expect(studyStore.getSnapshot().viewerOpen).toBe(true));
+
+    unmount();
+    await waitFor(() => expect(studyStore.getSnapshot().viewerOpen).toBe(false));
+  });
+
+  it('Esc que cierra un popover portaleado (combobox de materia) no cierra el visor', async () => {
+    const user = userEvent.setup();
+    render(<CardResource {...props} />);
+    await user.click(screen.getByRole('button', { name: /vista previa/i }));
+    await user.click(screen.getByRole('button', { name: 'Ver completo' }));
+
+    const popper = document.createElement('div');
+    popper.setAttribute('data-radix-popper-content-wrapper', '');
+    const input = document.createElement('input');
+    popper.appendChild(input);
+    document.body.appendChild(popper);
+    act(() => {
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+    popper.remove();
+
+    const handled = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      bubbles: true,
+      cancelable: true,
+    });
+    handled.preventDefault();
+    act(() => {
+      document.body.dispatchEvent(handled);
+    });
+
+    expect(screen.getByRole('button', { name: 'Cerrar vista completa' })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('button', { name: 'Cerrar vista completa' })).not.toBeInTheDocument();
+  });
+
+  it('con el flag apagado no hay chip y no toca el store', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', undefined);
+    const setViewerOpen = vi.spyOn(studyStore, 'setViewerOpen');
+    const user = userEvent.setup();
+    render(<CardResource {...props} />);
+
+    await user.click(screen.getByRole('button', { name: /vista previa/i }));
+    await user.click(screen.getByRole('button', { name: 'Ver completo' }));
+
+    expect(screen.queryByRole('button', { name: /^modo estudio/i })).not.toBeInTheDocument();
+    expect(setViewerOpen).not.toHaveBeenCalled();
+    setViewerOpen.mockRestore();
   });
 });

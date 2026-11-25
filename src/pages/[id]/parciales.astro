@@ -15,6 +15,7 @@ import ResourcesView from '@/features/resource/components/ResourcesView';
 import ResourcesSummary from '@/features/resource/components/ResourcesSummary.astro';
 import { loadResourcesPage } from '@/features/resource/services/resourcesPage';
 import { getSubjectById } from '@/shared/services/api';
+import { toStudyContext } from '@/features/study/context';
 
 const { id } = Astro.params;
 const subject = await getSubjectById(id as string);
@@ -35,6 +36,7 @@ const tabSuffix = homeQuery ? `?home=${encodeURIComponent(homeQuery)}` : '';
   title={`${subject.title} — Parciales`}
   description={page.description}
   canonical={page.canonicalUrl}
+  studyContext={toStudyContext(subject)}
 >
   <script is:inline slot='head' type='application/ld+json' set:html={page.jsonLd} />
   <ContainerSection id='parciales'>

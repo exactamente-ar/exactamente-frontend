@@ -21,6 +21,10 @@ interface FilterComboboxProps {
   disabled?: boolean;
   isLoading?: boolean;
   variant?: 'default' | 'pill' | 'form';
+  /** A `combobox` takes no name from its content, so give one when there is no visible label. */
+  ariaLabel?: string;
+  /** Extra classes for the portaled list, e.g. a higher z-index inside an overlay. */
+  popoverClassName?: string;
 }
 
 const FilterCombobox: React.FC<FilterComboboxProps> = ({
@@ -31,6 +35,8 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
   disabled = false,
   isLoading = false,
   variant = 'default',
+  ariaLabel,
+  popoverClassName,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectedLabel = useMemo(
@@ -75,6 +81,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
           variant='outline'
           role='combobox'
           aria-expanded={isOpen}
+          aria-label={ariaLabel}
           disabled={disabled || undefined}
           className={cn(triggerClassName, 'w-full')}
         >
@@ -92,6 +99,7 @@ const FilterCombobox: React.FC<FilterComboboxProps> = ({
             : 'bg-zinc-800 rounded-lg',
           isPill && 'w-[min(100vw-2rem,20rem)]',
           !isPill && !isForm && 'w-full',
+          popoverClassName,
         )}
         align='start'
       >

@@ -4,7 +4,7 @@
 import { getContainerRenderer } from '@astrojs/react';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { loadRenderers } from 'astro:container';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import Layout from './Layout.astro';
 
 // El Header monta islands de React (UserMenu), así que el container necesita
@@ -112,5 +112,60 @@ describe('Layout.astro — slot head', () => {
     const head = html.slice(html.indexOf('<head>'), html.indexOf('</head>'));
 
     expect(head).toContain('<script type="application/ld+json">{"a":1}</script>');
+  });
+});
+
+describe('Layout.astro — Modo Estudio apagado', () => {
+  it('sin PUBLIC_STUDY_MODE no hay ninguna isla ni markup del Modo Estudio', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', undefined);
+    const html = await render({
+      studyContext: { subjectId: 's1', subjectName: 'Álgebra', careers: [] },
+    });
+    vi.unstubAllEnvs();
+
+    expect(html).not.toMatch(/features\/study/);
+    expect(html).not.toMatch(/study-context|study-live/);
+    expect(html).not.toMatch(/Modo estudio/i);
+  });
+});
+
+describe('Layout.astro — Modo Estudio prendido', () => {
+  it('emite el contexto de materia como JSON en la página', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render({
+      studyContext: {
+        subjectId: 's1',
+        subjectName: 'Álgebra',
+        careers: [{ careerId: 'c1', careerName: 'Ing. en Sistemas' }],
+      },
+    });
+    vi.unstubAllEnvs();
+
+    const match = html.match(/<script type="application\/json" id="study-context">(.*?)<\/script>/);
+    expect(match).not.toBeNull();
+    expect(JSON.parse(match![1])).toEqual({
+      subjectId: 's1',
+      subjectName: 'Álgebra',
+      careers: [{ careerId: 'c1', careerName: 'Ing. en Sistemas' }],
+    });
+  });
+
+  it('sin contexto no emite el script', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render();
+    vi.unstubAllEnvs();
+
+    expect(html).not.toMatch(/id="study-context"/);
+  });
+});
+
+describe('Layout.astro — región live del Modo Estudio', () => {
+  it('con el flag prendido hay una sola región polite', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render();
+    vi.unstubAllEnvs();
+
+    expect(html.match(/id="study-live"/g)).toHaveLength(1);
+    expect(html).toMatch(/id="study-live"[^>]*aria-live="polite"/);
   });
 });
