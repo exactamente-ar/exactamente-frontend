@@ -369,6 +369,11 @@ export function createStudyStore(deps: Deps = {}) {
         set({ lastCareer });
       }
     },
+    setLastCareer(lastCareer: LastCareer) {
+      hydrate();
+      writeLastCareer(lastCareer);
+      set({ lastCareer });
+    },
     /** Presets and settings apply to the next focus, never the one running. */
     setFocusMinutes(minutes: number) {
       updateSettings({ focusMin: minutes });

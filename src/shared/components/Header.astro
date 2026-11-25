@@ -1,6 +1,10 @@
 ---
 import ContainerLink from './ContainerLink.astro';
 import UserMenu from '@/features/auth/components/UserMenu';
+import StudyChip from '@/features/study/components/StudyChip';
+import { isStudyModeEnabled } from '@/features/study/flag';
+
+const studyMode = isStudyModeEnabled();
 ---
 
 <header
@@ -77,6 +81,8 @@ import UserMenu from '@/features/auth/components/UserMenu';
       </div>
 
       <div class='flex items-center gap-2'>
+        {studyMode && <StudyChip client:load placement='header' />}
+
         <ContainerLink
           url='/upload'
           class='hidden sm:flex hover:sepia-50 bg-white text-primary-foreground font-bold'
