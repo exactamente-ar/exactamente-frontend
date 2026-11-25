@@ -197,3 +197,20 @@ export function readLastCareer(): LastCareer | null {
 export function writeLastCareer(career: LastCareer): void {
   writeRaw(STUDY_LAST_CAREER_KEY, career);
 }
+
+const PROBE_KEY = 'exactamente:studyProbe';
+
+/**
+ * Whether localStorage can be written. When it cannot, the store keeps working
+ * from memory instead of re-reading an always-empty storage.
+ */
+export function isStorageAvailable(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    window.localStorage.setItem(PROBE_KEY, '1');
+    window.localStorage.removeItem(PROBE_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
