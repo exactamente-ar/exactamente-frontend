@@ -7,6 +7,12 @@ import ContainerPage from '@/shared/components/ContainerPage.astro';
 import Header from '@/shared/components/Header.astro';
 import SupportBanner from '@/shared/components/SupportBanner.astro';
 import { SITE_NAME, toAbsoluteUrl } from '@/shared/constants/site';
+import { isStudyModeEnabled } from '@/features/study/flag';
+import {
+  STUDY_CONTEXT_ID,
+  serializeStudyContext,
+  type PageStudyContext,
+} from '@/features/study/context';
 
 interface Props {
   title?: string;
@@ -16,6 +22,8 @@ interface Props {
   canonical?: string;
   /** Imagen para Open Graph. Si es relativa se resuelve sobre el origen de producción. */
   ogImage?: string;
+  /** Materia de la página, para el Modo Estudio. Solo se emite con el flag prendido. */
+  studyContext?: PageStudyContext;
 }
 
 const DEFAULT_DESCRIPTION =
@@ -27,7 +35,11 @@ const {
   hideFooterSponsor = false,
   canonical,
   ogImage = '/logo.png',
+  studyContext,
 } = Astro.props;
+
+const studyMode = isStudyModeEnabled();
+const studyContextJson = studyMode && studyContext ? serializeStudyContext(studyContext) : null;
 
 const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 // Sin query string: los parámetros de navegación (`?home=`) no cambian el contenido.
@@ -58,6 +70,16 @@ const ogImageUrl = toAbsoluteUrl(ogImage);
     <meta property='og:image' content={ogImageUrl} />
     <meta name='twitter:card' content='summary' />
     <slot name='head' />
+    {
+      studyContextJson && (
+        <script
+          is:inline
+          type='application/json'
+          id={STUDY_CONTEXT_ID}
+          set:html={studyContextJson}
+        />
+      )
+    }
   </head>
   <body class='font-rubik bg-primary-foreground relative scroll-smooth'>
     <div class='fixed inset-0 bg-noise opacity-10 -z-0'></div>

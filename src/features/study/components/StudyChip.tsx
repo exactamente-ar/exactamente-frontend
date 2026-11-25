@@ -21,6 +21,7 @@ import {
   PAUSED_BORDER,
 } from '@/features/study/constants/styles';
 import { formatClock, formatOvertime, spokenDuration } from '@/features/study/utils/format';
+import { readPageContext, resolveContextSubject } from '@/features/study/context';
 import StudyPanel from './StudyPanel';
 
 type Props = {
@@ -119,6 +120,24 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
   const suppressed = placement === 'header' && study.viewerOpen;
   const open = study.openPanel === placement && !suppressed;
   const look = lookOf(study);
+
+  const toggle = () => {
+    const opening = !open;
+    if (opening && study.timer.phase === 'idle') {
+      // On a subject page, that subject becomes the active one (FR-1). A focus in
+      // progress keeps its own subject.
+      const context = readPageContext();
+      const subject = context && resolveContextSubject(context, study.lastCareer);
+      const current = study.timer.subject;
+      if (
+        subject &&
+        (current?.subjectId !== subject.subjectId || current?.careerId !== subject.careerId)
+      ) {
+        store.setSubject(subject);
+      }
+    }
+    store.setPanelOpen(placement, opening);
+  };
 
   const close = (returnFocus: boolean) => {
     store.setPanelOpen(placement, false);
@@ -235,7 +254,7 @@ export default function StudyChip({ placement, store = studyStore }: Props) {
       <button
         ref={chipRef}
         type='button'
-        onClick={() => store.togglePanel(placement)}
+        onClick={toggle}
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={look.name}

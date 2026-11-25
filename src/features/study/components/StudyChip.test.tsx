@@ -1,8 +1,9 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { StudySubject } from '@/features/study/domain/timer';
 import { createStudyStore, type StudyStore } from '@/features/study/store/studyStore';
+import { STUDY_CONTEXT_ID, resetPageContextCache } from '@/features/study/context';
 import StudyChip from './StudyChip';
 
 const api = vi.hoisted(() => ({ getCareers: vi.fn(), getSubjects: vi.fn() }));
@@ -159,5 +160,87 @@ describe('StudyChip — panel', () => {
     render(<StudyChip placement='header' store={store} />);
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});
+
+describe('StudyChip — materia por contexto', () => {
+  function mountContext() {
+    resetPageContextCache();
+    const script = document.createElement('script');
+    script.type = 'application/json';
+    script.id = STUDY_CONTEXT_ID;
+    script.textContent = JSON.stringify({
+      subjectId: 's7',
+      subjectName: 'Cálculo II',
+      careers: [
+        { careerId: 'c1', careerName: 'Ing. en Sistemas' },
+        { careerId: 'c2', careerName: 'Ing. Electrónica' },
+      ],
+    });
+    document.body.append(script);
+  }
+
+  afterEach(() => {
+    document.getElementById(STUDY_CONTEXT_ID)?.remove();
+    resetPageContextCache();
+  });
+
+  it('en reposo, abrir el panel toma la materia de la página: arrancar es abrir y play', async () => {
+    const user = userEvent.setup();
+    mountContext();
+    store.setLastCareer({ careerId: 'c2', careerName: 'Ing. Electrónica' });
+    render(<StudyChip placement='header' store={store} />);
+
+    await user.click(chip());
+    expect(screen.getByText('Cálculo II · Ing. Electrónica')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Arrancar foco' }));
+
+    expect(store.getSnapshot().timer).toMatchObject({
+      phase: 'focus',
+      subject: { subjectId: 's7', careerId: 'c2' },
+    });
+  });
+
+  it('con un foco en curso de otra materia, la página no la cambia', async () => {
+    const user = userEvent.setup();
+    const fisica = { ...SUBJECT, subjectId: 'f1', subjectName: 'Física' };
+    store.setSubject(fisica);
+    store.start();
+    mountContext();
+    render(<StudyChip placement='header' store={store} />);
+
+    await user.click(chip());
+
+    expect(store.getSnapshot().timer.subject).toEqual(fisica);
+  });
+});
+
+describe('StudyChip — visor', () => {
+  it('el chip del visor abre su panel y permite arrancar y pausar', async () => {
+    const user = userEvent.setup();
+    store.setSubject(SUBJECT);
+    act(() => store.setViewerOpen(true));
+    render(<StudyChip placement='viewer' store={store} />);
+
+    await user.click(chip());
+    await user.click(screen.getByRole('button', { name: 'Arrancar foco' }));
+    await user.click(screen.getByRole('button', { name: 'Pausar' }));
+
+    expect(store.getSnapshot().timer).toMatchObject({ phase: 'focus', runningSince: null });
+    expect(screen.getByRole('dialog').id).toBe('study-panel-viewer');
+  });
+
+  it('Esc en el panel del visor no llega a la ventana (el visor no se cierra)', async () => {
+    const user = userEvent.setup();
+    const onWindowKey = vi.fn();
+    window.addEventListener('keydown', onWindowKey);
+    render(<StudyChip placement='viewer' store={store} />);
+
+    await user.click(chip());
+    await user.keyboard('{Escape}');
+    window.removeEventListener('keydown', onWindowKey);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(onWindowKey).not.toHaveBeenCalled();
   });
 });

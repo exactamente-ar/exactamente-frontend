@@ -128,3 +128,33 @@ describe('Layout.astro — Modo Estudio apagado', () => {
     expect(html).not.toMatch(/Modo estudio/i);
   });
 });
+
+describe('Layout.astro — Modo Estudio prendido', () => {
+  it('emite el contexto de materia como JSON en la página', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render({
+      studyContext: {
+        subjectId: 's1',
+        subjectName: 'Álgebra',
+        careers: [{ careerId: 'c1', careerName: 'Ing. en Sistemas' }],
+      },
+    });
+    vi.unstubAllEnvs();
+
+    const match = html.match(/<script type="application\/json" id="study-context">(.*?)<\/script>/);
+    expect(match).not.toBeNull();
+    expect(JSON.parse(match![1])).toEqual({
+      subjectId: 's1',
+      subjectName: 'Álgebra',
+      careers: [{ careerId: 'c1', careerName: 'Ing. en Sistemas' }],
+    });
+  });
+
+  it('sin contexto no emite el script', async () => {
+    vi.stubEnv('PUBLIC_STUDY_MODE', 'true');
+    const html = await render();
+    vi.unstubAllEnvs();
+
+    expect(html).not.toMatch(/id="study-context"/);
+  });
+});
